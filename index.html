@@ -38,6 +38,81 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+
+<!-- Structured Data: MedicalWebPage (schema.org) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MedicalWebPage",
+  "name": "糖尿病照護小幫手 — 我們陪您一起走",
+  "description": "光田綜合醫院 曾士婷醫師．給糖尿病病人與家屬的衛教資訊：飲食 211 餐盤、運動、用藥、低血糖處理、足部護理、定期回診、疫苗與線上掛號。",
+  "url": "https://tsn4830-ui.github.io/diabetes-education/",
+  "inLanguage": "zh-Hant-TW",
+  "image": "https://tsn4830-ui.github.io/diabetes-education/assets/og-preview.jpg",
+  "author": {
+    "@type": "Person",
+    "name": "曾士婷",
+    "honorificPrefix": "醫師",
+    "jobTitle": "內分泌新陳代謝科主治醫師",
+    "affiliation": {
+      "@type": "MedicalOrganization",
+      "name": "光田綜合醫院",
+      "url": "https://www.ktgh.com.tw/"
+    }
+  },
+  "publisher": {
+    "@type": "MedicalOrganization",
+    "name": "光田綜合醫院",
+    "url": "https://www.ktgh.com.tw/",
+    "telephone": "+886-4-2688-6699"
+  },
+  "mainContentOfPage": {
+    "@type": "WebPageElement",
+    "cssSelector": ".content"
+  },
+  "about": [
+    {
+      "@type": "MedicalCondition",
+      "name": "第二型糖尿病",
+      "alternateName": "Type 2 Diabetes Mellitus",
+      "code": {
+        "@type": "MedicalCode",
+        "codeValue": "E11",
+        "codingSystem": "ICD-10"
+      }
+    },
+    {
+      "@type": "MedicalCondition",
+      "name": "第一型糖尿病",
+      "alternateName": "Type 1 Diabetes Mellitus",
+      "code": {
+        "@type": "MedicalCode",
+        "codeValue": "E10",
+        "codingSystem": "ICD-10"
+      }
+    }
+  ],
+  "audience": {
+    "@type": "PeopleAudience",
+    "healthCondition": {
+      "@type": "MedicalCondition",
+      "name": "糖尿病"
+    },
+    "audienceType": "Patients and caregivers"
+  },
+  "specialty": {
+    "@type": "MedicalSpecialty",
+    "name": "Endocrinology"
+  },
+  "lastReviewed": "2026-05-24",
+  "reviewedBy": {
+    "@type": "Person",
+    "name": "曾士婷",
+    "honorificPrefix": "醫師"
+  },
+  "medicalAudience": ["Patient", "Caregiver"]
+}
+</script>
 <style>
   :root {
     --cream:        #FBF6EC;
@@ -1446,6 +1521,167 @@
     .legend-item { font-size: 0.85em; }
   }
 
+  /* ============ Print CSS ============ */
+  @media print {
+    /* 基本：白底黑字、省墨 */
+    body, html {
+      background: #fff !important;
+      color: #000 !important;
+      font-size: 11pt;
+      line-height: 1.55;
+    }
+    body { padding: 0; margin: 0; }
+
+    /* 列印頁邊 + 自動頁首頁尾 */
+    @page {
+      margin: 18mm 14mm 18mm 14mm;
+      size: A4 portrait;
+    }
+    @page :first { margin-top: 12mm; }
+
+    /* 隱藏：互動元件、浮動按鈕、QR 碼區、線上服務按鈕、字級切換 */
+    .nav-top, .nav-tabs, .font-controls, #toTop, .to-top,
+    .qr-section, .online-section, .online-grid,
+    .phone-section,
+    .hero-cta, .hero-tag,
+    .visit-cta, .next-step-note,
+    nav, .skip-link, .share-buttons {
+      display: none !important;
+    }
+
+    /* Hero 區大幅瘦身：取消色塊，只留標題 */
+    .hero {
+      background: none !important;
+      color: #000 !important;
+      padding: 0 0 12mm 0 !important;
+      page-break-after: avoid;
+      grid-template-columns: 1fr !important;
+      text-align: left;
+    }
+    .hero h1 {
+      font-size: 22pt;
+      color: #000 !important;
+      margin: 0 0 4mm 0;
+    }
+    .hero .accent { color: #000 !important; }
+    .hero .lead, .hero p {
+      color: #000 !important;
+      font-size: 11pt;
+    }
+
+    /* 內文 section */
+    section.content {
+      padding: 8mm 0 !important;
+      page-break-inside: auto;
+      background: none !important;
+    }
+    .section-head .label {
+      background: none !important;
+      color: #000 !important;
+      border: 1pt solid #000;
+      padding: 1mm 2mm;
+      font-size: 9pt;
+    }
+    .section-head h2 {
+      font-size: 16pt;
+      color: #000 !important;
+      page-break-after: avoid;
+    }
+
+    /* 卡片：取消彩色背景，改細邊框 */
+    .intro-card, .stat-box, .edu-card,
+    .alert-step, .glucose-row, .med-card,
+    .feet-card, .visit-card, .vaccine-card,
+    .food-tip, .number-strip > *,
+    .plate-list li, .exercise-card {
+      background: #fff !important;
+      color: #000 !important;
+      border: 0.5pt solid #888 !important;
+      box-shadow: none !important;
+      page-break-inside: avoid;
+      padding: 4mm !important;
+    }
+
+    /* 標題避免分頁 */
+    h1, h2, h3, h4 {
+      page-break-after: avoid;
+      color: #000 !important;
+    }
+    h3 { font-size: 13pt; }
+    h4 { font-size: 11pt; }
+
+    /* 段落避免孤行/寡行 */
+    p {
+      orphans: 3;
+      widows: 3;
+      page-break-inside: auto;
+    }
+
+    /* 強制 FAQ 全部展開 + 顯示答案 */
+    .faq-item, details {
+      page-break-inside: avoid;
+    }
+    .faq-item .q-text {
+      font-weight: bold;
+      page-break-after: avoid;
+    }
+    .faq-item .a, .faq-item .answer, .faq-item p, details > *:not(summary) {
+      display: block !important;
+      max-height: none !important;
+      opacity: 1 !important;
+      overflow: visible !important;
+    }
+    .faq-item { /* override .open class so answers always show */
+      max-height: none !important;
+    }
+    details[open], details {
+      display: block;
+    }
+    details summary::-webkit-details-marker { display: none; }
+
+    /* 圖片不要切到下頁 */
+    img, svg {
+      page-break-inside: avoid;
+      max-width: 100% !important;
+      height: auto !important;
+    }
+    .plate-image-wrap img {
+      max-width: 110mm !important;
+    }
+
+    /* 連結：印出網址（不適用 mailto/tel） */
+    a[href^="http"]::after {
+      content: "（" attr(href) "）";
+      font-size: 9pt;
+      color: #555;
+      word-break: break-all;
+    }
+    a[href^="mailto:"]::after,
+    a[href^="tel:"]::after,
+    a[href^="#"]::after,
+    nav a::after { content: ""; }
+
+    /* 強調色保留：紅字警示 */
+    strong, b { font-weight: bold; }
+    .warn, .alert, .danger { color: #b00 !important; }
+
+    /* 表格列印友善 */
+    table { page-break-inside: auto; border-collapse: collapse; }
+    tr { page-break-inside: avoid; }
+    th, td { border: 0.5pt solid #888; padding: 2mm; }
+
+    /* 列印頁首：網站標題與網址（每頁固定） */
+    body::before {
+      content: "糖尿病照護小幫手  |  曾士婷醫師 · 光田綜合醫院  |  tsn4830-ui.github.io/diabetes-education";
+      display: block;
+      font-size: 8pt;
+      color: #666;
+      border-bottom: 0.5pt solid #aaa;
+      padding-bottom: 2mm;
+      margin-bottom: 4mm;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -1585,10 +1821,12 @@
   <div class="exercise-grid">
     <div class="exercise-card">
       <div class="exercise-icon">
-        <svg width="50" height="50" viewBox="0 0 50 50">
-          <circle cx="25" cy="12" r="6" fill="#C75B4A"/>
-          <path d="M 25 18 L 25 32 M 25 22 L 18 28 M 25 22 L 32 28 M 25 32 L 20 45 M 25 32 L 30 45" 
-                stroke="#C75B4A" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <!-- Lucide: footprints (散步) -->
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#C75B4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="散步">
+          <path d="M4 16v-2.38c0-.99-.025-2.7.92-4.18.95-1.48 2.05-1.83 2.45-1.83.65 0 1.42.32 1.91 1.16.42.71.72 1.78.72 2.85V16Z"/>
+          <path d="M14 12c0-1.07.3-2.14.72-2.85.49-.84 1.26-1.16 1.91-1.16.4 0 1.5.35 2.45 1.83.95 1.48.92 3.19.92 4.18V16Z"/>
+          <path d="M19 22h0a3 3 0 0 1-3-3v-3h6v3a3 3 0 0 1-3 3h0Z"/>
+          <path d="M5 22h0a3 3 0 0 1-3-3v-3h6v3a3 3 0 0 1-3 3h0Z"/>
         </svg>
       </div>
       <h3>散步</h3>
@@ -1597,11 +1835,12 @@
     </div>
     <div class="exercise-card">
       <div class="exercise-icon">
-        <svg width="50" height="50" viewBox="0 0 50 50">
-          <circle cx="25" cy="10" r="5" fill="#5E8C61"/>
-          <path d="M 25 15 L 25 28 M 18 20 L 32 20 M 25 28 L 18 40 M 25 28 L 32 40" 
-                stroke="#5E8C61" stroke-width="3" stroke-linecap="round" fill="none"/>
-          <ellipse cx="25" cy="45" rx="8" ry="2" fill="#5E8C61" opacity="0.3"/>
+        <!-- Lucide: person-standing (太極/甩手) -->
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#5E8C61" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="太極甩手">
+          <circle cx="12" cy="5" r="1"/>
+          <path d="m9 20 3-6 3 6"/>
+          <path d="m6 8 6 2 6-2"/>
+          <path d="M12 10v4"/>
         </svg>
       </div>
       <h3>太極／甩手</h3>
@@ -1610,12 +1849,11 @@
     </div>
     <div class="exercise-card">
       <div class="exercise-icon">
-        <svg width="50" height="50" viewBox="0 0 50 50">
-          <rect x="8" y="20" width="34" height="14" rx="3" fill="#C99A4E"/>
-          <rect x="6" y="22" width="4" height="10" fill="#C99A4E"/>
-          <rect x="40" y="22" width="4" height="10" fill="#C99A4E"/>
-          <circle cx="16" cy="38" r="4" fill="#574836"/>
-          <circle cx="34" cy="38" r="4" fill="#574836"/>
+        <!-- Lucide: waves (水中走路) -->
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#C99A4E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="水中走路">
+          <path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
+          <path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
+          <path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
         </svg>
       </div>
       <h3>水中走路</h3>
@@ -1624,10 +1862,13 @@
     </div>
     <div class="exercise-card">
       <div class="exercise-icon">
-        <svg width="50" height="50" viewBox="0 0 50 50">
-          <rect x="12" y="22" width="26" height="6" rx="2" fill="#E89B7A"/>
-          <rect x="4" y="16" width="9" height="18" rx="2" fill="#E89B7A"/>
-          <rect x="37" y="16" width="9" height="18" rx="2" fill="#E89B7A"/>
+        <!-- Lucide: dumbbell (阻力訓練) -->
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#E89B7A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="阻力訓練">
+          <path d="M14.4 14.4 9.6 9.6"/>
+          <path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/>
+          <path d="m21.5 21.5-1.4-1.4"/>
+          <path d="M3.9 3.9 2.5 2.5"/>
+          <path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/>
         </svg>
       </div>
       <h3>阻力訓練</h3>
@@ -2637,11 +2878,11 @@
   <div class="next-step-grid">
     <div class="edu-card">
       <div class="edu-icon">
-        <svg viewBox="0 0 64 64" width="48" height="48">
-          <circle cx="32" cy="22" r="10" fill="#C75B4A"/>
-          <path d="M 14 56 Q 14 38 32 38 Q 50 38 50 56 Z" fill="#C75B4A"/>
-          <circle cx="44" cy="20" r="9" fill="#FBE2D2" stroke="#C75B4A" stroke-width="2"/>
-          <path d="M 39 20 L 43 24 L 49 16" stroke="#C75B4A" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Lucide: user-check (衛教師) -->
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#C75B4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="衛教師">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <polyline points="16 11 18 13 22 9"/>
         </svg>
       </div>
       <div class="edu-text">
@@ -2662,20 +2903,10 @@
 
     <div class="edu-card edu-card-nutrition">
       <div class="edu-icon">
-        <svg viewBox="0 0 64 64" width="48" height="48">
-          <!-- 葉子 -->
-          <path d="M 34 18 Q 44 10, 50 16 Q 44 22, 35 21 Z" fill="#5E8C61"/>
-          <!-- 蒂 -->
-          <path d="M 32 18 Q 33 14, 31 10" stroke="#3D2E1F" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-          <!-- 蘋果主體（左右雙瓣，上方中央凹陷的剪影） -->
-          <path d="M 32 22
-                   C 26 16, 14 18, 12 32
-                   C 10 46, 22 58, 32 54
-                   C 42 58, 54 46, 52 32
-                   C 50 18, 38 16, 32 22 Z"
-                fill="#5E8C61"/>
-          <!-- 高光 -->
-          <ellipse cx="22" cy="30" rx="3.5" ry="6" fill="#FFFFFF" opacity="0.25"/>
+        <!-- Lucide: apple (營養) -->
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#5E8C61" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="營養諮詢">
+          <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/>
+          <path d="M10 2c1 .5 2 2 2 5"/>
         </svg>
       </div>
       <div class="edu-text">
