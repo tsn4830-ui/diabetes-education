@@ -6,7 +6,7 @@
 <title>糖尿病照護小幫手 — 我們陪您一起走</title>
 
 <!-- SEO / Description -->
-<meta name="description" content="光田綜合醫院 曾士婷醫師．糖尿病病人衛教資訊：飲食 211 餐盤、運動、用藥、低血糖處理、足部護理、定期回診、疫苗與線上掛號。">
+<meta name="description" content="光田綜合醫院 曾士婷醫師．糖尿病病人衛教資訊：飲食 211 餐盤、運動、用藥、低血糖處理、足部護理、腎臟保健、骨質疏鬆、疫苗、教學醫院衛教影片與線上掛號。">
 <meta name="keywords" content="糖尿病, 衛教, 211餐盤, 飲食, 血糖控制, 胰島素, 低血糖, 光田醫院, 內分泌科, 曾士婷">
 <meta name="author" content="曾士婷醫師 · 光田綜合醫院">
 <meta name="theme-color" content="#5E8C61">
@@ -21,7 +21,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="糖尿病照護小幫手">
 <meta property="og:title" content="糖尿病照護小幫手 — 我們陪您一起走">
-<meta property="og:description" content="光田綜合醫院 曾士婷醫師．糖尿病病人衛教資訊：飲食 211 餐盤、運動、用藥、低血糖處理、定期回診。">
+<meta property="og:description" content="光田綜合醫院 曾士婷醫師．給糖尿病病人與家屬的衛教頁：飲食 211 餐盤、運動、低血糖、足部、腎臟、骨鬆、疫苗，附教學醫院官方衛教影片。">
 <meta property="og:url" content="https://tsn4830-ui.github.io/diabetes-education/">
 <meta property="og:image" content="https://tsn4830-ui.github.io/diabetes-education/assets/og-preview.jpg">
 <meta property="og:image:width" content="1200">
@@ -104,7 +104,7 @@
     "@type": "MedicalSpecialty",
     "name": "Endocrinology"
   },
-  "lastReviewed": "2026-05-25",
+  "lastReviewed": "2026-08-02",
   "reviewedBy": {
     "@type": "Person",
     "name": "曾士婷",
@@ -1168,6 +1168,162 @@
     .vaccine-card { padding: 26px 22px 22px; }
   }
 
+  /* ============ 衛教影片區 ============ */
+  .video-disclaimer {
+    max-width: 880px;
+    margin: 0 auto 32px auto;
+    padding: 18px 24px;
+    background: var(--cream);
+    border-left: 5px solid var(--sage);
+    border-radius: 10px;
+    color: var(--ink);
+    font-size: 0.95em;
+    line-height: 1.7;
+  }
+  .video-disclaimer strong { color: var(--sage-deep); }
+
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    max-width: 1160px;
+    margin: 0 auto;
+  }
+  .video-card {
+    background: var(--paper);
+    border: 1px solid var(--cream-deep);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--ink);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+  }
+  .video-card:hover, .video-card:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: var(--sage);
+    outline: none;
+  }
+  .video-thumb-wrap {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    overflow: hidden;
+  }
+  .video-thumb-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s;
+  }
+  .video-card:hover .video-thumb-wrap img { transform: scale(1.04); }
+  .video-play-btn {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 60px; height: 60px;
+    transform: translate(-50%, -50%);
+    background: rgba(220, 40, 40, 0.95);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s, background 0.2s;
+  }
+  .video-card:hover .video-play-btn {
+    background: rgba(220, 40, 40, 1);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  .video-play-btn svg { width: 26px; height: 26px; fill: #fff; margin-left: 4px; }
+  .video-body {
+    padding: 18px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+  .video-topic {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 4px 12px;
+    background: var(--sage-light);
+    color: var(--sage-deep);
+    border-radius: 999px;
+    font-size: 0.82em;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  .video-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.1em;
+    color: var(--ink);
+    line-height: 1.4;
+    margin: 0;
+    font-weight: 700;
+  }
+  .video-channel {
+    font-size: 0.88em;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .video-channel::before {
+    content: "📺";
+    font-size: 0.9em;
+  }
+  .video-why {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px dashed var(--cream-deep);
+    font-size: 0.9em;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .video-why strong { color: var(--sage-deep); font-weight: 700; }
+
+  .video-more {
+    margin: 40px auto 0 auto;
+    max-width: 880px;
+    background: var(--cream);
+    border-radius: 14px;
+    padding: 24px 28px;
+  }
+  .video-more summary {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 1.05em;
+    padding: 4px 0;
+    list-style: none;
+  }
+  .video-more summary::-webkit-details-marker { display: none; }
+  .video-more summary::before {
+    content: "▸";
+    display: inline-block;
+    margin-right: 10px;
+    color: var(--sage-deep);
+    transition: transform 0.2s;
+  }
+  .video-more[open] summary::before { transform: rotate(90deg); }
+  .video-more[open] summary { margin-bottom: 18px; }
+  .video-more .video-grid { margin-top: 0; }
+
+  @media (max-width: 640px) {
+    .video-grid { grid-template-columns: 1fr; gap: 18px; }
+    .video-card h3 { font-size: 1.02em; }
+    .video-play-btn { width: 52px; height: 52px; }
+    .video-play-btn svg { width: 22px; height: 22px; }
+  }
+
+  /* 列印時隱藏影片區（紙本無法播放） */
+  @media print {
+    #videos { display: none !important; }
+  }
+
   /* 響應式 - 小螢幕 */
   @media (max-width: 980px) {
     .hospital-logo { height: 28px; }
@@ -1774,6 +1930,7 @@
       <li><a href="#kidney">腎臟保健</a></li>
       <li><a href="#bone">骨質疏鬆</a></li>
       <li><a href="#visit">回診</a></li>
+      <li><a href="#videos">衛教影片</a></li>
       <li><a href="#clinic">看診資訊</a></li>
       <li><a href="#faq">常見問題</a></li>
     </ul>
@@ -2911,6 +3068,151 @@
       請洽詢您的主治醫師。
     </div>
   </div>
+</section>
+
+<!-- ============ 衛教影片 ============ -->
+<section class="content" id="videos">
+  <div class="section-head">
+    <span class="label">衛教影片</span>
+    <h2>看看影片<br>更容易懂</h2>
+    <p>從國內教學醫院與糖尿病衛教學會的官方影片中，挑幾支給您參考</p>
+  </div>
+
+  <div class="video-disclaimer">
+    <strong>💡 觀看提醒</strong>
+    這些影片來自其他醫院與糖尿病衛教學會的官方 YouTube 頻道，是為了幫您多一種學習方式。<br>
+    <strong>影片內容不代表本站背書</strong>；若影片說法與您跟曾醫師討論的方向不同，<strong>以您和曾醫師的討論為準</strong>。<br>
+    點下方縮圖會開啟 YouTube 影片。
+  </div>
+
+  <div class="video-grid">
+    <a href="https://www.youtube.com/watch?v=aD1y2sg0c8Y" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：認識糖尿病 掌握健康甜在心">
+      <div class="video-thumb-wrap">
+        <img src="https://i.ytimg.com/vi/aD1y2sg0c8Y/hqdefault.jpg" alt="認識糖尿病 掌握健康甜在心 影片縮圖" loading="lazy" width="480" height="360">
+        <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="video-body">
+        <span class="video-topic">認識糖尿病</span>
+        <h3>認識糖尿病 掌握健康甜在心</h3>
+        <div class="video-channel">童綜合醫院 TTMHH</div>
+        <div class="video-why"><strong>為什麼推薦：</strong>動畫講解，簡短易懂，適合剛被診斷或想給家人看的入門。</div>
+      </div>
+    </a>
+
+    <a href="https://www.youtube.com/watch?v=qwKFRzd3NwI" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：糖尿病衛教流程">
+      <div class="video-thumb-wrap">
+        <img src="https://i.ytimg.com/vi/qwKFRzd3NwI/hqdefault.jpg" alt="童綜合醫院糖尿病衛教流程 影片縮圖" loading="lazy" width="480" height="360">
+        <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="video-body">
+        <span class="video-topic">整體照護</span>
+        <h3>糖尿病衛教流程 給您完整健康照護</h3>
+        <div class="video-channel">童綜合醫院 TTMHH</div>
+        <div class="video-why"><strong>為什麼推薦：</strong>讓您先了解「來衛教室、營養諮詢會做什麼」，回診更安心。</div>
+      </div>
+    </a>
+
+    <a href="https://www.youtube.com/watch?v=Q_XmsIiw_xA" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：警戒低血糖">
+      <div class="video-thumb-wrap">
+        <img src="https://i.ytimg.com/vi/Q_XmsIiw_xA/hqdefault.jpg" alt="警戒低血糖 影片縮圖" loading="lazy" width="480" height="360">
+        <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="video-body">
+        <span class="video-topic">低血糖處理</span>
+        <h3>低低低！嗶嗶嗶！警戒低血糖（國語版）</h3>
+        <div class="video-channel">成大醫院糖尿病防治中心</div>
+        <div class="video-why"><strong>為什麼推薦：</strong>衛教護理師示範，語速慢、有情境重演，長輩看得懂。</div>
+      </div>
+    </a>
+
+    <a href="https://www.youtube.com/watch?v=PixP24dSndA" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：胰島素注射部位">
+      <div class="video-thumb-wrap">
+        <img src="https://i.ytimg.com/vi/PixP24dSndA/hqdefault.jpg" alt="胰島素注射部位 影片縮圖" loading="lazy" width="480" height="360">
+        <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="video-body">
+        <span class="video-topic">胰島素基礎</span>
+        <h3>胰島素注射部位</h3>
+        <div class="video-channel">中華民國糖尿病衛教學會</div>
+        <div class="video-why"><strong>為什麼推薦：</strong>學會官方版，說明哪些位置可以打、要輪流換位置。</div>
+      </div>
+    </a>
+
+    <a href="https://www.youtube.com/watch?v=npjPJIRgxaU" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：糖尿病足之衛教">
+      <div class="video-thumb-wrap">
+        <img src="https://i.ytimg.com/vi/npjPJIRgxaU/hqdefault.jpg" alt="糖尿病足之衛教 影片縮圖" loading="lazy" width="480" height="360">
+        <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="video-body">
+        <span class="video-topic">足部日常照護</span>
+        <h3>糖尿病足之衛教 天天護理不可少</h3>
+        <div class="video-channel">童綜合醫院 TTMHH</div>
+        <div class="video-why"><strong>為什麼推薦：</strong>洗腳、剪指甲、選鞋子等日常動作示範，配上本站文字剛好。</div>
+      </div>
+    </a>
+
+    <a href="https://www.youtube.com/watch?v=i__iyPVSpdk" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：糖尿病與周邊神經病變">
+      <div class="video-thumb-wrap">
+        <img src="https://i.ytimg.com/vi/i__iyPVSpdk/hqdefault.jpg" alt="糖尿病與周邊神經病變 影片縮圖" loading="lazy" width="480" height="360">
+        <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="video-body">
+        <span class="video-topic">神經病變</span>
+        <h3>糖尿病與周邊神經病變</h3>
+        <div class="video-channel">成大醫院・黃涵薇醫師</div>
+        <div class="video-why"><strong>為什麼推薦：</strong>神經科醫師解說腳麻、腳無力的原因，配合足部照護一起看。</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- 進階：打胰島素的人再看 -->
+  <details class="video-more">
+    <summary>💉 有在打胰島素的病友，另外可以看這 3 支操作教學</summary>
+    <div class="video-grid">
+      <a href="https://www.youtube.com/watch?v=CvCV-d8sm6U" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：速效型胰島素注射筆操作步驟">
+        <div class="video-thumb-wrap">
+          <img src="https://i.ytimg.com/vi/CvCV-d8sm6U/hqdefault.jpg" alt="速效型胰島素注射筆 影片縮圖" loading="lazy" width="480" height="360">
+          <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="video-body">
+          <span class="video-topic">速效筆</span>
+          <h3>速效型胰島素注射筆操作步驟</h3>
+          <div class="video-channel">中國醫藥大學附設醫院</div>
+          <div class="video-why"><strong>為什麼推薦：</strong>教學醫院示範，餐前打的速效型（如 NovoRapid、Humalog）適用。</div>
+        </div>
+      </a>
+
+      <a href="https://www.youtube.com/watch?v=pudwWgUbjj8" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：長效型胰島素注射筆操作步驟">
+        <div class="video-thumb-wrap">
+          <img src="https://i.ytimg.com/vi/pudwWgUbjj8/hqdefault.jpg" alt="長效型胰島素注射筆 影片縮圖" loading="lazy" width="480" height="360">
+          <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="video-body">
+          <span class="video-topic">長效筆</span>
+          <h3>長效型胰島素注射筆操作步驟</h3>
+          <div class="video-channel">中國醫藥大學附設醫院</div>
+          <div class="video-why"><strong>為什麼推薦：</strong>睡前打的長效型（如 Lantus、Tresiba、Toujeo）適用。</div>
+        </div>
+      </a>
+
+      <a href="https://www.youtube.com/watch?v=KrcBZCqx37k" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：空針抽取中效胰島素注射步驟">
+        <div class="video-thumb-wrap">
+          <img src="https://i.ytimg.com/vi/KrcBZCqx37k/hqdefault.jpg" alt="空針抽取中效胰島素 影片縮圖" loading="lazy" width="480" height="360">
+          <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="video-body">
+          <span class="video-topic">空針抽取</span>
+          <h3>空針抽取中效胰島素注射步驟</h3>
+          <div class="video-channel">中國醫藥大學附設醫院</div>
+          <div class="video-why"><strong>為什麼推薦：</strong>不用筆型、需要自己抽藥的病人適用（如 NPH、混合型）。</div>
+        </div>
+      </a>
+    </div>
+  </details>
+
+  <p style="text-align: center; margin-top: 32px; color: var(--ink-soft); font-size: 0.9em;">
+    影片來源：<strong>童綜合醫院 · 成大醫院 · 中國醫藥大學附設醫院 · 中華民國糖尿病衛教學會</strong>（全數為官方頻道，2026 年 8 月核對可用）
+  </p>
 </section>
 
 <!-- ============ 看診資訊 / 線上資源 ============ -->
