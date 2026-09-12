@@ -1319,6 +1319,54 @@
     .video-play-btn svg { width: 22px; height: 22px; }
   }
 
+  /* 曾醫師自己的影片 — 作者版塊 */
+  .author-videos {
+    max-width: 1160px;
+    margin: 0 auto 40px auto;
+    padding: 26px 28px 30px;
+    background: linear-gradient(135deg, var(--peach-light) 0%, var(--cream) 100%);
+    border: 1.5px solid var(--peach);
+    border-radius: 18px;
+  }
+  .author-videos-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 6px;
+  }
+  .author-videos-head .badge {
+    background: var(--coral);
+    color: var(--paper);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.78em;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .author-videos-head h3 {
+    font-family: var(--font-display);
+    font-size: 1.3em;
+    color: var(--ink);
+    margin: 0;
+    font-weight: 700;
+  }
+  .author-videos-sub {
+    font-size: 0.95em;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    margin: 0 0 22px 0;
+  }
+  .author-videos .video-card { border-color: var(--peach); }
+  .author-videos .video-card:hover { border-color: var(--coral); }
+  .author-videos .video-topic {
+    background: var(--peach-light);
+    color: var(--coral);
+  }
+  @media (max-width: 640px) {
+    .author-videos { padding: 22px 20px; }
+    .author-videos-head h3 { font-size: 1.1em; }
+  }
+
   /* 列印時隱藏影片區（紙本無法播放） */
   @media print {
     #videos { display: none !important; }
@@ -3087,6 +3135,32 @@
     <span class="label">衛教影片</span>
     <h2>看看影片<br>更容易懂</h2>
     <p>從國內教學醫院與糖尿病衛教學會的官方影片中，挑幾支給您參考</p>
+  </div>
+
+  <!-- 曾醫師（本站作者）自己的影片 -->
+  <div class="author-videos">
+    <div class="author-videos-head">
+      <span class="badge">本站作者</span>
+      <h3>曾醫師的影片</h3>
+    </div>
+    <p class="author-videos-sub">
+      本站作者曾士婷醫師的個人頻道「阿婷醫師的筆記本」。<br>
+      這些是曾醫師針對病人常問的問題整理的說明，內容可以當作和曾醫師討論時的參考。
+    </p>
+    <div class="video-grid">
+      <a href="https://www.youtube.com/watch?v=d1nHHWLTzQc" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：苦瓜胜肽（曾醫師說明）">
+        <div class="video-thumb-wrap">
+          <img src="https://i.ytimg.com/vi/d1nHHWLTzQc/hqdefault.jpg" alt="苦瓜胜肽 曾醫師說明 影片縮圖" loading="lazy" width="480" height="360">
+          <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="video-body">
+          <span class="video-topic">保健食品 · 血糖</span>
+          <h3>苦瓜胜肽</h3>
+          <div class="video-channel">阿婷醫師的筆記本（本站作者）</div>
+          <div class="video-why"><strong>常見疑問：</strong>吃苦瓜胜肽真的可以降血糖嗎？曾醫師整理實證告訴您怎麼看待這類保健食品。</div>
+        </div>
+      </a>
+    </div>
   </div>
 
   <div class="video-disclaimer">
