@@ -1661,6 +1661,21 @@
     .emergency-secondary { grid-template-columns: 1fr; }
   }
 
+  /* LINE OA 卡片（<a> 版本，繼承 .qr-card 樣式） */
+  a.qr-card {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  a.qr-card:hover {
+    transform: translateY(-3px);
+    transition: transform 0.2s;
+  }
+  .qr-card.qr-line { border-color: #06C755; }
+  .qr-card.qr-line h4 { color: #06C755; }
+
   /* QR 區 */
   .qr-section {
     background: linear-gradient(165deg, var(--paper), var(--cream));
@@ -3575,6 +3590,14 @@
         <h4>Dr 光田 APP</h4>
         <p>線上掛號、查看<br>檢驗報告與藥歷</p>
       </div>
+
+      <a href="https://lin.ee/7CKHRZ4" target="_blank" rel="noopener" class="qr-card qr-line" aria-label="加入曾醫師 LINE 官方帳號">
+        <div class="qr-img-wrap">
+          <img src="assets/line-oa-qr.webp" alt="曾醫師 LINE 官方帳號 QR" width="360" height="360">
+        </div>
+        <h4>曾醫師 LINE 官方帳號</h4>
+        <p>每週推播衛教<br>短文與圖片</p>
+      </a>
 
       </div>
     </div>
