@@ -1357,6 +1357,42 @@
     margin: 0 0 22px 0;
   }
   .author-videos .video-card { border-color: var(--peach); }
+
+  /* ============ 衛教小遊戲 ============ */
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    max-width: 1160px;
+    margin: 0 auto;
+  }
+  .game-card {
+    background: var(--paper);
+    border: 1.5px solid var(--sage-light);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    padding: 26px 26px 24px;
+    display: flex; flex-direction: column;
+  }
+  .game-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+  .game-card-icon {
+    flex: none; width: 64px; height: 64px; border-radius: 16px;
+    background: var(--cream-deep);
+    display: grid; place-items: center; font-size: 1.7em;
+  }
+  .game-card h3 { font-family: var(--font-display); font-size: 1.3em; color: var(--ink); margin: 0; font-weight: 700; }
+  .game-card p { color: var(--ink-soft); font-size: 0.95em; line-height: 1.7; margin: 0 0 18px 0; flex: 1; }
+  .game-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .game-btn {
+    display: block; text-align: center; text-decoration: none;
+    background: var(--sage-deep); color: var(--paper);
+    border: 2px solid var(--sage-deep); border-radius: 14px;
+    padding: 12px 8px; font-weight: 700; line-height: 1.35;
+  }
+  .game-btn small { display: block; font-size: 0.72em; font-weight: 500; opacity: 0.92; }
+  .game-btn.alt { background: transparent; color: var(--sage-deep); }
+  .game-btn:hover { filter: brightness(1.08); }
+  .game-note { text-align: center; margin-top: 28px; color: var(--ink-soft); font-size: 0.9em; }
   .author-videos .video-card:hover { border-color: var(--coral); }
   .author-videos .video-topic {
     background: var(--peach-light);
@@ -1994,6 +2030,7 @@
       <li><a href="#bone">骨質疏鬆</a></li>
       <li><a href="#visit">回診</a></li>
       <li><a href="#videos">衛教影片</a></li>
+      <li><a href="#games">小遊戲</a></li>
       <li><a href="#clinic">看診資訊</a></li>
       <li><a href="#faq">常見問題</a></li>
     </ul>
@@ -2328,6 +2365,10 @@
       <strong style="color: var(--warning); font-size: 1.1em;">🚨 立刻打 119 的情況：</strong><br>
       <span style="color: var(--ink);">人開始意識不清、叫不醒、抽搐、或無法吞嚥。<strong>不要塞東西到嘴巴裡</strong>，會嗆到。讓他側躺、立刻打 119。</span>
     </div>
+
+    <p style="margin-top: 24px; text-align: center;">
+      <a href="#games" style="color: inherit; font-weight: 700;">🎮 想練習看看？玩 3 分鐘的「低血糖急救任務」小遊戲 →</a>
+    </p>
   </div>
 </section>
 
@@ -3390,6 +3431,46 @@
   <p style="text-align: center; margin-top: 32px; color: var(--ink-soft); font-size: 0.9em;">
     影片來源：<strong>成大醫院 · 中國醫藥大學附設醫院 · 員林基督教醫院 · 中華民國糖尿病衛教學會 · 臺北醫學大學附設醫院</strong>（全數為台灣教學醫院／學會官方頻道，2026 年 8 月核對可用）
   </p>
+</section>
+
+<!-- ============ 衛教小遊戲 ============ -->
+<section class="content" id="games">
+  <div class="section-head">
+    <span class="label">衛教小遊戲</span>
+    <h2>玩一玩<br>更容易記得</h2>
+    <p>曾醫師做的手機小遊戲，每款約 3 分鐘，免安裝、免登入</p>
+  </div>
+
+  <div class="game-grid">
+    <div class="game-card">
+      <div class="game-card-head"><div class="game-card-icon" aria-hidden="true">🧃</div><h3>低血糖急救任務</h3></div>
+      <p>冒冷汗、手抖怎麼辦？練習「吃 15 克糖、等 15 分鐘再測」，認識哪些食物升血糖快、哪些太慢。</p>
+      <div class="game-btns">
+        <a class="game-btn" href="https://game.drtsengshihting.com/hypo" target="_blank" rel="noopener">問答版<small>9 關情境題</small></a>
+        <a class="game-btn alt" href="https://game.drtsengshihting.com/run" target="_blank" rel="noopener">動作版<small>快跑拿糖</small></a>
+      </div>
+    </div>
+
+    <div class="game-card">
+      <div class="game-card-head"><div class="game-card-icon" aria-hidden="true">📋</div><h3>打針六步驟</h3></div>
+      <p>給自己打胰島素的您：洗手核對、裝針頭、排氣、轉劑量、選位置、注射數到 10，動手練一次。</p>
+      <div class="game-btns">
+        <a class="game-btn" href="https://game.drtsengshihting.com/pen" target="_blank" rel="noopener">動手版<small>轉劑量、數到 10</small></a>
+        <a class="game-btn alt" href="https://game.drtsengshihting.com/pen-run" target="_blank" rel="noopener">動作版<small>步驟快跑</small></a>
+      </div>
+    </div>
+
+    <div class="game-card">
+      <div class="game-card-head"><div class="game-card-icon" aria-hidden="true">💉</div><h3>打針換位置</h3></div>
+      <p>一直打同一個地方會長硬塊。練習每週換一區、每針隔一個手指寬，避開肚臍周圍和硬塊。</p>
+      <div class="game-btns">
+        <a class="game-btn" href="https://game.drtsengshihting.com/rotate" target="_blank" rel="noopener">點選版<small>慢慢點、慢慢想</small></a>
+        <a class="game-btn alt" href="https://game.drtsengshihting.com/rotate-run" target="_blank" rel="noopener">動作版<small>小筆出任務</small></a>
+      </div>
+    </div>
+  </div>
+
+  <p class="game-note">遊戲說明的是一般通用原則；您個人的劑量與做法，請照醫師和衛教師的指導。</p>
 </section>
 
 <!-- ============ 看診資訊 / 線上資源 ============ -->
