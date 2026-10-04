@@ -776,6 +776,19 @@
     transition: transform 0.2s;
   }
   .consensus-link:hover .consensus-arrow { transform: translateX(4px); }
+  /* 作者自家站變體：改用 peach/coral 色調 */
+  .consensus-link.coral {
+    background: linear-gradient(135deg, var(--peach-light) 0%, var(--cream) 100%);
+    border-color: var(--peach);
+  }
+  .consensus-link.coral:hover {
+    border-color: var(--coral);
+    box-shadow: 0 6px 18px rgba(199, 91, 74, 0.15);
+  }
+  .consensus-link.coral .consensus-label {
+    color: var(--coral);
+  }
+  .consensus-link.coral .consensus-arrow { color: var(--coral); }
   @media (max-width: 640px) {
     .consensus-link {
       grid-template-columns: auto 1fr;
@@ -2140,6 +2153,17 @@
     <h2>動一動，<br>血糖跟著好</h2>
     <p>選您喜歡、做得到的運動就好。不用太勉強，安全最重要。</p>
   </div>
+
+  <!-- 作者自家站：居家徒手 20 動作 -->
+  <a href="https://fit.drtsengshihting.com/" target="_blank" rel="noopener" class="consensus-link coral" aria-label="開啟曾醫師的居家徒手運動站">
+    <div class="consensus-icon">💪</div>
+    <div class="consensus-body">
+      <span class="consensus-label">曾醫師整理 · 20 支動畫</span>
+      <h4>居家徒手運動 — 20 個不用器材的動作</h4>
+      <p>給健身小白、長輩、關節不好的人設計：每一支都有動畫＋圖解＋重點說明，在家不用器材就能做。從最簡單的開始，慢慢加。</p>
+    </div>
+    <div class="consensus-arrow" aria-hidden="true">→</div>
+  </a>
 
   <!-- 政府活動：運動部揮汗有禮（2026/9/1–11/30 限時） -->
   <a href="https://500.gov.tw/registrant/" target="_blank" rel="noopener" class="consensus-link" aria-label="開啟運動部揮汗有禮活動網站">
