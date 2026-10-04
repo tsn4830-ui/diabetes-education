@@ -789,13 +789,48 @@
     color: var(--coral);
   }
   .consensus-link.coral .consensus-arrow { color: var(--coral); }
+
+  /* 內嵌 QR 版（供診間螢幕讓病人掃碼帶回家） */
+  .consensus-link.with-qr {
+    grid-template-columns: auto 1fr auto auto;
+  }
+  .consensus-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    background: var(--paper);
+    border-radius: 10px;
+    border: 1px solid var(--cream-deep);
+  }
+  .consensus-qr img {
+    width: 92px;
+    height: 92px;
+    display: block;
+  }
+  .consensus-qr-caption {
+    font-size: 0.7em;
+    color: var(--ink-soft);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 980px) {
+    /* 平板：QR 稍微變小 */
+    .consensus-qr img { width: 74px; height: 74px; }
+    .consensus-qr-caption { font-size: 0.65em; }
+  }
   @media (max-width: 640px) {
     .consensus-link {
       grid-template-columns: auto 1fr;
       padding: 16px 20px;
       gap: 14px;
     }
+    .consensus-link.with-qr { grid-template-columns: auto 1fr; }
     .consensus-arrow { display: none; }
+    /* 手機已經在手機上，掃自己螢幕的 QR 沒意義，隱藏 */
+    .consensus-qr { display: none; }
   }
   .bone-source, .kidney-source {
     margin-top: 32px;
@@ -2155,12 +2190,16 @@
   </div>
 
   <!-- 作者自家站：居家徒手 20 動作 -->
-  <a href="https://fit.drtsengshihting.com/" target="_blank" rel="noopener" class="consensus-link coral" aria-label="開啟曾醫師的居家徒手運動站">
+  <a href="https://fit.drtsengshihting.com/" target="_blank" rel="noopener" class="consensus-link coral with-qr" aria-label="開啟曾醫師的居家徒手運動站">
     <div class="consensus-icon">💪</div>
     <div class="consensus-body">
       <span class="consensus-label">曾醫師整理 · 20 支動畫</span>
       <h4>居家徒手運動 — 20 個不用器材的動作</h4>
       <p>給健身小白、長輩、關節不好的人設計：每一支都有動畫＋圖解＋重點說明，在家不用器材就能做。從最簡單的開始，慢慢加。</p>
+    </div>
+    <div class="consensus-qr" aria-hidden="true">
+      <img src="assets/fit-qr.webp" alt="居家徒手運動站 QR" width="92" height="92">
+      <span class="consensus-qr-caption">掃我帶回家</span>
     </div>
     <div class="consensus-arrow" aria-hidden="true">→</div>
   </a>
