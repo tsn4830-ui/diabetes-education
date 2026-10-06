@@ -1451,6 +1451,42 @@
     .author-videos-head h3 { font-size: 1.1em; }
   }
 
+  /* ============ Section 裝飾圖（Pixabay CC0） ============ */
+  .section-img {
+    max-width: 880px;
+    margin: 0 auto 28px auto;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    position: relative;
+    aspect-ratio: 16 / 6;
+  }
+  .section-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  /* 柔和漸層遮罩，讓圖片不要太搶視覺 */
+  .section-img::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 55%, rgba(248,243,232,0.4) 100%);
+    pointer-events: none;
+  }
+  @media (max-width: 640px) {
+    .section-img {
+      border-radius: 12px;
+      margin-bottom: 22px;
+      aspect-ratio: 16 / 7;
+    }
+  }
+  @media print {
+    .section-img { display: none !important; }
+  }
+
   /* 列印時隱藏影片區（紙本無法播放） */
   @media print {
     #videos { display: none !important; }
@@ -2119,6 +2155,9 @@
 
 <!-- ============ 認識糖尿病 ============ -->
 <section class="content" id="about">
+  <div class="section-img" aria-hidden="true">
+    <img src="assets/pixabay-hero-elderly-hands.webp" alt="長輩夫妻牽手溫馨照 — 代表陪伴與一起照顧" loading="lazy" width="640" height="240">
+  </div>
   <div class="section-head">
     <span class="label">什麼是糖尿病</span>
     <h2>用簡單的話，<br>幫您認識糖尿病</h2>
@@ -2162,6 +2201,9 @@
 
 <!-- ============ 飲食指南 ============ -->
 <section class="content" id="diet">
+  <div class="section-img" aria-hidden="true">
+    <img src="assets/pixabay-diet-tomatoes.webp" alt="新鮮蔬果 — 代表健康飲食" loading="lazy" width="640" height="240">
+  </div>
   <div class="section-head">
     <span class="label">飲食指南</span>
     <h2>吃得開心，<br>也吃得健康</h2>
@@ -2183,6 +2225,9 @@
 
 <!-- ============ 運動 ============ -->
 <section class="content" id="exercise">
+  <div class="section-img" aria-hidden="true">
+    <img src="assets/pixabay-exercise-walking.webp" alt="長輩在公園散步 — 代表規律運動" loading="lazy" width="640" height="240">
+  </div>
   <div class="section-head">
     <span class="label">適度運動</span>
     <h2>動一動，<br>血糖跟著好</h2>
@@ -2437,6 +2482,9 @@
 
 <!-- ============ 足部照護 ============ -->
 <section class="content" id="feet">
+  <div class="section-img" aria-hidden="true">
+    <img src="assets/pixabay-feet-barefoot.webp" alt="赤腳走在木地板 — 代表足部照護" loading="lazy" width="640" height="240">
+  </div>
   <div class="section-head">
     <span class="label">足部照護</span>
     <h2>每天看看您的腳，<br>就像看看自己的孩子</h2>
@@ -2485,6 +2533,9 @@
 
 <!-- ============ 腎臟保健 ============ -->
 <section class="content" id="kidney">
+  <div class="section-img" aria-hidden="true">
+    <img src="assets/pixabay-kidney-water.webp" alt="乾淨水滴 — 代表腎臟保健" loading="lazy" width="640" height="240">
+  </div>
   <div class="section-head">
     <span class="label">腎臟保健</span>
     <h2>糖尿病人的<br>腎臟保健五件事</h2>
@@ -2805,6 +2856,9 @@
 
 <!-- ============ 骨質疏鬆 ============ -->
 <section class="content" id="bone">
+  <div class="section-img" aria-hidden="true">
+    <img src="assets/pixabay-bone-milk.webp" alt="牛奶 — 代表鈣質與骨骼保健" loading="lazy" width="640" height="240">
+  </div>
   <div class="section-head">
     <span class="label">骨質疏鬆</span>
     <h2>糖尿病人的<br>骨骼保健五件事</h2>
