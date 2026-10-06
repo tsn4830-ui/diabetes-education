@@ -501,6 +501,73 @@
     gap: 56px; align-items: center;
   }
   .feet-art { max-width: 440px; }
+
+  /* 足部段落新版：全寬 hero + 2x3 卡片 */
+  .feet-hero {
+    max-width: 880px;
+    margin: 0 auto 32px auto;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    aspect-ratio: 16 / 7;
+  }
+  .feet-hero img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .feet-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .feet-card {
+    background: var(--paper);
+    border: 1px solid var(--cream-deep);
+    border-radius: 16px;
+    padding: 24px 22px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow-soft);
+  }
+  .feet-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+  .feet-card-icon {
+    font-size: 2.4em;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .feet-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.08em;
+    color: var(--ink);
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+  }
+  .feet-card p {
+    font-size: 0.93em;
+    color: var(--ink-soft);
+    line-height: 1.65;
+    margin: 0;
+  }
+  .feet-card-alert {
+    background: var(--peach-light);
+    border-color: var(--peach);
+  }
+  .feet-card-alert h3 { color: var(--coral); }
+  @media (max-width: 900px) {
+    .feet-cards { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .feet-cards { grid-template-columns: 1fr; }
+    .feet-hero { aspect-ratio: 16 / 9; }
+  }
+
   .feet-checklist { list-style: none; }
   .feet-checklist li {
     padding: 16px 20px; margin-bottom: 12px;
@@ -2156,7 +2223,7 @@
 <!-- ============ 認識糖尿病 ============ -->
 <section class="content" id="about">
   <div class="section-img" aria-hidden="true">
-    <img src="assets/pexels-about-v6.webp" alt="長輩夫妻相視微笑 — 代表安心生活、相互扶持" loading="lazy" width="640" height="240">
+    <img src="assets/pexels-about-v7.webp" alt="亞洲中年夫妻相視微笑 — 代表安心生活、相互扶持" loading="lazy" width="640" height="240">
   </div>
   <div class="section-head">
     <span class="label">什麼是糖尿病</span>
@@ -2226,7 +2293,7 @@
 <!-- ============ 運動 ============ -->
 <section class="content" id="exercise">
   <div class="section-img" aria-hidden="true">
-    <img src="assets/pexels-exercise-v6.webp" alt="長輩在社區公園使用運動設施 — 代表動一動" loading="lazy" width="640" height="240">
+    <img src="assets/pexels-exercise-v7.webp" alt="散步在陽光下的綠蔭小路 — 代表每天動一動" loading="lazy" width="640" height="240">
   </div>
   <div class="section-head">
     <span class="label">適度運動</span>
@@ -2491,19 +2558,42 @@
     <p>糖尿病久了，腳的感覺會比較不靈敏，小傷口可能沒感覺就變大事。</p>
   </div>
 
-  <div class="feet-wrap">
-    <div class="feet-art">
-      <img src="assets/pexels-feetart-v6.webp" alt="赤腳走在陽光下的花草地 — 代表好好照顧自己的腳" loading="lazy" width="1200" height="900" style="width:100%; height:auto; border-radius:16px; box-shadow:0 4px 14px rgba(0,0,0,0.08);">
+  <!-- 足部大圖：全寬顯示 -->
+  <div class="feet-hero">
+    <img src="assets/pexels-feetart-v6.webp" alt="赤腳走在陽光下的花草地 — 代表好好照顧自己的腳" loading="lazy" width="1200" height="675">
+  </div>
+
+  <!-- 六個照護重點：2×3 卡片網格 -->
+  <div class="feet-cards">
+    <div class="feet-card">
+      <div class="feet-card-icon">👁</div>
+      <h3>每天看一次腳</h3>
+      <p>特別是腳底和腳趾縫。看不到可以用鏡子或請家人幫忙。</p>
     </div>
-    <div>
-      <ul class="feet-checklist">
-        <li><span class="icon">1</span><div><strong>每天看一次腳</strong><br><span style="color: var(--ink-soft); font-size: 0.95em;">特別是腳底和腳趾縫。看不到可以用鏡子或請家人幫忙。</span></div></li>
-        <li><span class="icon">2</span><div><strong>用溫水（不是熱水）洗腳</strong><br><span style="color: var(--ink-soft); font-size: 0.95em;">用手肘試水溫。洗完輕輕擦乾，特別是腳趾縫。</span></div></li>
-        <li><span class="icon">3</span><div><strong>塗乳液但不要塗腳趾縫</strong><br><span style="color: var(--ink-soft); font-size: 0.95em;">皮膚保持滋潤可預防裂開。腳趾縫太濕反而會長黴菌。</span></div></li>
-        <li><span class="icon">4</span><div><strong>不要赤腳走路</strong><br><span style="color: var(--ink-soft); font-size: 0.95em;">在家穿軟拖鞋，外出穿合腳的鞋子（不會夾、不會磨）。</span></div></li>
-        <li><span class="icon">5</span><div><strong>剪指甲剪平不要剪太短</strong><br><span style="color: var(--ink-soft); font-size: 0.95em;">看不清楚或手不靈活，請家人或修腳師幫忙。</span></div></li>
-        <li><span class="icon">6</span><div><strong>有傷口立刻就醫</strong><br><span style="color: var(--ink-soft); font-size: 0.95em;">任何水泡、紅腫、傷口都不要自己處理，趕快給醫生看。</span></div></li>
-      </ul>
+    <div class="feet-card">
+      <div class="feet-card-icon">💧</div>
+      <h3>用溫水洗腳（不是熱水）</h3>
+      <p>用手肘試水溫。洗完輕輕擦乾，特別是腳趾縫。</p>
+    </div>
+    <div class="feet-card">
+      <div class="feet-card-icon">🧴</div>
+      <h3>塗乳液但不要塗腳趾縫</h3>
+      <p>皮膚保持滋潤可預防裂開。腳趾縫太濕反而會長黴菌。</p>
+    </div>
+    <div class="feet-card">
+      <div class="feet-card-icon">👟</div>
+      <h3>不要赤腳走路</h3>
+      <p>在家穿軟拖鞋，外出穿合腳的鞋子（不會夾、不會磨）。</p>
+    </div>
+    <div class="feet-card">
+      <div class="feet-card-icon">✂️</div>
+      <h3>剪指甲剪平不要剪太短</h3>
+      <p>看不清楚或手不靈活，請家人或修腳師幫忙。</p>
+    </div>
+    <div class="feet-card feet-card-alert">
+      <div class="feet-card-icon">🚨</div>
+      <h3>有傷口立刻就醫</h3>
+      <p>任何水泡、紅腫、傷口都不要自己處理，趕快給醫生看。</p>
     </div>
   </div>
 </section>
