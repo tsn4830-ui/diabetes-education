@@ -504,12 +504,12 @@
 
   /* 足部段落新版：全寬 hero + 2x3 卡片 */
   .feet-hero {
-    max-width: 880px;
-    margin: 0 auto 32px auto;
-    border-radius: 16px;
+    max-width: 1040px;
+    margin: 0 auto 28px auto;
+    border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-    aspect-ratio: 16 / 7;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    aspect-ratio: 16 / 4.5;
   }
   .feet-hero img {
     width: 100%; height: 100%;
@@ -1520,13 +1520,13 @@
 
   /* ============ Section 裝飾圖（Pixabay CC0） ============ */
   .section-img {
-    max-width: 880px;
+    max-width: 1040px;
     margin: 0 auto 28px auto;
-    border-radius: 16px;
+    border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     position: relative;
-    aspect-ratio: 16 / 6;
+    aspect-ratio: 16 / 4.5;
   }
   .section-img img {
     width: 100%;
@@ -1545,9 +1545,9 @@
   }
   @media (max-width: 640px) {
     .section-img {
-      border-radius: 12px;
-      margin-bottom: 22px;
-      aspect-ratio: 16 / 7;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      aspect-ratio: 16 / 6;
     }
   }
   @media print {
@@ -2154,6 +2154,120 @@
     }
   }
 
+
+  /* ============ 整站美化 + 手機閱讀優化 ============ */
+
+  /* 更細緻的中文字體渲染 */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* 段落留白更舒服 */
+  .content p, .content li, .faq-a p, .bone-content p, .kidney-content p {
+    letter-spacing: 0.02em;
+  }
+
+  /* Section 之間加極淡分隔，視覺呼吸感 */
+  .content + .content::before {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 2px;
+    background: var(--cream-deep);
+    border-radius: 2px;
+    margin: 0 auto 48px auto;
+    opacity: 0.7;
+  }
+
+  /* 平板 (640-980px) 空間微調 */
+  @media (max-width: 980px) {
+    .content { padding: 48px 24px; }
+    .section-head h2 { font-size: 1.8em; line-height: 1.35; }
+    .section-head p { font-size: 1em; }
+    .section-img, .feet-hero {
+      max-width: 100%;
+      border-radius: 14px;
+      aspect-ratio: 16 / 5.5;
+    }
+  }
+
+  /* 手機 (<640px)：閱讀最大化 */
+  @media (max-width: 640px) {
+    :root { --base-size: 20px; }  /* 從 22px 稍微降，避免行寬過窄 */
+    body { line-height: 1.9; }
+
+    .content {
+      padding: 36px 18px;
+      max-width: 100%;
+    }
+
+    .section-head {
+      margin-bottom: 24px;
+    }
+    .section-head .label {
+      font-size: 0.78em;
+      padding: 5px 14px;
+    }
+    .section-head h2 {
+      font-size: 1.55em;
+      line-height: 1.4;
+      margin: 10px 0;
+    }
+    .section-head p { font-size: 0.95em; }
+
+    /* banner 圖再縮一點，給文字更多空間 */
+    .section-img, .feet-hero {
+      aspect-ratio: 16 / 7;
+      margin-bottom: 20px;
+      border-radius: 10px;
+    }
+
+    /* 卡片類：外距縮小、內距保留 */
+    .intro-card, .exercise-card, .vaccine-card,
+    .med-card, .edu-card, .feet-card,
+    .consensus-link, .video-card, .qr-card,
+    .bone-article, .kidney-article {
+      border-radius: 12px;
+    }
+
+    /* h3/h4 字級 */
+    .content h3 { font-size: 1.18em; line-height: 1.5; }
+    .content h4 { font-size: 1.05em; line-height: 1.5; }
+
+    /* 列表更舒服 */
+    .content ul, .content ol { padding-left: 1.2em; }
+    .content li { margin-bottom: 6px; }
+
+    /* 按鈕觸控面積 ≥ 44x44 (iOS 建議) */
+    .btn, button, .faq-q, .bone-header, .kidney-header {
+      min-height: 44px;
+    }
+
+    /* 避免被字型大小控制撞到底部按鈕 */
+    footer { padding-bottom: 90px; }
+    .section-head p br { display: none; }  /* 標題下的 <br> 斷行手機拿掉，自動流 */
+    .hero p.lead br { display: none; }
+    .vaccine-head p br { display: none; }
+
+    /* Nav links：避免換行時太擠 */
+    .nav-links { gap: 10px 16px; row-gap: 10px; }
+    .nav-links a { padding: 4px 2px; }
+  }
+
+  /* 很窄的手機 (<400px)：再多縮一點 */
+  @media (max-width: 400px) {
+    .content { padding: 32px 14px; }
+    .section-head h2 { font-size: 1.4em; }
+  }
+
+  /* 大圖預設不要超出容器 */
+  img { max-width: 100%; height: auto; }
+
+  /* 避免水平捲動 */
+  html, body { overflow-x: hidden; }
+
 </style>
 </head>
 <body>
@@ -2223,7 +2337,7 @@
 <!-- ============ 認識糖尿病 ============ -->
 <section class="content" id="about">
   <div class="section-img" aria-hidden="true">
-    <img src="assets/pexels-about-v8.webp" alt="亞洲中年女性騎單車穿越鄉間 — 代表動一動、過健康的生活" loading="lazy" width="640" height="240">
+    <img src="assets/pexels-about-v9.webp" alt="亞洲中年女性在陽台邊微笑 — 代表自在過好每一天" loading="lazy" width="640" height="240">
   </div>
   <div class="section-head">
     <span class="label">什麼是糖尿病</span>
@@ -2293,7 +2407,7 @@
 <!-- ============ 運動 ============ -->
 <section class="content" id="exercise">
   <div class="section-img" aria-hidden="true">
-    <img src="assets/pexels-exercise-v7.webp" alt="散步在陽光下的綠蔭小路 — 代表每天動一動" loading="lazy" width="640" height="240">
+    <img src="assets/pexels-exercise-v9.webp" alt="亞洲女性在公園慢跑 — 代表動一動、保持健康" loading="lazy" width="640" height="240">
   </div>
   <div class="section-head">
     <span class="label">適度運動</span>
