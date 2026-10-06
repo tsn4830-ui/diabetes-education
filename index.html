@@ -3994,6 +3994,9 @@
   <p>本網站僅供衛教參考使用，不能取代醫師的診斷與建議。</p>
   <p>如有任何不適或疑問，請與您的主治醫師聯繫。</p>
   <p style="margin-top: 16px;">© 光田綜合醫院 · 內分泌新陳代謝科 · 願您每天都平安健康</p>
+  <p id="visit-counter" hidden style="margin-top: 10px; font-size: 0.88em; opacity: 0.75;">
+    本網站已經陪伴 <strong id="visit-count-num"></strong> 位朋友
+  </p>
 </footer>
 
 <!-- ============ 字體大小調整 ============ -->
@@ -4034,6 +4037,21 @@
     if (window.scrollY > 400) toTop.classList.add('visible');
     else toTop.classList.remove('visible');
   });
+
+  // 瀏覽人數（GoatCounter 公開計數）
+  // 需在 GoatCounter 後台把「Allow public access to the view statistics page?」打開
+  // 若未開啟或請求失敗，區塊維持 hidden，不會顯示錯誤
+  (async () => {
+    try {
+      const r = await fetch('https://tsn4830.goatcounter.com/counter/TOTAL.json', { mode: 'cors' });
+      if (!r.ok) return;
+      const data = await r.json();
+      const n = parseInt(data.count_unique || data.count || '0', 10);
+      if (!n || n < 10) return; // 太少的話不顯示，避免「只有 3 人」尷尬
+      document.getElementById('visit-count-num').textContent = n.toLocaleString('zh-Hant-TW');
+      document.getElementById('visit-counter').hidden = false;
+    } catch (e) { /* 失敗就靜默隱藏 */ }
+  })();
 </script>
 
 <script data-goatcounter="https://tsn4830.goatcounter.com/count"
