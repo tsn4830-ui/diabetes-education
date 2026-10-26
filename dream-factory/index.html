@@ -112,32 +112,69 @@ input[type=text]{font:inherit;width:100%;box-sizing:border-box;border:2px solid 
 .end-card b{display:block;font-size:17px}
 .end-card small{display:block;font-size:13.5px;line-height:1.6;margin-top:4px}
 
-/* ---------- game ---------- */
-#game{display:flex;flex-direction:column;gap:14px;padding-block:14px}
-.hud{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;background:var(--night);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--paper);border-radius:18px;padding:10px 16px}
-.month{font-family:var(--f-display);font-size:20px;white-space:nowrap}
-.month small{font-family:var(--f-body);font-size:13px;opacity:.8;margin-left:4px}
-.a1c{display:flex;align-items:baseline;gap:6px;background:var(--paper);color:var(--ink);border-radius:999px;padding:3px 14px;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
-.a1c em{font-style:normal;font-size:22px}
-.a1c small{font-weight:500;font-size:12px;color:var(--muted)}
-.bars{display:flex;flex-wrap:wrap;gap:8px 16px;flex:1;min-width:0}
-.bar{display:flex;align-items:center;gap:6px;font-size:13.5px;min-width:130px;flex:1}
-.bar i{flex:1;height:9px;border-radius:9px;background:rgba(251,246,234,.22);overflow:hidden;min-width:60px}
-.bar i b{display:block;height:100%;border-radius:9px;background:var(--gold);transition:width .6s}
-.bar[data-k=fit] i b{background:#8fd0a8}
-.bar[data-k=mood] i b{background:#f4a9a0}
-.bar[data-k=know] i b{background:#a9c6f0}
-.bar span{font-variant-numeric:tabular-nums;width:2.2em;text-align:right}
-.hud .menu-btn{margin-left:auto}
-
-.stagewrap{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:16px;align-items:start}
-.stage{position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);display:flex;flex-direction:column;align-items:center}
-.bubble{position:relative;background:var(--paper);border:2px solid var(--ink);border-radius:18px;padding:10px 14px;font-size:15px;line-height:1.6;width:100%;box-sizing:border-box}
-.bubble::after{content:"";position:absolute;left:50%;bottom:-13px;width:20px;height:20px;background:var(--paper);border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:translateX(-50%) rotate(45deg)}
-.bubble b{color:#2a6b78}
-.chara{width:100%;max-width:240px;margin-top:10px;filter:drop-shadow(0 10px 12px rgba(36,65,74,.25))}
-.chara svg{width:100%;height:auto;display:block}
-
+/* ---------- game: classic raising-sim screen (status strip / room + record sheet / command bar) ---------- */
+#game{display:flex;flex-direction:column;gap:0;padding-block:12px;max-width:1240px;margin:0 auto}
+.g-frame{background:var(--ink);border:2px solid var(--ink);border-radius:18px;overflow:hidden;box-shadow:10px 10px 0 rgba(36,65,74,.18);display:flex;flex-direction:column}
+.g-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;color:var(--paper);padding:9px 16px}
+.g-top .when{font-family:var(--f-display);font-size:20px;white-space:nowrap}
+.g-top .pill{background:var(--gold);color:var(--ink);border-radius:999px;padding:0 10px;font-size:13px;font-weight:700}
+.g-top .who{font-weight:700;white-space:nowrap}
+.g-top .sp{flex:1}
+.g-top .left{font-size:13.5px;opacity:.9;white-space:nowrap}
+.g-main{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);background:var(--paper)}
+.room{position:relative;min-height:440px;overflow:hidden;background:#e9e2cf}
+.room>svg.bg{position:absolute;inset:0;width:100%;height:100%}
+.room .chara{position:absolute;left:50%;bottom:2%;transform:translateX(-50%);width:min(46%,250px);margin:0;max-width:none;filter:drop-shadow(0 10px 10px rgba(36,65,74,.25))}
+.room .bubble{position:absolute;z-index:2;left:14px;top:14px;width:auto;max-width:min(62%,330px);box-shadow:0 4px 0 rgba(36,65,74,.15)}
+.room .bubble::after{left:34px;bottom:-12px;transform:rotate(45deg)}
+.room .meter{position:absolute;right:12px;bottom:12px;background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:6px 10px;min-width:150px;font-size:13px;font-variant-numeric:tabular-nums}
+.room .meter b{font-size:18px}
+.room .meter i{display:block;height:8px;border-radius:8px;background:var(--paper-2);margin-top:4px;overflow:hidden}
+.room .meter i u{display:block;height:100%;background:var(--leaf);border-radius:8px;text-decoration:none}
+.sheet{border-left:2px solid var(--ink);display:flex;flex-direction:column;min-width:0}
+.prof{padding:14px 18px 10px;border-bottom:2px dashed #d9cfb9}
+.prof h2{font-family:var(--f-display);font-size:24px;margin:0 0 6px}
+.prof dl{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:3px 10px;margin:0;font-size:14px}
+.prof dt{color:var(--muted)}
+.prof dd{margin:0;font-weight:700;color:#2a6b78}
+.tabs{display:flex;gap:6px;padding:10px 14px 0}
+.tab{appearance:none;flex:1;border:2px solid var(--ink);border-bottom:none;border-radius:12px 12px 0 0;background:var(--paper-2);color:var(--ink);font:inherit;font-weight:700;font-size:15px;padding:6px 4px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--leaf);color:#fff}
+.tabbody{border-top:2px solid var(--ink);padding:14px 18px;flex:1;min-height:0;overflow:auto}
+.sbar{display:grid;grid-template-columns:4.5em 1fr 2.6em;align-items:center;gap:10px;font-size:15px;margin:7px 0;font-variant-numeric:tabular-nums}
+.sbar i{height:10px;border-radius:10px;background:var(--paper-2);overflow:hidden}
+.sbar i b{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#3f8f6b,#6fb38e);transition:width .6s}
+.sbar[data-k=mood] i b{background:linear-gradient(90deg,#d9735e,#f4a9a0)}
+.sbar[data-k=know] i b{background:linear-gradient(90deg,#3f6f9a,#a9c6f0)}
+.sbar span{text-align:right;font-weight:700}
+.sheet .fine{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+.hist{width:100%;height:auto;display:block}
+.bag{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.item{border:2px solid #d9cfb9;border-radius:12px;padding:8px 10px;background:#fff;font-size:13px;line-height:1.5}
+.item b{display:block;font-size:14.5px}
+.item.star{border-color:var(--gold);background:#fff9e8}
+.item.lock{background:var(--paper-2);color:#a59c88;border-style:dashed}
+.g-cmd{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:10px;background:var(--ink)}
+.cmd{appearance:none;border:2px solid #c7b98f;background:var(--paper);color:var(--ink);border-radius:12px;padding:8px 4px 10px;font:inherit;font-weight:700;font-size:15.5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:transform .12s, background .12s}
+.cmd:hover{background:#fff;transform:translateY(-1px)}
+.cmd svg{width:24px;height:24px}
+.cmd.hot{background:#fbe9bd;border-color:var(--gold);box-shadow:0 0 0 3px rgba(240,181,69,.45)}
+/* dialog over the screen for schedule / events / talk / system */
+.dlg{position:fixed;inset:0;z-index:15;background:rgba(36,65,74,.5);display:grid;place-items:center;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));padding-block:max(12px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-bottom,0px))}
+.dlg .panel{width:min(820px,100%);max-height:100%;overflow:auto;box-sizing:border-box;position:relative}
+.dlg .x{position:absolute;right:12px;top:10px}
+.dlg .who-line{display:flex;gap:12px;align-items:center;background:var(--paper-2);border-radius:14px;padding:8px 12px;margin:10px 0}
+.dlg .who-line .mini{width:58px;flex:none}
+.dlg .who-line .mini svg{width:100%;height:auto;display:block}
+@media (max-width:820px){
+  .g-main{grid-template-columns:1fr}
+  .sheet{border-left:none;border-top:2px solid var(--ink)}
+  .room{min-height:330px}
+  .room .chara{width:min(44%,190px)}
+  .g-cmd{grid-template-columns:repeat(3,1fr);position:sticky;bottom:0;padding-bottom:max(10px,env(safe-area-inset-bottom,0px))}
+  .prof dl{grid-template-columns:auto 1fr}
+  .g-top .left{width:100%}
+}
 .panel{background:var(--paper);border:2px solid var(--ink);border-radius:22px;box-shadow:8px 8px 0 rgba(36,65,74,.16);padding:clamp(16px,3vw,26px);min-width:0}
 .panel h2{font-family:var(--f-display);font-size:clamp(22px,3.6vw,28px);margin:0 0 4px;text-wrap:balance}
 .eyebrow{font-size:12.5px;letter-spacing:.14em;color:var(--muted);font-weight:700}
@@ -203,9 +240,7 @@ details.recap li{margin:6px 0}
 .modal .page{max-width:420px}
 
 @media (max-width:760px){
-  .stagewrap{grid-template-columns:1fr}
-  .stage{position:static;display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:end}
-  .chara{order:-1;margin:0;max-width:110px}
+      .chara{order:-1;margin:0;max-width:110px}
   .bubble::after{left:-12px;bottom:22px;transform:rotate(135deg)}
   .ending-hero{grid-template-columns:1fr;justify-items:center;text-align:center}
   .ending-hero svg{max-width:170px}
@@ -217,7 +252,6 @@ details.recap li{margin:6px 0}
 .twinkle{animation:tw 3s ease-in-out infinite}
 @keyframes tw{50%{opacity:.25}}
 </style>
-
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head>
 <body>
@@ -238,7 +272,7 @@ details.recap li{margin:6px 0}
         <button class="tile" id="b-how"><b>遊戲說明</b><small>玩法與數值介紹</small></button>
         <button class="tile" id="b-ref"><b>實證文獻依據</b><small>ADA 2026・糖尿病學會・衛教學會</small></button>
       </div>
-      <p class="foot">原創衛教作品，人物與場景皆為原創繪製。內容依據 ADA Standards of Care in Diabetes 2026、中華民國糖尿病學會照護指引與糖尿病衛教學會衛教資料。不取代醫療建議。v2.0</p>
+      <p class="foot">原創衛教作品，人物與場景皆為原創繪製。內容依據 ADA Standards of Care in Diabetes 2026、中華民國糖尿病學會照護指引與糖尿病衛教學會衛教資料。不取代醫療建議。v3.0</p>
       <p class="foot"><a href="/#games" style="color:#2a6b78;font-weight:700">← 回到糖尿病照護小幫手</a></p>
     </div>
     <div class="title-chara" id="title-chara"></div>
@@ -249,6 +283,8 @@ details.recap li{margin:6px 0}
   <div class="page">
     <h2>遊戲說明</h2>
     <p class="lead">你是一位溫暖的「健康夥伴」。主角剛被診斷為第二型糖尿病，接下來的 12 個月，由你陪他一起學習、一起調整生活。</p>
+    <h3>主畫面與指令</h3>
+    <p>主畫面左邊是主角的房間，右邊是資料卡和數值。下方有六個指令：<b>排行程</b>（每個月必做）、<b>說話</b>（每月一次，心情會變好）、<b>飲食</b>（選擇飲食方針）、<b>回診紀錄</b>（看 A1C 變化）、<b>隨身包</b>（每月事件取得的衛教物品）、<b>系統</b>（存檔、說明、文獻）。</p>
     <h3>每個月會做兩件事</h3>
     <p><b>一、安排生活計畫：</b>從健走、肌力訓練、餐盤法料理、血糖紀錄、睡眠、支持團體等活動中，選 2 項。每項活動都附有小知識和出處。</p>
     <p><b>二、遇到生活事件：</b>例如手搖飲團購、低血糖、感冒吃不下。替主角做選擇後，遊戲會告訴你最合適的做法，附上白話解說和醫學實證依據。</p>
@@ -310,23 +346,38 @@ details.recap li{margin:6px 0}
 
 <!-- GAME -->
 <section class="screen" id="game" hidden>
-  <div class="hud">
-    <div class="month" id="h-month"></div>
-    <div class="a1c">A1C <em id="h-a1c"></em><small>目標多為 &lt;7%</small></div>
-    <div class="bars">
-      <div class="bar" data-k="fit">體力<i><b></b></i><span></span></div>
-      <div class="bar" data-k="mood">心情<i><b></b></i><span></span></div>
-      <div class="bar" data-k="know">知識<i><b></b></i><span></span></div>
+  <div class="g-frame">
+    <div class="g-top">
+      <span class="when" id="h-month"></span><span class="pill" id="h-season"></span>
+      <span class="who" id="h-who"></span><span class="sp"></span>
+      <span class="left" id="h-left"></span>
     </div>
-    <button class="btn small menu-btn" id="b-quit">存檔並回標題</button>
-  </div>
-  <div class="stagewrap">
-    <div class="stage">
-      <div class="bubble" id="bubble"></div>
-      <div class="chara" id="chara"></div>
+    <div class="g-main">
+      <div class="room" id="room">
+        <div class="bubble" id="bubble"></div>
+        <div class="chara" id="chara"></div>
+        <div class="meter"><span>A1C <b id="h-a1c"></b></span> <small>目標多為 &lt;7%</small><i><u id="h-a1c-bar"></u></i></div>
+      </div>
+      <div class="sheet">
+        <div class="prof"><h2 id="p-name"></h2><dl id="p-dl"></dl></div>
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" data-tab="base" aria-selected="true">基本</button>
+          <button class="tab" role="tab" data-tab="hist" aria-selected="false">回診紀錄</button>
+          <button class="tab" role="tab" data-tab="bag" aria-selected="false">隨身包</button>
+        </div>
+        <div class="tabbody" id="tabbody"></div>
+      </div>
     </div>
-    <div class="panel" id="panel" aria-live="polite"></div>
+    <nav class="g-cmd" aria-label="指令">
+      <button class="cmd" id="c-plan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3" fill="#a9c6f0" stroke="#24414a" stroke-width="1.6"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#24414a" stroke-width="1.6" stroke-linecap="round"/><path d="M7 14h3M14 14h3M7 17h3" stroke="#24414a" stroke-width="1.6" stroke-linecap="round"/></svg>排行程</button>
+      <button class="cmd" id="c-talk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v10H10l-4 4v-4H4z" fill="#f6c9c1" stroke="#24414a" stroke-width="1.6" stroke-linejoin="round"/></svg>說話</button>
+      <button class="cmd" id="c-diet"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" fill="#fff" stroke="#24414a" stroke-width="1.6"/><path d="M12 13V5a8 8 0 0 1 8 8z" fill="#7fbf95"/><path d="M12 13h8a8 8 0 0 1-8 8z" fill="#f2b84b"/><path d="M12 13v8a8 8 0 0 1-8-8z" fill="#e46c5c"/></svg>飲食</button>
+      <button class="cmd" id="c-hist"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2" fill="#fff" stroke="#24414a" stroke-width="1.6"/><path d="M7 16l3-4 3 2 4-6" stroke="#3f8f6b" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>回診紀錄</button>
+      <button class="cmd" id="c-bag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h14l-1 11H6z" fill="#f2b84b" stroke="#24414a" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 9V7a3 3 0 0 1 6 0v2" stroke="#24414a" stroke-width="1.6" fill="none"/></svg>隨身包</button>
+      <button class="cmd" id="c-sys"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="none" stroke="#24414a" stroke-width="1.6"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" stroke="#24414a" stroke-width="1.6" stroke-linecap="round"/></svg>系統</button>
+    </nav>
   </div>
+  <div class="dlg" id="dlg" hidden><div class="panel" id="panel" role="dialog" aria-modal="true" aria-live="polite"></div></div>
 </section>
 
 <!-- ENDING -->
@@ -517,7 +568,7 @@ function sceneSVG(){
   </svg>`;
 }
 const SKIN="#fde3cf", BLUSH="#f6a5a0";
-function charSVG(kind, expr="normal"){
+function charSVG(kind, expr="normal", full=false){
   const tang = kind==="tang";
   const hair = tang?"#5a3a2e":"#2c2b3d";
   const hood = tang?"#f2a7a0":"#7fc4bb";
@@ -537,9 +588,11 @@ function charSVG(kind, expr="normal"){
   const arms = expr==="cheer"
     ? `<path d="M58 184 Q30 160 34 128" stroke="${hood}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="34" cy="124" r="10" fill="${SKIN}"/><path d="M142 184 Q170 160 166 128" stroke="${hood}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="166" cy="124" r="10" fill="${SKIN}"/>`
     : `<path d="M58 184 Q40 214 52 246" stroke="${hood}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="54" cy="250" r="9" fill="${SKIN}"/><path d="M142 184 Q160 214 148 246" stroke="${hood}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="146" cy="250" r="9" fill="${SKIN}"/>`;
-  return `<svg viewBox="0 0 200 300" role="img" aria-label="${tang?'糖糖':'正正'}">
+  const legs = full ? `<path d="M64 292 L66 372 H96 L99 300 H101 L104 372 H134 L136 292Z" fill="${tang?"#4f6d8a":"#3d4a5c"}"/><path d="M60 368 h40 q4 0 4 6 v6 h-48 v-4 q0 -8 4 -8Z M100 368 h40 q4 0 4 8 v4 h-48 v-6 q0 -6 4 -6Z" fill="#fffaf0" stroke="#24414a" stroke-width="2"/>` : "";
+  return `<svg viewBox="0 0 200 ${full?390:300}" role="img" aria-label="${tang?'糖糖':'正正'}">
+    ${legs}
     ${backHair}
-    <path d="M56 300 L60 196 Q62 172 100 168 Q138 172 140 196 L144 300Z" fill="${hood}"/>
+    <path d="M56 300 L60 196 Q62 172 100 168 Q138 172 140 196 L144 300Z" fill="${hood}"/>${full?`<path d="M56 290 H144 V300 Q100 306 56 300Z" fill="${hoodD}"/>`:""}
     <path d="M74 172 Q100 196 126 172 Q120 164 100 164 Q80 164 74 172Z" fill="${hoodD}"/>
     <path d="M92 180 L90 214M108 180 L110 214" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
     <path d="M72 246 H128 Q130 268 120 272 H80 Q70 268 72 246Z" fill="${hoodD}" opacity=".7"/>
@@ -590,7 +643,7 @@ function importCode(code){
 let S=null;
 const $=id=>document.getElementById(id);
 const clamp=(v,a=0,b=100)=>Math.max(a,Math.min(b,v));
-function newState(kind,name){ return {kind,name,month:1,a1c:8.4,fit:30,mood:50,know:20,correct:0,answers:[],phase:"plan",picks:[],log:null}; }
+function newState(kind,name){ return {kind,name,month:1,a1c:8.4,fit:30,mood:50,know:20,correct:0,answers:[],phase:"hub",picks:[],log:null,hist:[],items:[],diet:"free"}; }
 function lowerA1c(d){ S.a1c = 5.5 + (S.a1c-5.5)*Math.exp(-d/4.5); }
 const a1cStr=()=>S.a1c.toFixed(1)+"%";
 function exprFor(){ if(S.mood<30) return "worry"; if(S.mood>=70) return "happy"; return "normal"; }
@@ -618,7 +671,6 @@ $("b-new").onclick=()=>needLogin(()=>{
   else show("setup");
 });
 $("b-load").onclick=()=>needLogin(()=>{ const s=curSave(); if(s){ S=s; show("game"); renderGame(); } else show("title"); });
-$("b-quit").onclick=()=>{ saveGame(); show("title"); };
 
 /* ============ login ============ */
 let afterLogin=null;
@@ -744,32 +796,166 @@ function renderGallery(){
     : `<div class="end-card lock"><b>？？？</b><small>解鎖條件：${e.hint}</small></div>`).join("");
 }
 
-/* ============ game rendering ============ */
-function renderHUD(){
-  $("h-month").innerHTML=`第 ${S.month} 個月<small>/ 12</small>`;
-  $("h-a1c").textContent=a1cStr();
-  document.querySelectorAll(".bar").forEach(b=>{ const k=b.dataset.k; b.querySelector("b").style.width=S[k]+"%"; b.querySelector("span").textContent=Math.round(S[k]); });
-}
-function setChar(expr, line){ $("chara").innerHTML=charSVG(S.kind,expr); $("bubble").innerHTML=line; }
+/* ============ game data: diet plans, talks, bag items ============ */
+const DIETS = [
+  { id:"free", n:"想吃什麼就吃什麼", d:0, fx:{mood:3}, tip:"偶爾放鬆沒關係，但長期沒有計畫，血糖比較不容易穩定。可以先從一餐開始調整。", ref:"ada5" },
+  { id:"plate", n:"餐盤法", d:.05, fx:{know:2}, tip:"蔬菜半盤、豆魚蛋肉 1/4、全穀 1/4，先吃菜和肉再吃飯，份量好掌握。", ref:"hpa_plate" },
+  { id:"med", n:"地中海式飲食", d:.05, fx:{mood:2}, tip:"多蔬果、全穀、豆類、堅果、魚和橄欖油，少紅肉與加工食品。ADA 認可的健康飲食型態之一。", ref:"ada5" },
+  { id:"lowcarb", n:"適度減醣", d:.05, fx:{}, tip:"適度減少醣類對部分人有幫助。有用胰島素或容易低血糖的藥物，先和醫師討論；使用 SGLT2 抑制劑者不建議生酮飲食。", ref:"ada5" },
+];
+const TALKS = [
+  { say:"其實我有點怕打針、怕吃藥一輩子……", reply:"這些擔心很常見。把擔心說出來，和醫師、衛教師一起討論，會找到適合你的方法。", ref:"ada5" },
+  { say:"每天量血糖，有時候量到數字很高就好沮喪。", reply:"血糖數字是幫你找規律的工具，不是成績單。記下當天吃了什麼、做了什麼，回診時一起看。", ref:"ada7" },
+  { say:"家人說我一定是吃太多糖才會這樣，我好難過。", reply:"第二型糖尿病和遺傳、年齡、體重、生活型態都有關，不是單一原因造成的，也不是你的錯。", ref:"ada5" },
+  { say:"最近工作壓力大，晚上都睡不好。", reply:"成人每晚建議至少 7 小時睡眠。睡不好會讓血糖更難控制，睡前可以先放下手機。", ref:"watson" },
+  { say:"我想喝酒放鬆一下可以嗎？", reply:"有喝酒習慣的人不要過量，也不建議為了健康開始喝酒。喝酒後可能發生延遲性低血糖，記得多量血糖。", ref:"ada5" },
+  { say:"我爸也有糖尿病，我會不會跟他一樣？", reply:"現在的治療和照護比以前進步很多。規律追蹤、及早處理，就能大大減少併發症。", ref:"ukpds" },
+  { say:"如果我想戒菸，該怎麼開始？", reply:"不建議抽菸或電子菸。醫院有戒菸門診，提供諮詢和藥物協助，成功率比自己戒高很多。", ref:"ada5" },
+  { say:"我可以跟朋友去吃到飽嗎？", reply:"可以！先拿一盤蔬菜，蛋白質選烤或蒸的，澱粉放最後，甜點選一小份，慢慢吃。", ref:"ada5" },
+  { say:"聽說有一種可以貼在手臂上的血糖機？", reply:"那是連續血糖監測（CGM）。使用胰島素或容易低血糖的人，可以和醫師討論是否適合。", ref:"ada7" },
+  { say:"我覺得自己最近進步好多！", reply:"真的！每一個小改變都算數。繼續保持，也別忘了好好獎勵自己。", ref:"ada5" },
+  { say:"出國旅行要注意什麼？", reply:"藥物帶兩倍份量放隨身行李，備好葡萄糖錠和英文藥單，跨時區時先和醫師討論用藥時間。", ref:"ada9" },
+  { say:"一年快到了，謝謝你一直陪著我。", reply:"謝謝你這麼努力！照顧糖尿病是長期的事，有醫療團隊和家人陪你，一起走下去。", ref:"ada5" },
+];
+const ITEMS = ["衛教手冊","餐盤便當盒","保溫水壺","健走鞋","葡萄糖錠","生病日小卡","合腳鞋襪","年度檢查表","藥物清單卡","疫苗紀錄卡","體重紀錄本","A1C 成績單"];
 
-function renderGame(){
+/* ============ room scene (original) ============ */
+function roomSVG(month){
+  const ticks=Array.from({length:12},(_,i)=>`<rect x="${8+(i%4)*24}" y="${20+Math.floor(i/4)*24}" width="16" height="14" rx="2" fill="${i<month-1?"#7fbf95":"#fff"}" stroke="#c9bfa6"/>`).join("");
+  return `<svg class="bg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+  <defs><linearGradient id="win" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fd6e8"/><stop offset="1" stop-color="#e8f6ef"/></linearGradient>
+  <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9b98e"/><stop offset="1" stop-color="#c49d6f"/></linearGradient></defs>
+  <rect width="800" height="600" fill="#eef1e4"/>
+  <rect y="0" width="800" height="430" fill="#e6ecd9"/>
+  ${Array.from({length:20},(_,i)=>`<rect x="${i*40}" y="0" width="20" height="430" fill="#e1e8d2"/>`).join("")}
+  <rect y="410" width="800" height="22" fill="#f6f1e2"/>
+  <rect y="430" width="800" height="170" fill="url(#floor)"/>
+  ${Array.from({length:8},(_,i)=>`<path d="M0 ${452+i*20} H800" stroke="#b8925f" stroke-width="1.5" opacity=".45"/>`).join("")}
+  <g transform="translate(250 70)"><rect width="300" height="230" rx="10" fill="#fffaf0" stroke="#8a6a4f" stroke-width="6"/><rect x="12" y="12" width="276" height="206" rx="4" fill="url(#win)"/>
+    <circle cx="230" cy="62" r="26" fill="#ffe27a"/><path d="M12 170 Q90 130 160 160 T288 150 V218 H12Z" fill="#9ccfb7"/><path d="M150 12 V218 M12 115 H288" stroke="#8a6a4f" stroke-width="6"/>
+    <path d="M-30 -10 Q10 120 -18 250 L-40 250 L-40 -10Z" fill="#f6c9c1"/><path d="M330 -10 Q290 120 318 250 L340 250 L340 -10Z" fill="#f6c9c1"/><rect x="-46" y="-18" width="392" height="12" rx="6" fill="#8a6a4f"/></g>
+  <g transform="translate(600 100)"><rect width="104" height="96" rx="6" fill="#fff" stroke="#8a6a4f" stroke-width="3"/><rect width="104" height="14" rx="4" fill="#e46c5c"/>${ticks}</g>
+  <g transform="translate(40 150)"><rect width="150" height="270" fill="#a57e5a"/><rect x="10" y="10" width="130" height="250" fill="#8a6a4f"/>
+    ${[0,1,2].map(r=>`<rect x="10" y="${88+r*86}" width="130" height="8" fill="#a57e5a"/>`).join("")}
+    ${[["#e46c5c",16,40],["#7fc4bb",36,48],["#f2b84b",58,36],["#a9c6f0",80,50]].map(([c,x,h])=>`<rect x="${x}" y="${88-h}" width="18" height="${h}" fill="${c}"/>`).join("")}
+    <rect x="20" y="130" width="60" height="44" rx="4" fill="#fff" stroke="#c9bfa6"/><path d="M28 160 l10 -10 8 6 12 -14 10 6" stroke="#3f8f6b" stroke-width="3" fill="none"/>
+    <circle cx="110" cy="160" r="16" fill="#7fbf95"/><rect x="100" y="166" width="20" height="10" fill="#c9845a"/>
+    <rect x="22" y="226" width="40" height="34" rx="4" fill="#f2b84b"/><rect x="72" y="214" width="50" height="46" rx="6" fill="#fffaf0" stroke="#c9bfa6"/></g>
+  <g transform="translate(610 300)"><path d="M0 130 Q-10 40 40 20 Q90 40 80 130Z" fill="#c9845a"/><circle cx="40" cy="0" r="48" fill="#5aa676"/><circle cx="0" cy="20" r="30" fill="#4e9a6a"/><circle cx="80" cy="24" r="32" fill="#4e9a6a"/></g>
+  <ellipse cx="400" cy="540" rx="250" ry="40" fill="#f6c9c1" opacity=".75"/><ellipse cx="400" cy="540" rx="200" ry="28" fill="none" stroke="#fffaf0" stroke-width="4" stroke-dasharray="10 10"/>
+  <g transform="translate(560 430)"><rect width="150" height="16" rx="6" fill="#a57e5a"/><rect x="12" y="16" width="10" height="70" fill="#8a6a4f"/><rect x="128" y="16" width="10" height="70" fill="#8a6a4f"/>
+    <rect x="20" y="-34" width="18" height="34" rx="6" fill="#a9c6f0" stroke="#24414a" stroke-width="1.5"/><ellipse cx="96" cy="-4" rx="34" ry="8" fill="#fff" stroke="#c9bfa6"/><path d="M70 -6 h52" stroke="#7fbf95" stroke-width="5"/></g>
+  </svg>`;
+}
+
+/* ============ game rendering ============ */
+const SEASON=m=>["冬","冬","春","春","春","夏","夏","夏","秋","秋","秋","冬"][(m-1)%12];
+const JOB=k=>k==="tang"?"上班族":"外送員";
+const AGE=k=>k==="tang"?32:35;
+function upgrade(){ // fill fields added after v2 saves
+  if(!S.hist) S.hist=[]; if(!S.items) S.items=[]; if(!S.diet) S.diet="free";
+  if(S.phase==="plan") S.phase="hub";
+}
+let tab="base";
+function setChar(expr, line){ $("chara").innerHTML=charSVG(S.kind,expr,true); $("bubble").innerHTML=line; }
+function renderHUD(){
+  const room=$("room"); room.querySelector("svg.bg")?.remove(); room.insertAdjacentHTML("afterbegin",roomSVG(S.month));
+  $("h-month").textContent=`確診後第 ${S.month} 個月`;
+  $("h-season").textContent=`${S.month} 月・${SEASON(S.month)}`;
+  $("h-who").textContent=`${S.name}・${AGE(S.kind)} 歲`;
+  $("h-left").textContent= S.month<12 ? `距離年度回診還有 ${12-S.month} 個月` : "這個月就是年度回診！";
+  $("h-a1c").textContent=a1cStr();
+  $("h-a1c-bar").style.width=Math.max(4,Math.min(100,(9.5-S.a1c)/3*100))+"%";
+  $("p-name").textContent=S.name;
+  const diet=DIETS.find(d=>d.id===S.diet);
+  const ex = S.fit>=70?"很規律":S.fit>=45?"規律":"偶爾";
+  const rows=[["職業",JOB(S.kind)],["診斷","第二型糖尿病"],["飲食",diet.n],["運動",ex],["用藥","按時服藥"],["A1C 目標","&lt;7%（個別化）"]];
+  $("p-dl").innerHTML=rows.map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join("");
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.tab===tab));
+  renderTab();
+  $("c-plan").classList.toggle("hot",S.phase==="hub");
+}
+function renderTab(){
+  const b=$("tabbody");
+  if(tab==="base"){
+    b.innerHTML=[["fit","體力"],["mood","心情"],["know","衛教知識"]].map(([k,l])=>`<div class="sbar" data-k="${k}"><span style="text-align:left;font-weight:400">${l}</span><i><b style="width:${S[k]}%"></b></i><span>${Math.round(S[k])}</span></div>`).join("")
+      +`<div class="sbar"><span style="text-align:left;font-weight:400">最佳做法</span><i><b style="width:${S.correct/12*100}%;background:linear-gradient(90deg,#c9952e,#f0b545)"></b></i><span>${S.correct}/12</span></div>`
+      +`<p class="fine">心情低於 30 時，活動效果會打折；記得安排放鬆或和人聊聊。每個月可以「說話」一次，心情會變好。</p>`;
+  } else if(tab==="hist"){
+    const pts=[8.4,...S.hist]; const W=320,H=170,x=i=>30+i*(W-40)/12,y=v=>12+(9-v)/(9-5.5)*(H-36);
+    b.innerHTML=`<svg class="hist" viewBox="0 0 ${W} ${H}" role="img" aria-label="每月 A1C 變化">
+      ${[9,8,7,6].map(v=>`<path d="M30 ${y(v)} H${W-10}" stroke="${v===7?"#3f8f6b":"#e3dccb"}" stroke-width="${v===7?1.5:1}" ${v===7?'stroke-dasharray="5 4"':""}/><text x="24" y="${y(v)+4}" font-size="10" text-anchor="end" fill="#5b6b6c">${v}%</text>`).join("")}
+      <text x="${W-10}" y="${y(7)-5}" font-size="10" text-anchor="end" fill="#3f8f6b">目標 7%</text>
+      <polyline points="${pts.map((v,i)=>`${x(i)},${y(v)}`).join(" ")}" fill="none" stroke="#24414a" stroke-width="2.5" stroke-linejoin="round"/>
+      ${pts.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="${i===pts.length-1?4.5:3}" fill="${i===pts.length-1?"#f0b545":"#24414a"}"/>`).join("")}
+      ${[0,3,6,9,12].map(i=>`<text x="${x(i)}" y="${H-6}" font-size="10" text-anchor="middle" fill="#5b6b6c">${i===0?"確診":i+"月"}</text>`).join("")}
+    </svg><p class="fine">A1C 反映約 3 個月的平均血糖。遊戲中的變化為簡化示意。目前 ${a1cStr()}。</p>`;
+  } else {
+    b.innerHTML=`<div class="bag">${ITEMS.map((n,i)=>{ const s=S.items[i]; return s?`<div class="item ${s===2?"star":""}"><b>${n}${s===2?" ★":""}</b>${EVENTS[i].key}</div>`:`<div class="item lock"><b>？？？</b>第 ${i+1} 個月取得</div>`; }).join("")}</div><p class="fine">每個月的生活事件都會得到一件物品；選到最佳做法會有 ★。</p>`;
+  }
+}
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{ tab=t.dataset.tab; renderHUD(); });
+
+function openDlg(closable){ $("dlg").hidden=false; $("panel").scrollTop=0; if(closable){ const x=document.createElement("button"); x.className="btn small x"; x.textContent="關閉"; x.onclick=closeDlg; $("panel").prepend(x); } }
+function closeDlg(){ $("dlg").hidden=true; renderHub(); }
+
+function renderHub(){
   renderHUD();
-  if(S.phase==="plan") renderPlan();
-  else if(S.phase==="planResult") renderPlanResult();
+  if(S.phase!=="hub") return;
+  const low=S.mood<30;
+  setChar(exprFor(), low ? `最近有點累……這個月可以安排<b>放鬆</b>或<b>說說話</b>嗎？`
+    : S.month===1 ? `你好！我是${esc(S.name)}，請多多指教！先按下方的<b>排行程</b>，安排這個月吧。`
+    : `第 ${S.month} 個月了！按<b>排行程</b>安排這個月，也可以先<b>說話</b>或調整<b>飲食</b>。`);
+}
+function renderGame(){
+  upgrade(); renderHub();
+  if(S.phase==="planResult") renderPlanResult();
   else if(S.phase==="event") renderEvent();
   else if(S.phase==="feedback") renderFeedback();
+  else $("dlg").hidden=true;
 }
+
+/* commands */
+$("c-plan").onclick=()=>{ if(S.phase==="hub") renderPlan(); else renderGame(); };
+$("c-hist").onclick=()=>{ tab="hist"; renderHUD(); $("tabbody").scrollIntoView({behavior:"smooth",block:"nearest"}); };
+$("c-bag").onclick=()=>{ tab="bag"; renderHUD(); $("tabbody").scrollIntoView({behavior:"smooth",block:"nearest"}); };
+$("c-talk").onclick=()=>{
+  const t=TALKS[(S.month-1)%TALKS.length]; const first=S.talked!==S.month;
+  if(first){ S.talked=S.month; S.mood=clamp(S.mood+4); saveGame(); renderHUD(); }
+  $("panel").innerHTML=`<div class="eyebrow">MONTH ${S.month} ・ 說話</div><h2>和${esc(S.name)}聊聊</h2>
+    <div class="who-line"><div class="mini">${charSVG(S.kind,"normal")}</div><div>${t.say}</div></div>
+    <div class="who-line"><div><b>你：</b>${t.reply}<cite style="display:block;font-style:normal;font-size:12.5px;color:var(--muted)">出處：${refHTML(t.ref)}</cite></div></div>
+    <p class="hint">${first?"聊完心情變好了（心情 +4）。":"這個月已經聊過了，下個月再來聊新話題吧。"}</p>
+    <div class="row"><button class="btn primary" id="t-ok">好</button></div>`;
+  openDlg(false); $("t-ok").onclick=closeDlg;
+};
+$("c-diet").onclick=()=>{
+  const can=S.dietM!==S.month;
+  $("panel").innerHTML=`<div class="eyebrow">MONTH ${S.month} ・ 飲食</div><h2>這個月的飲食方針</h2>
+    <p class="hint">${can?"選一種方針，會影響之後每個月的血糖變化。沒有一種飲食適合所有人，選做得到的最重要。":"這個月已經調整過飲食方針了，下個月可以再換。"}</p>
+    <div class="acts">${DIETS.map(d=>`<button class="act" data-id="${d.id}" aria-pressed="${S.diet===d.id}" ${can?"":"disabled"}><b>${d.n}</b><span>${d.tip}</span><span class="fx">${d.d?"A1C↓":"心情+3"}・出處：${REFS[d.ref].s}</span></button>`).join("")}</div>
+    <div class="row"><button class="btn" id="d-close">關閉</button></div>`;
+  openDlg(false); $("d-close").onclick=closeDlg;
+  if(can) $("panel").querySelectorAll(".act").forEach(b=>b.onclick=()=>{ const d=DIETS.find(x=>x.id===b.dataset.id); if(S.diet!==d.id){ S.diet=d.id; S.dietM=S.month; for(const k in d.fx) S[k]=clamp(S[k]+d.fx[k]); saveGame(); } closeDlg(); });
+};
+$("c-sys").onclick=()=>{
+  $("panel").innerHTML=`<div class="eyebrow">系統</div><h2>選單</h2><p class="hint">遊戲會自動存檔。</p>
+    <div class="row"><button class="btn primary" id="s-back">繼續遊戲</button><button class="btn" id="s-how">遊戲說明</button><button class="btn" id="s-ref">實證文獻依據</button><button class="btn" id="s-quit">存檔並回標題</button></div>`;
+  openDlg(false);
+  $("s-back").onclick=closeDlg;
+  $("s-how").onclick=()=>{ saveGame(); $("dlg").hidden=true; show("how"); };
+  $("s-ref").onclick=()=>{ saveGame(); $("dlg").hidden=true; renderRefs(); show("refs"); };
+  $("s-quit").onclick=()=>{ saveGame(); $("dlg").hidden=true; show("title"); };
+};
 
 function renderPlan(){
   const low = S.mood<30;
-  setChar(exprFor(), low
-    ? `最近有點累……這個月可以安排一些<b>放鬆或聊聊天</b>的活動嗎？`
-    : S.month===1 ? `你好！我是${S.name}。接下來一年，請多多指教！` : `第 ${S.month} 個月了，這個月要做什麼呢？`);
   const p=$("panel");
-  p.innerHTML=`<div class="eyebrow">MONTH ${S.month} ・ 生活計畫</div><h2>這個月安排哪兩項活動？</h2>
+  p.innerHTML=`<div class="eyebrow">MONTH ${S.month} ・ 排行程</div><h2>這個月安排哪兩項活動？</h2>
    <p class="hint">選 2 項。每個月固定按時服藥、回診，A1C 會慢慢進步。${low?"心情偏低時，活動效果會打折喔。":""}</p>
    <div class="acts">${ACTS.map(a=>`<button class="act" data-id="${a.id}" aria-pressed="${S.picks.includes(a.id)}"><b>${a.name}</b><span>${a.desc}</span><span class="fx">${fxText(a)}</span></button>`).join("")}</div>
    <div class="row"><button class="btn primary" id="b-go" ${S.picks.length===2?"":"disabled"}>開始這個月</button><span class="hint" id="pick-n">已選 ${S.picks.length} / 2</span></div>`;
+  openDlg(true);
   p.querySelectorAll(".act").forEach(b=>b.onclick=()=>{
     const id=b.dataset.id, i=S.picks.indexOf(id);
     if(i>=0) S.picks.splice(i,1); else { if(S.picks.length>=2) S.picks.shift(); S.picks.push(id); }
@@ -782,7 +968,7 @@ function fxText(a){ const L={fit:"體力",mood:"心情",know:"知識"}; const pa
 function runMonth(){
   const mult = S.mood<30 ? .6 : 1;
   const before={a1c:S.a1c,fit:S.fit,mood:S.mood,know:S.know};
-  let d=.02; // taking prescribed medication and follow-up each month
+  let d=.02 + (DIETS.find(x=>x.id===S.diet)?.d||0); // prescribed medication and follow-up each month, plus the chosen eating plan
   S.picks.forEach(id=>{ const a=ACTS.find(x=>x.id===id); d+=a.d*mult; for(const k in a.fx) S[k]=clamp(S[k]+a.fx[k]*mult); });
   S.fit=clamp(S.fit-2); S.mood=clamp(S.mood-3);
   lowerA1c(d);
@@ -802,20 +988,24 @@ function renderPlanResult(){
    <div class="delta">${deltaChips(S.log.before)}</div>
    <div class="results">${items.map(i=>`<div class="res"><b>${i.name}</b><div class="tip">${i.tip}</div><cite>出處：${refHTML(i.ref)}</cite></div>`).join("")}</div>
    <div class="row"><button class="btn primary" id="b-ev">接下來發生了一件事……</button></div>`;
+  openDlg(false);
   $("b-ev").onclick=()=>{ S.phase="event"; saveGame(); renderGame(); };
 }
 
 function renderEvent(){
   const e=EVENTS[S.month-1];
-  setChar(S.month===1?"worry":"normal", e.say.replace(/糖糖/g,S.name));
+  setChar(S.month===1?"worry":"normal", "……");
   $("panel").innerHTML=`<div class="eyebrow">MONTH ${S.month} ・ 生活事件</div><h2>${e.t}</h2>
-   <div class="q">${e.q.replace(/糖糖/g,S.name)}</div>
+   <div class="who-line"><div class="mini">${charSVG(S.kind,S.month===1?"worry":"normal")}</div><div>${e.say.replace(/糖糖/g,esc(S.name))}</div></div>
+   <div class="q">${e.q.replace(/糖糖/g,esc(S.name))}</div>
    <div class="opts">${e.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${"ABC"[i]}</span><span>${o}</span></button>`).join("")}</div>`;
+  openDlg(false);
   $("panel").querySelectorAll(".opt").forEach(b=>b.onclick=()=>choose(+b.dataset.i));
 }
 function choose(i){
   const e=EVENTS[S.month-1]; const ok=i===e.a;
   S.answers[S.month-1]=i;
+  S.items[S.month-1]=ok?2:1;
   const before={a1c:S.a1c,fit:S.fit,mood:S.mood,know:S.know};
   if(ok){ S.correct++; S.know=clamp(S.know+8); S.mood=clamp(S.mood+5); lowerA1c(.2); }
   else { S.know=clamp(S.know+3); }
@@ -824,21 +1014,23 @@ function choose(i){
 }
 function renderFeedback(){
   const e=EVENTS[S.month-1]; const mine=S.answers[S.month-1]; const ok=mine===e.a;
-  setChar(ok?"cheer":"normal", ok?`原來如此！謝謝你幫我選了最好的做法！`:`原來是這樣！學起來了，下次我就知道怎麼做了！`);
+  setChar(ok?"cheer":"happy", ok?`謝謝你幫我選了最好的做法！`:`原來是這樣！學起來了！`);
   $("panel").innerHTML=`<div class="eyebrow">MONTH ${S.month} ・ ${e.t}</div><h2>解答與解說</h2>
    <div class="opts">${e.o.map((o,i)=>`<button class="opt ${i===e.a?'good':''} ${i===mine?'mine':''}" disabled><span class="k">${"ABC"[i]}</span><span>${o}${i===e.a?'<span class="tag g">最佳做法</span>':''}${i===mine&&i!==e.a?'<span class="tag m">你的選擇</span>':''}</span></button>`).join("")}</div>
-   <div class="verdict ${ok?'ok':'try'}">${ok?'答對了，做得很好！':'沒關係，這正是學習的好機會！'}<span>${ok?'A1C 進步、知識 +8、心情 +5':'知識 +3。看看下面的解說，下次一定沒問題。'}</span></div>
+   <div class="verdict ${ok?'ok':'try'}">${ok?'答對了，做得很好！':'沒關係，這正是學習的好機會！'}<span>${ok?'A1C 進步、知識 +8、心情 +5':'知識 +3。看看下面的解說，下次一定沒問題。'}　隨身包多了「${ITEMS[S.month-1]}」${ok?"★":""}。</span></div>
    <div class="explain">
      <h3>白話解說</h3><p>${e.ex}</p>
      <h3>醫學實證依據</h3>
      <ul class="evi">${e.ev.map(([t,r])=>`<li>${t}<cite>出處：${refHTML(r)}</cite></li>`).join("")}</ul>
    </div>
    <div class="row"><button class="btn primary" id="b-next">${S.month<12?'前往下個月':'迎接這一年的結局'}</button></div>`;
+  openDlg(false);
   $("b-next").onclick=nextMonth;
 }
 function nextMonth(){
-  if(S.month>=12){ finish(); return; }
-  S.month++; S.phase="plan"; S.picks=[]; S.log=null; saveGame(); renderGame();
+  S.hist[S.month-1]=+S.a1c.toFixed(2);
+  if(S.month>=12){ $("dlg").hidden=true; finish(); return; }
+  S.month++; S.phase="hub"; S.picks=[]; S.log=null; saveGame(); $("dlg").hidden=true; renderGame();
 }
 
 /* ============ ending ============ */
