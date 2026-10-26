@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="糖尿病衛教養成遊戲：陪伴新確診糖友一年，每個選擇都附白話解說與實證依據（ADA 2026、中華民國糖尿病學會、糖尿病衛教學會）。">
+<meta property="og:title" content="糖糖正正夢工廠">
+<meta property="og:description" content="陪伴一位新糖友，一起養成穩糖好習慣的一年。">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<title>糖糖正正夢工廠</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: a morning garden-town scene behind every screen. The title is a left-aligned "workshop notebook" card with menu tiles, and the character stands on the hill to its right. Gameplay splits into a character stage and a paper panel. Single committed look (bright morning), not theme-switched. */
+:root{
+  --sky:#a9dbe8;
+  --ink:#24414a;          /* deep teal ink: text, borders */
+  --paper:#fffaf0;        /* panels and buttons */
+  --paper-2:#f2efe1;
+  --gold:#f0b545;         /* sunshine accent */
+  --leaf:#3f8f6b;         /* best choice / good */
+  --leaf-soft:#e3f3e9;
+  --coral:#d9735e;        /* gentle attention, never "wrong" red */
+  --coral-soft:#fbe7e0;
+  --muted:#5b6b6c;
+  --night:rgba(36,65,74,.86);
+  --f-display:"LXGW WenKai TC","Kaiti TC","DFKai-SB","BiauKai",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  color-scheme:light;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--sky);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.7;overflow-x:hidden}
+button{font-family:inherit}
+button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+#scene{position:fixed;inset:0;z-index:0}
+#scene svg{width:100%;height:100%;display:block}
+.screen{position:relative;z-index:1;min-height:100%;box-sizing:border-box;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px}
+
+/* ---------- title ---------- */
+#title{display:flex;align-items:center}
+.title-wrap{width:100%;max-width:1080px;margin:0 auto;display:grid;grid-template-columns:minmax(0,520px) 1fr;gap:24px;align-items:end}
+.title-card{background:var(--paper);border:2px solid var(--ink);border-radius:8px 28px 28px 8px;box-shadow:10px 10px 0 rgba(36,65,74,.18);padding:clamp(20px,4vw,34px);position:relative;border-left-width:12px}
+.kicker{display:inline-block;margin:0 0 6px;font-size:13px;font-weight:700;letter-spacing:.16em;color:var(--leaf);background:var(--leaf-soft);border-radius:6px;padding:2px 10px}
+.game-title{font-family:var(--f-display);font-weight:700;font-size:clamp(42px,7vw,72px);line-height:1.08;margin:4px 0 8px;color:var(--ink);letter-spacing:.04em}
+.game-title span{display:block;font-size:.72em;color:var(--leaf)}
+.subtitle{color:var(--muted);font-size:16px;margin:0 0 18px}
+.menu{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{appearance:none;text-align:left;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:14px;padding:12px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px;transition:transform .12s, background .12s}
+.tile:hover:not([disabled]){background:#fffdf3;transform:translateY(-2px)}
+.tile b{font-size:17px}
+.tile small{font-size:12.5px;color:var(--muted);line-height:1.45}
+.tile.main{grid-column:1/-1;background:var(--ink);color:var(--paper);flex-direction:row;align-items:center;justify-content:space-between}
+.tile.main small{color:#cfe3e0}
+.tile.main i{font-style:normal;font-size:24px;line-height:1}
+.tile[disabled]{opacity:.45;cursor:not-allowed}
+.btn{appearance:none;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:12px;padding:11px 20px;font-size:16.5px;font-weight:700;cursor:pointer;transition:transform .12s, background .12s}
+.btn:hover{background:#fffdf3;transform:translateY(-1px)}
+.btn:active{transform:translateY(1px)}
+.btn.small{padding:7px 14px;font-size:14.5px}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:#2f5560}
+.foot{color:var(--muted);font-size:12px;margin:16px 0 0;line-height:1.6}
+.player-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:0 0 12px;padding:8px 12px;background:var(--paper-2);border-radius:12px;font-size:14.5px}
+.player-bar b{font-size:16px}
+.player-bar .sp{flex:1}
+.linkbtn{appearance:none;background:none;border:none;padding:2px 4px;color:#2a6b78;font:inherit;font-size:14px;font-weight:700;text-decoration:underline;cursor:pointer}
+.acc-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:14px}
+.acc{appearance:none;text-align:left;background:#fff;border:2px solid var(--ink);border-radius:14px;padding:12px 14px;cursor:pointer;color:var(--ink);font:inherit}
+.acc b{display:block;font-size:17px}
+.acc small{color:var(--muted);font-size:12.5px}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+input.pin{letter-spacing:.5em;font-variant-numeric:tabular-nums}
+.err{color:#a33d2a;font-weight:700;min-height:1.6em;margin:8px 0 0}
+textarea{font:inherit;font-size:13px;width:100%;box-sizing:border-box;border:2px solid #cbbfa6;border-radius:12px;padding:10px;min-height:110px;background:#fff;color:var(--ink);word-break:break-all}
+.title-chara{justify-self:center;width:min(260px,100%);pointer-events:none;filter:drop-shadow(0 12px 14px rgba(36,65,74,.25))}
+@media (max-width:760px){.title-wrap{grid-template-columns:1fr}.title-chara{display:none}}
+
+/* ---------- paper pages (how-to, refs, gallery, setup, ending) ---------- */
+.page{max-width:760px;margin:0 auto;background:var(--paper);border:2.5px solid var(--ink);border-radius:22px;box-shadow:10px 10px 0 rgba(36,65,74,.18);padding:clamp(20px,4vw,36px)}
+.page h2{font-family:var(--f-display);font-size:clamp(26px,4.4vw,34px);margin:0 0 6px;text-wrap:balance}
+.page h3{font-size:18px;margin:22px 0 6px}
+.page p{margin:8px 0}
+.page .lead{color:var(--muted)}
+.page-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.note{background:var(--paper-2);border-radius:14px;padding:12px 16px;font-size:14.5px;color:#3f4b4a}
+ol.refs{list-style:none;padding:0;font-size:14.5px}
+ol.refs .ref-g{margin:18px 0 0}
+ol.refs .ref-g>b{font-size:16px}
+ol.refs ol{padding-left:1.4em;margin:6px 0 0}
+ol.refs li{margin:6px 0}
+ol.refs a{color:#2a6b78}
+
+/* setup */
+.pick-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.pick{appearance:none;background:#fff;border:2.5px solid #d9cfb9;border-radius:18px;padding:12px;cursor:pointer;text-align:center;font-family:inherit;color:var(--ink)}
+.pick[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 4px 0 var(--ink);background:#fffdf7}
+.pick svg{width:100%;max-width:150px;height:auto}
+.pick b{display:block;font-size:18px}
+.pick span{font-size:13.5px;color:var(--muted)}
+label.fld{display:block;margin-top:18px;font-weight:700}
+input[type=text]{font:inherit;width:100%;box-sizing:border-box;border:2px solid #cbbfa6;border-radius:12px;padding:10px 14px;background:#fff;color:var(--ink);margin-top:6px}
+
+/* gallery */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:16px}
+.end-card{border:2px solid #d9cfb9;border-radius:16px;padding:14px;background:#fff}
+.end-card.lock{background:var(--paper-2);color:#9a917d}
+.end-card b{display:block;font-size:17px}
+.end-card small{display:block;font-size:13.5px;line-height:1.6;margin-top:4px}
+
+/* ---------- game ---------- */
+#game{display:flex;flex-direction:column;gap:14px;padding-block:14px}
+.hud{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;background:var(--night);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--paper);border-radius:18px;padding:10px 16px}
+.month{font-family:var(--f-display);font-size:20px;white-space:nowrap}
+.month small{font-family:var(--f-body);font-size:13px;opacity:.8;margin-left:4px}
+.a1c{display:flex;align-items:baseline;gap:6px;background:var(--paper);color:var(--ink);border-radius:999px;padding:3px 14px;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.a1c em{font-style:normal;font-size:22px}
+.a1c small{font-weight:500;font-size:12px;color:var(--muted)}
+.bars{display:flex;flex-wrap:wrap;gap:8px 16px;flex:1;min-width:0}
+.bar{display:flex;align-items:center;gap:6px;font-size:13.5px;min-width:130px;flex:1}
+.bar i{flex:1;height:9px;border-radius:9px;background:rgba(251,246,234,.22);overflow:hidden;min-width:60px}
+.bar i b{display:block;height:100%;border-radius:9px;background:var(--gold);transition:width .6s}
+.bar[data-k=fit] i b{background:#8fd0a8}
+.bar[data-k=mood] i b{background:#f4a9a0}
+.bar[data-k=know] i b{background:#a9c6f0}
+.bar span{font-variant-numeric:tabular-nums;width:2.2em;text-align:right}
+.hud .menu-btn{margin-left:auto}
+
+.stagewrap{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:16px;align-items:start}
+.stage{position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);display:flex;flex-direction:column;align-items:center}
+.bubble{position:relative;background:var(--paper);border:2px solid var(--ink);border-radius:18px;padding:10px 14px;font-size:15px;line-height:1.6;width:100%;box-sizing:border-box}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-13px;width:20px;height:20px;background:var(--paper);border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:translateX(-50%) rotate(45deg)}
+.bubble b{color:#2a6b78}
+.chara{width:100%;max-width:240px;margin-top:10px;filter:drop-shadow(0 10px 12px rgba(36,65,74,.25))}
+.chara svg{width:100%;height:auto;display:block}
+
+.panel{background:var(--paper);border:2px solid var(--ink);border-radius:22px;box-shadow:8px 8px 0 rgba(36,65,74,.16);padding:clamp(16px,3vw,26px);min-width:0}
+.panel h2{font-family:var(--f-display);font-size:clamp(22px,3.6vw,28px);margin:0 0 4px;text-wrap:balance}
+.eyebrow{font-size:12.5px;letter-spacing:.14em;color:var(--muted);font-weight:700}
+.panel p{margin:8px 0}
+.acts{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:12px}
+.act{appearance:none;text-align:left;background:#fff;border:2px solid #d9cfb9;border-radius:16px;padding:10px 12px;cursor:pointer;color:var(--ink);font-family:inherit;display:flex;flex-direction:column;gap:2px}
+.act[aria-pressed="true"]{border-color:var(--ink);background:#fffdf7;box-shadow:0 3px 0 var(--ink)}
+.act b{font-size:16px}
+.act span{font-size:13px;color:var(--muted);line-height:1.5}
+.act .fx{font-size:12.5px;color:#2a6b78;font-weight:500}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+.hint{font-size:13.5px;color:var(--muted)}
+
+.results{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.res{background:var(--paper-2);border-radius:14px;padding:10px 14px}
+.res b{display:block}
+.res .tip{font-size:14px;color:#3f4b4a}
+.res cite{display:block;font-style:normal;font-size:12.5px;color:var(--muted);margin-top:2px}
+.delta{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chip{font-size:12.5px;font-weight:700;border-radius:999px;padding:1px 10px;background:#fff;border:1.5px solid #d9cfb9;font-variant-numeric:tabular-nums}
+.chip.up{border-color:var(--leaf);color:var(--leaf)}
+
+.q{font-weight:700;font-size:18px;margin-top:12px}
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.opt{appearance:none;text-align:left;background:#fff;border:2px solid #d9cfb9;border-radius:16px;padding:12px 14px;cursor:pointer;color:var(--ink);font:inherit;font-size:16px;line-height:1.55;display:flex;gap:10px}
+.opt:hover:not([disabled]){border-color:var(--ink)}
+.opt .k{flex:none;width:28px;height:28px;border-radius:50%;background:var(--paper-2);display:grid;place-items:center;font-weight:700;font-size:14px}
+.opt[disabled]{cursor:default}
+.opt.good{border-color:var(--leaf);background:var(--leaf-soft)}
+.opt.good .k{background:var(--leaf);color:#fff}
+.opt.mine:not(.good){border-color:var(--coral);background:var(--coral-soft)}
+.opt.mine:not(.good) .k{background:var(--coral);color:#fff}
+.tag{font-size:12px;font-weight:700;border-radius:999px;padding:0 8px;margin-left:6px;white-space:nowrap}
+.tag.g{background:var(--leaf);color:#fff}
+.tag.m{background:var(--coral);color:#fff}
+
+.verdict{border-radius:16px;padding:12px 16px;margin-top:14px;font-weight:700}
+.verdict.ok{background:var(--leaf-soft);color:#245a43}
+.verdict.try{background:var(--coral-soft);color:#8a3b2b}
+.verdict span{display:block;font-weight:400;font-size:14.5px;margin-top:2px;color:var(--ink)}
+.explain h3{font-size:16px;margin:16px 0 4px;display:flex;align-items:center;gap:8px}
+.explain h3::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px #f6e6c3}
+.explain p{font-size:15.5px}
+.evi{list-style:none;padding:0;margin:6px 0 0;display:flex;flex-direction:column;gap:8px}
+.evi li{background:var(--paper-2);border-radius:12px;padding:8px 12px;font-size:14.5px}
+.evi cite{display:block;font-style:normal;font-size:12.5px;color:var(--muted);margin-top:2px}
+.evi cite a{color:#2a6b78}
+
+/* ending */
+.ending-hero{display:grid;grid-template-columns:180px 1fr;gap:20px;align-items:center}
+.ending-hero svg{width:100%;height:auto}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:14px}
+.stat{background:var(--paper-2);border-radius:14px;padding:10px 12px;font-variant-numeric:tabular-nums}
+.stat small{display:block;color:var(--muted);font-size:12.5px}
+.stat b{font-size:22px}
+details.recap{margin-top:16px;border:2px solid #d9cfb9;border-radius:16px;padding:10px 14px;background:#fff}
+details.recap summary{cursor:pointer;font-weight:700}
+details.recap ol{padding-left:1.3em;font-size:14.5px}
+details.recap li{margin:6px 0}
+
+/* in-page confirm */
+.modal{position:fixed;inset:0;z-index:20;background:rgba(36,65,74,.45);display:grid;place-items:center;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.modal .page{max-width:420px}
+
+@media (max-width:760px){
+  .stagewrap{grid-template-columns:1fr}
+  .stage{position:static;display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:end}
+  .chara{order:-1;margin:0;max-width:110px}
+  .bubble::after{left:-12px;bottom:22px;transform:rotate(135deg)}
+  .ending-hero{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .ending-hero svg{max-width:170px}
+  .hud .menu-btn{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.float{animation:float 4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-6px)}}
+.twinkle{animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.25}}
+</style>
+
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+</head>
+<body>
+<div id="scene" aria-hidden="true"></div>
+
+<!-- TITLE -->
+<section class="screen" id="title">
+  <div class="title-wrap">
+    <div class="title-card">
+      <p class="kicker">糖尿病衛教養成遊戲</p>
+      <h1 class="game-title">糖糖正正<span>夢工廠</span></h1>
+      <p class="subtitle">陪伴一位新糖友，一起養成穩糖好習慣的一年。</p>
+      <div class="player-bar" id="player-bar"></div>
+      <div class="menu">
+        <button class="tile main" id="b-new"><span><b>開始新的養成</b><br><small>選主角，開始 12 個月的旅程</small></span><i aria-hidden="true">→</i></button>
+        <button class="tile" id="b-load"><b>讀取進度</b><small>從上次存檔的月份繼續</small></button>
+        <button class="tile" id="b-gal"><b>結局圖鑑</b><small>6 種溫暖結局</small></button>
+        <button class="tile" id="b-how"><b>遊戲說明</b><small>玩法與數值介紹</small></button>
+        <button class="tile" id="b-ref"><b>實證文獻依據</b><small>ADA 2026・糖尿病學會・衛教學會</small></button>
+      </div>
+      <p class="foot">原創衛教作品，人物與場景皆為原創繪製。內容依據 ADA Standards of Care in Diabetes 2026、中華民國糖尿病學會照護指引與糖尿病衛教學會衛教資料。不取代醫療建議。v2.0</p>
+      <p class="foot"><a href="/#games" style="color:#2a6b78;font-weight:700">← 回到糖尿病照護小幫手</a></p>
+    </div>
+    <div class="title-chara" id="title-chara"></div>
+  </div>
+</section>
+<!-- HOW TO -->
+<section class="screen" id="how" hidden>
+  <div class="page">
+    <h2>遊戲說明</h2>
+    <p class="lead">你是一位溫暖的「健康夥伴」。主角剛被診斷為第二型糖尿病，接下來的 12 個月，由你陪他一起學習、一起調整生活。</p>
+    <h3>每個月會做兩件事</h3>
+    <p><b>一、安排生活計畫：</b>從健走、肌力訓練、餐盤法料理、血糖紀錄、睡眠、支持團體等活動中，選 2 項。每項活動都附有小知識和出處。</p>
+    <p><b>二、遇到生活事件：</b>例如手搖飲團購、低血糖、感冒吃不下。替主角做選擇後，遊戲會告訴你最合適的做法，附上白話解說和醫學實證依據。</p>
+    <h3>沒有「失敗」這回事</h3>
+    <p>選錯了也沒關係，主角一樣會學到東西、知識值會增加。糖尿病照顧是長跑，每一小步都算數。</p>
+    <h3>玩家登入與存檔</h3>
+    <p>第一次玩請先「建立新玩家」：取個暱稱、設定 4 位數密碼，再填生日月日。每位玩家的進度和結局分開保存，遊戲會自動存檔。忘記密碼時，用生日月日就能重設。進度保存在這台手機或平板上；要換裝置，先在標題畫面按「我的進度碼」複製，再到新裝置還原。</p>
+    <h3>四項成長數值</h3>
+    <p><b>A1C</b>（糖化血色素，起始 8.4%）、<b>體力</b>、<b>心情</b>、<b>衛教知識</b>。心情太低時，活動效果會打折，記得也要安排放鬆和社交喔。</p>
+    <h3>結局</h3>
+    <p>12 個月後，依照數值會迎來不同的結局，全部都是溫暖正向的。已解鎖的結局會收進「結局圖鑑」。</p>
+    <p class="note">本遊戲為衛教用途，遊戲中的數值變化為簡化示意，不代表真實療效。實際用藥、目標值與檢查安排，請與您的醫師、糖尿病衛教師討論。</p>
+    <div class="page-actions"><button class="btn" data-back>回到標題</button></div>
+  </div>
+</section>
+
+<!-- REFS -->
+<section class="screen" id="refs" hidden>
+  <div class="page">
+    <h2>實證文獻依據</h2>
+    <p class="lead">遊戲中每一題的最佳做法，都同時對照美國糖尿病學會（ADA 2026）、中華民國糖尿病學會與中華民國糖尿病衛教學會的資料，再輔以關鍵研究。點「查證」可開啟原始出處。</p>
+    <ol class="refs" id="ref-list"></ol>
+    <div class="page-actions"><button class="btn" data-back>回到標題</button></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="screen" id="gallery" hidden>
+  <div class="page">
+    <h2>結局圖鑑</h2>
+    <p class="lead" id="gal-count"></p>
+    <div class="gal" id="gal"></div>
+    <div class="page-actions"><button class="btn" data-back>回到標題</button></div>
+  </div>
+</section>
+
+<!-- LOGIN -->
+<section class="screen" id="login" hidden>
+  <div class="page" id="login-body"></div>
+</section>
+
+<!-- SETUP -->
+<section class="screen" id="setup" hidden>
+  <div class="page">
+    <h2>選擇你要陪伴的主角</h2>
+    <p class="lead">兩位都是剛確診的第二型糖尿病新朋友，故事內容相同。</p>
+    <div class="pick-row">
+      <button class="pick" id="pk-tang" aria-pressed="true"><span id="pv-tang"></span><b>糖糖</b><span>32 歲・上班族，喜歡手搖飲和追劇</span></button>
+      <button class="pick" id="pk-zheng" aria-pressed="false"><span id="pv-zheng"></span><b>正正</b><span>35 歲・外送員，三餐常常外食</span></button>
+    </div>
+    <label class="fld" for="nm">主角的名字（可修改）</label>
+    <input type="text" id="nm" maxlength="8" value="糖糖">
+    <div class="page-actions">
+      <button class="btn primary" id="b-start">開始這一年</button>
+      <button class="btn" data-back>回到標題</button>
+    </div>
+  </div>
+</section>
+
+<!-- GAME -->
+<section class="screen" id="game" hidden>
+  <div class="hud">
+    <div class="month" id="h-month"></div>
+    <div class="a1c">A1C <em id="h-a1c"></em><small>目標多為 &lt;7%</small></div>
+    <div class="bars">
+      <div class="bar" data-k="fit">體力<i><b></b></i><span></span></div>
+      <div class="bar" data-k="mood">心情<i><b></b></i><span></span></div>
+      <div class="bar" data-k="know">知識<i><b></b></i><span></span></div>
+    </div>
+    <button class="btn small menu-btn" id="b-quit">存檔並回標題</button>
+  </div>
+  <div class="stagewrap">
+    <div class="stage">
+      <div class="bubble" id="bubble"></div>
+      <div class="chara" id="chara"></div>
+    </div>
+    <div class="panel" id="panel" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ENDING -->
+<section class="screen" id="ending" hidden>
+  <div class="page" id="ending-body"></div>
+</section>
+
+<div class="modal" id="modal" hidden><div class="page" id="modal-body"></div></div>
+
+<script>
+/* ============ references ============ */
+const ADA = (n, t) => { const id=`dc26-S${String(n).padStart(3,"0")}`; return { g:"ada", t:`American Diabetes Association Professional Practice Committee. ${n}. ${t}: Standards of Care in Diabetes—2026. Diabetes Care 2026;49(Suppl 1). doi:10.2337/${id}`, u:`https://doi.org/10.2337/${id}`, s:`ADA 2026 第 ${n} 章` }; };
+const PM = q => "https://pubmed.ncbi.nlm.nih.gov/?term=" + encodeURIComponent(q);
+const DAT = k => `https://www.endo-dm.org.tw/dia/direct/content.asp?BK_KIND=${k}`;
+const REF_GROUPS = { ada:"美國糖尿病學會 ADA 2026", dat:"中華民國糖尿病學會", tade:"中華民國糖尿病衛教學會", gov:"台灣衛生主管機關", study:"國際共識與關鍵研究" };
+const REFS = {
+  ada4: ADA(4, "Comprehensive Medical Evaluation and Assessment of Comorbidities"),
+  ada5: ADA(5, "Facilitating Positive Health Behaviors and Well-being to Improve Health Outcomes"),
+  ada6: ADA(6, "Glycemic Goals, Hypoglycemia, and Hyperglycemic Crises"),
+  ada7: ADA(7, "Diabetes Technology"),
+  ada8: ADA(8, "Obesity and Weight Management for the Prevention and Treatment of Diabetes"),
+  ada9: ADA(9, "Pharmacologic Approaches to Glycemic Treatment"),
+  ada11: ADA(11, "Chronic Kidney Disease and Risk Management"),
+  ada12: ADA(12, "Retinopathy, Neuropathy, and Foot Care"),
+
+  dat_t2: { g:"dat", t:"中華民國糖尿病學會。2022 第 2 型糖尿病臨床照護指引，含更新章節：第 21 章住院病人照護（2023 年 2 月）、第 16 章其他共病（2024 年 5 月）、第 15 章第 4 節糖尿病足（2024 年 6 月）。", u:DAT(64), s:"糖尿病學會 2022 指引（含 2023–2024 更新章節）" },
+  dat_vac: { g:"dat", t:"中華民國糖尿病學會。2022 第 2 型糖尿病臨床照護指引《感染與疫苗注射建議修訂》；另有 2026 年第 2 型糖尿病臨床照護及疫苗注射最新建議（草案，會員版）。", u:DAT(53), s:"糖尿病學會 感染與疫苗注射建議" },
+  dat_rsv: { g:"dat", t:"中華民國糖尿病學會專家共識。糖尿病與肥胖族群的呼吸道融合病毒（RSV）疫苗預防。", u:DAT(73), s:"糖尿病學會 RSV 疫苗專家共識" },
+  dat_dkd: { g:"dat", t:"中華民國糖尿病學會。2024 台灣糖尿病腎臟疾病臨床照護指引。", u:DAT(67), s:"2024 台灣糖尿病腎臟疾病指引" },
+  dat_obe: { g:"dat", t:"中華民國糖尿病學會等。台灣成人肥胖及肥胖相關併發症與疾病臨床照護指引。", u:DAT(76), s:"台灣成人肥胖臨床照護指引" },
+
+  tade_hb: { g:"tade", t:"中華民國糖尿病衛教學會。糖尿病照護手冊（簡易版）：運動、飲食、體重與低血糖相關建議。", u:"https://www.tade.org.tw/upload/News/file/1868-3.pdf", s:"衛教學會《糖尿病照護手冊》" },
+  tade_ex: { g:"tade", t:"中華民國糖尿病衛教學會。2019 糖尿病衛教核心教材 第 3 章 糖尿病患之運動（補充資料）。", u:"https://www.tade.org.tw/upload/News/file/1448-1.pdf", s:"衛教學會 核心教材・運動章" },
+  tade_pcv: { g:"tade", t:"中華民國糖尿病衛教學會衛教資訊網。杜思德。糖尿病患者為什麼特別要打肺炎鏈球菌疫苗？（2025 年 12 月 10 日）", u:"https://www.tade.org.tw/hei/article/content.asp?ID=97", s:"衛教學會 肺炎鏈球菌疫苗衛教（2025）" },
+  tade_hz: { g:"tade", t:"中華民國糖尿病衛教學會衛教資訊網。糖尿病患者應注意帶狀疱疹（2024 年 10 月 29 日）。", u:"https://www.tade.org.tw/hei/news/content.asp?id=21", s:"衛教學會 帶狀疱疹衛教（2024）" },
+  tade_glp: { g:"tade", t:"中華民國糖尿病衛教學會衛教資訊網。糖尿病友瘦瘦針飲食攻略：吃對才能控糖、防復胖（2026 年 8 月 28 日）。", u:"https://www.tade.org.tw/hei/article/content.asp?ID=106", s:"衛教學會 減重針飲食衛教（2026）" },
+  tade_cgm: { g:"tade", t:"中華民國糖尿病衛教學會衛教資訊網。看懂連續血糖報告的「三大安全關卡」（2026 年 9 月 4 日）。", u:"https://www.tade.org.tw/hei/article/content.asp?ID=107", s:"衛教學會 CGM 報告衛教（2026）" },
+
+  hpa_plate: { g:"gov", t:"衛生福利部國民健康署。我的餐盤：均衡飲食建議（每日飲食指南）。", u:"https://www.hpa.gov.tw/", s:"國健署「我的餐盤」" },
+  cdc_tw: { g:"gov", t:"衛生福利部疾病管制署。公費流感疫苗接種計畫實施對象（含高風險慢性病人）。", u:"https://www.cdc.gov.tw/", s:"疾管署公費流感疫苗計畫" },
+  tfda: { g:"gov", t:"衛生福利部食品藥物管理署。食品違規廣告及摻加西藥成分產品之公告與提醒。", u:"https://www.fda.gov.tw/", s:"食藥署違規產品公告" },
+
+  chrvala: { g:"study", t:"Chrvala CA, Sherr D, Lipman RD. Diabetes self-management education for adults with type 2 diabetes mellitus: a systematic review of the effect on glycemic control. Patient Educ Couns 2016;99:926–943.", u:PM("Chrvala diabetes self-management education systematic review glycemic control 2016"), s:"Chrvala 2016 統合分析" },
+  davis: { g:"study", t:"Davis J, Fischl AH, Beck J, et al. 2022 National Standards for Diabetes Self-Management Education and Support. Diabetes Care 2022;45:484–494.", u:PM("2022 National Standards for Diabetes Self-Management Education and Support"), s:"2022 美國 DSMES 國家標準" },
+  shukla: { g:"study", t:"Shukla AP, Iliescu RG, Thomas CE, Aronne LJ. Food order has a significant impact on postprandial glucose and insulin levels. Diabetes Care 2015;38:e98–e99.", u:PM("Shukla food order postprandial glucose insulin Diabetes Care 2015"), s:"Shukla 2015 進食順序研究" },
+  imamura: { g:"study", t:"Imamura F, O'Connor L, Ye Z, et al. Consumption of sugar sweetened beverages, artificially sweetened beverages, and fruit juice and incidence of type 2 diabetes. BMJ 2015;351:h3576.", u:PM("Imamura sugar sweetened beverages fruit juice incidence type 2 diabetes BMJ 2015"), s:"Imamura 2015 BMJ 統合分析" },
+  kanaley: { g:"study", t:"Kanaley JA, Colberg SR, Corcoran MH, et al. Exercise/Physical Activity in Individuals with Type 2 Diabetes: A Consensus Statement from the American College of Sports Medicine. Med Sci Sports Exerc 2022;54:353–368.", u:PM("Kanaley exercise physical activity type 2 diabetes consensus ACSM 2022"), s:"美國運動醫學會 2022 共識" },
+  iwgdf: { g:"study", t:"Schaper NC, van Netten JJ, Apelqvist J, et al. Practical guidelines on the prevention and management of diabetes-related foot disease (IWGDF 2023 update). Diabetes Metab Res Rev 2024;40:e3657.", u:"https://onlinelibrary.wiley.com/doi/10.1002/dmrr.3657", s:"IWGDF 2023 國際糖尿病足指引" },
+  dirct: { g:"study", t:"Lean MEJ, Leslie WS, Barnes AC, et al. Primary care-led weight management for remission of type 2 diabetes (DiRECT): an open-label, cluster-randomised trial. Lancet 2018;391:541–551.", u:PM("DiRECT primary care-led weight management remission type 2 diabetes Lancet 2018"), s:"DiRECT 試驗（Lancet 2018）" },
+  ukpds: { g:"study", t:"Stratton IM, Adler AI, Neil HA, et al. Association of glycaemia with macrovascular and microvascular complications of type 2 diabetes (UKPDS 35). BMJ 2000;321:405–412.", u:PM("UKPDS 35 Stratton association of glycaemia macrovascular microvascular BMJ 2000"), s:"UKPDS 35（BMJ 2000）" },
+  accord: { g:"study", t:"The Action to Control Cardiovascular Risk in Diabetes Study Group. Effects of intensive glucose lowering in type 2 diabetes. N Engl J Med 2008;358:2545–2559.", u:PM("Effects of intensive glucose lowering in type 2 diabetes ACCORD 2008"), s:"ACCORD 試驗（NEJM 2008）" },
+  credence: { g:"study", t:"Perkovic V, Jardine MJ, Neal B, et al. Canagliflozin and renal outcomes in type 2 diabetes and nephropathy (CREDENCE). N Engl J Med 2019;380:2295–2306.", u:PM("Canagliflozin and renal outcomes in type 2 diabetes and nephropathy"), s:"CREDENCE 試驗（NEJM 2019）" },
+  davies: { g:"study", t:"Davies MJ, Aroda VR, Collins BS, et al. Management of hyperglycemia in type 2 diabetes, 2022. A consensus report by the ADA and the EASD. Diabetes Care 2022;45:2753–2786.", u:PM("Management of hyperglycemia in type 2 diabetes 2022 consensus report ADA EASD"), s:"ADA/EASD 2022 共識報告" },
+  watson: { g:"study", t:"Watson NF, Badr MS, Belenky G, et al. Recommended amount of sleep for a healthy adult: a joint consensus statement of the AASM and SRS. Sleep 2015;38:843–844.", u:PM("Recommended amount of sleep for a healthy adult joint consensus statement AASM SRS"), s:"美國睡眠醫學會 2015 共識" },
+};
+
+/* ============ activities ============ */
+const ACTS = [
+  { id:"walk", name:"飯後健走 30 分鐘", desc:"吃完飯散步，聊聊天也很好", fx:{fit:8,mood:4}, d:.10,
+    tip:"餐後活動能幫助肌肉使用血糖，降低餐後血糖高峰。健走的強度以「有點喘、但還能和人正常對話」為準。", ref:"tade_hb" },
+  { id:"lift", name:"彈力帶肌力訓練", desc:"在家看劇也能做", fx:{fit:7}, d:.08,
+    tip:"肌肉是使用血糖的大功臣。建議每週 2–3 次肌力訓練，中間至少隔一天。衛教學會網站有彈力帶運動影片可以跟著做。", ref:"ada5" },
+  { id:"cook", name:"練習餐盤法料理", desc:"菜一半、肉 1/4、全穀 1/4", fx:{know:5,mood:2}, d:.10,
+    tip:"多選蔬菜、豆類、全穀和完整水果，少吃精緻澱粉、甜食與加工食品。膳食纖維目標每 1000 大卡至少 14 公克。", ref:"ada5" },
+  { id:"smbg", name:"記錄血糖日記", desc:"量餐前、餐後，找出規律", fx:{know:6}, d:.06,
+    tip:"把血糖和飲食、運動一起記錄，看見自己的規律。使用胰島素或容易低血糖的糖友，可以和醫師討論是否適合連續血糖監測（CGM）。", ref:"ada7" },
+  { id:"class", name:"參加衛教課程", desc:"和衛教師一對一聊聊", fx:{know:10,mood:2}, d:.05,
+    tip:"糖尿病自我管理衛教（DSMES）能改善血糖控制與生活品質，建議確診時、每年、以及生活或治療有變化時都參加。", ref:"ada5" },
+  { id:"sleep", name:"好好睡一覺", desc:"今晚早點關手機", fx:{mood:8,fit:3}, d:.03,
+    tip:"成人每晚建議至少 7 小時睡眠。睡不好會讓食慾和血糖都更難控制。", ref:"watson" },
+  { id:"group", name:"糖友支持團體", desc:"和走過一樣路的人聊聊", fx:{mood:10,know:3}, d:.03,
+    tip:"有人陪伴、說出擔心，能減輕「糖尿病困擾」。覺得心累時，也可以請醫療團隊協助。", ref:"ada5" },
+  { id:"hobby", name:"放鬆的興趣時間", desc:"畫畫、拼圖、聽音樂", fx:{mood:7}, d:.02,
+    tip:"照顧心情也是照顧血糖的一部分。壓力大時身體會分泌讓血糖上升的荷爾蒙。", ref:"ada5" },
+];
+
+/* ============ monthly events ============ */
+const EVENTS = [
+ { t:"確診的那一天", say:"醫生說我的 A1C 是 8.4%，確定是第二型糖尿病了……我好害怕，是不是我哪裡做錯了？", q:"這時候，最好的第一步是什麼？",
+   o:["先上網找偏方，自己試試看","參加醫院的糖尿病衛教課程，和衛教師一起訂計畫","先不要想了，等下次回診再說"], a:1,
+   ex:"剛確診時會擔心、難過都很正常，這不是你的錯。第一步最推薦的是接受「糖尿病自我管理衛教與支持」（DSMES）。衛教師會依照你的作息、飲食習慣和工作，陪你一起訂出做得到的小目標。網路偏方沒有經過驗證，可能延誤治療；拖延則會讓高血糖持續傷害身體。",
+   ev:[["所有糖尿病人在確診時、每年、出現新的健康問題或照護轉換時，都應接受 DSMES；也建議定期評估「糖尿病困擾」等心理狀態。","ada5"],["與一般照護相比，接受自我管理衛教的第二型糖尿病人，A1C 平均多下降約 0.5%。","chrvala"],["DSMES 應以人為中心，由合格衛教人員依個人需求提供。","davis"]],
+   key:"確診時就參加糖尿病衛教，有衛教師陪伴，不必一個人面對。" },
+ { t:"便當店的難題", say:"午餐便當店好多菜色，我到底該怎麼夾？聽說得了糖尿病就不能吃飯了？", q:"哪一種夾菜方式最合適？",
+   o:["完全不吃飯和澱粉，只吃肉和菜","用「餐盤法」：蔬菜佔一半、蛋白質 1/4、全穀澱粉 1/4，先吃菜和肉再吃飯","飯照吃，另外多吃很多水果當正餐"], a:1,
+   ex:"糖尿病不是「不能吃飯」，而是吃對份量、選對種類。餐盤法簡單好記：半盤蔬菜，1/4 豆魚蛋肉，1/4 全穀澱粉（糙米、五穀飯比白飯更好）。先吃菜和蛋白質、最後吃澱粉，能讓餐後血糖上升得比較平緩。有些人適度減少醣類會有幫助，但完全不吃澱粉很難長期維持，若有用藥還可能低血糖；使用 SGLT2 抑制劑的人更不適合極低醣的生酮飲食。水果也含糖，一次約一個拳頭大小就好。",
+   ev:[["ADA 2026 建議多吃非澱粉類蔬菜、完整水果、豆類、全穀、堅果，少吃紅肉、含糖飲料、甜食、精緻穀類與超加工食品；部分成人適度減少醣類可能有益，沒有一種比例適合所有人。","ada5"],["有酮酸中毒風險者（包括使用 SGLT2 抑制劑）不建議採用生酮飲食。","ada5"],["衛教學會照護手冊建議多選全穀、豆類與蔬果，膳食纖維每 1000 大卡至少 14 公克。","tade_hb"],["同一份餐點，先吃蔬菜與蛋白質、後吃醣類，餐後血糖明顯較低。","shukla"],["國人每日飲食可參考「我的餐盤」均衡原則。","hpa_plate"]],
+   key:"餐盤法：菜一半、肉 1/4、全穀 1/4，先吃菜和肉，再吃飯。" },
+ { t:"手搖飲團購", say:"同事揪團訂手搖飲！我好想喝全糖珍奶……", q:"糖糖怎麼做比較好？",
+   o:["點無糖茶或喝白開水，一樣可以加入團購的快樂","點全糖，等一下少吃一餐抵銷就好","改點「果汁」，聽起來比較健康"], a:0,
+   ex:"含糖飲料的糖是液體，吸收非常快，血糖會快速衝高。少吃一餐來「抵銷」會讓血糖忽高忽低，有用藥的人還可能低血糖。果汁雖然天然，但也是濃縮的糖，同樣會讓血糖快速上升。白開水是第一選擇，無糖茶也很好。代糖飲料可以偶爾、短期用來取代含糖飲料，但不要變成每天的習慣。真的很想喝時，挑小杯、無糖或微糖，並把它算進當天的飲食裡。",
+   ev:[["以白開水或低熱量、無熱量飲料取代含糖飲料（包含果汁），並減少添加糖。","ada5"],["鼓勵以白開水取代其他飲料；非營養性甜味劑可適量、短期用來取代含糖產品。","ada5"],["衛教學會照護手冊：「儘可能以白開水代替含糖飲料」。","tade_hb"],["每天多喝一份含糖飲料，第二型糖尿病風險約增加 18%；果汁也有類似的趨勢。","imamura"]],
+   key:"含糖飲料和果汁都會讓血糖快速衝高，改喝白開水或無糖茶。" },
+ { t:"運動時間不夠", say:"醫師說要多運動，可是我平常好忙。週末一次運動三小時可以嗎？", q:"怎麼安排運動最好？",
+   o:["週末一次做完就好","每週累積 150 分鐘中等強度運動，分散至少 3 天，不要連續 2 天都沒動；每週再加 2–3 次肌力訓練","等血糖控制好再開始運動"], a:1,
+   ex:"運動能讓身體對胰島素更敏感，但這個效果大約只維持一兩天，所以「分散」比「一次做完」更好。中等強度是「有點喘，但還可以正常和人對話」。上班久坐時，每 30 分鐘起來走一走。運動本身就是治療的一部分，不需要等血糖變好才開始，從每天 10 分鐘慢慢增加就可以。安全提醒：血糖高於 300 或低於 70 mg/dL 時先不要運動；使用胰島素或易低血糖藥物的人，運動前血糖低於 90 mg/dL 可先吃 15–30 公克醣類。運動時要穿鞋襪，不要赤腳。",
+   ev:[["成人糖尿病建議每週至少 150 分鐘中等以上強度有氧運動，分散至少 3 天，不連續 2 天以上不運動；體能較好者可改為每週 75 分鐘高強度或間歇運動。每週 2–3 次不連續日的阻力訓練，並避免久坐超過 30 分鐘。","ada5"],["衛教學會照護手冊：中等強度為「有點喘但還可以正常與人對話的程度」；血糖高於 300 或低於 70 mg/dL 避免運動；運動前血糖低於 90 mg/dL 可補充 15–30 公克醣類；避免赤腳運動。","tade_hb"],["規律有氧加阻力運動可改善血糖、胰島素敏感度與心血管風險。","kanaley"]],
+   key:"每週 150 分鐘、分散 3 天以上，加上每週 2–3 次肌力訓練，久坐每 30 分鐘動一動。" },
+ { t:"突然手抖冒冷汗", say:"下午突然手抖、冒冷汗、心跳好快！血糖機量到 62 mg/dL……", q:"現在該怎麼處理？",
+   o:["吃一條巧克力棒，比較有飽足感","立刻吃 15–20 公克的糖（例如 3–4 顆葡萄糖錠，或半杯約 120–150 mL 果汁或含糖飲料），15 分鐘後再量一次","先躺下來睡一覺，休息一下就好"], a:1,
+   ex:"血糖低於 70 mg/dL 就是低血糖，要馬上處理。記住「15-15 法則」：先吃 15–20 公克能快速吸收的糖，等 15 分鐘再量；如果還是低於 70，就再吃一次。血糖回升後，如果離下一餐還有一段時間，可以吃點小點心，避免再掉下來。巧克力含有油脂，糖分吸收比較慢，不適合急救；低血糖時睡覺，可能在沒人發現的情況下變嚴重。特別提醒：有服用「阿爾發葡萄糖苷酶抑制劑」（例如 acarbose）的人，要用葡萄糖或牛奶來處理，一般砂糖效果較差。發生低血糖後，請告訴醫療團隊，可能需要調整藥物。",
+   ev:[["血糖低於 70 mg/dL 且意識清楚時，首選葡萄糖 15–20 公克，15 分鐘後若仍偏低應重複；回到正常後應進食正餐或點心預防再發。食物中的脂肪會延緩血糖回升。","ada6"],["使用胰島素或易造成低血糖藥物者，應備有升糖素並教導家人使用。","ada6"],["衛教學會照護手冊：服用阿爾發葡萄糖苷酶抑制劑者若發生低血糖，建議使用單醣（例如葡萄糖或牛奶）處理。","tade_hb"]],
+   key:"低血糖 15-15 法則：吃 15–20 公克糖，等 15 分鐘再量。不要用巧克力急救。" },
+ { t:"感冒吃不下", say:"我感冒發燒，胃口很差，幾乎吃不下……那糖尿病的藥還要吃嗎？", q:"生病的日子該怎麼辦？",
+   o:["反正吃不下，所有糖尿病藥都先自己停掉","照平常一樣吃藥，不用特別注意","多補充水分、更常量血糖，並依「生病日計畫」及早聯絡醫療團隊調整藥物"], a:2,
+   ex:"生病時，身體的壓力荷爾蒙會讓血糖升高，就算吃得少，血糖也可能偏高；但如果吃不下又照常用某些藥，也可能低血糖。所以關鍵是「多量、多喝、早聯絡」。有些藥物（例如 SGLT2 抑制劑）在吃不下、嘔吐或脫水時，可能需要暫時停用，以免發生酮酸中毒；使用胰島素的人通常不能自行全部停掉。最好平常就和醫師、衛教師先討論好自己的生病日計畫。如果持續嘔吐、無法進食喝水、血糖持續很高、呼吸急促或意識改變，請立刻就醫。",
+   ev:[["使用 SGLT2 抑制劑者應接受酮酸中毒風險與「生病日」處置衛教；急性疾病、無法進食或脫水時可能需暫停使用。","ada9"],["應為每位病人提供個別化的生病日處置計畫，包括血糖監測頻率與藥物調整原則。","davies"]],
+   key:"生病日：多喝水、多量血糖、早聯絡醫療團隊，不要自己決定全部停藥。" },
+ { t:"夏天想光腳", say:"最近腳底有點麻麻的。夏天到了，好想穿拖鞋、光腳在沙灘上走！", q:"關於腳的照顧，哪一個做法正確？",
+   o:["每天洗腳後檢查腳底和趾縫，穿合腳的包鞋和襪子，不赤腳走路","腳麻就用很熱的水泡腳、熱敷就會好","腳底長繭，自己用刀片修掉就好"], a:0,
+   ex:"糖尿病可能讓腳的感覺變遲鈍，受傷、燙傷時常常感覺不到，小傷口也可能變成難癒合的潰瘍。所以要每天檢查雙腳（看不到腳底可以用鏡子或請家人幫忙），洗完腳要擦乾趾縫，穿合腳、包覆的鞋子，不要赤腳走路。泡腳前要用手肘或溫度計試水溫，不要用熱水袋熱敷。厚繭和雞眼請交給醫療人員處理。每年至少做一次足部檢查；腳已經有感覺變差的人，醫師會依風險安排更密集的追蹤。發現傷口、紅腫、水泡或顏色改變，要盡快就醫。",
+   ev:[["所有糖尿病人每年至少接受一次完整足部評估（包含 10 公克單股纖維等感覺檢查）；有感覺喪失者每次就診都應檢查足部，並提供足部自我照護衛教。","ada12"],["依足部潰瘍風險分級追蹤：無感覺喪失或周邊動脈疾病者每年篩檢，風險越高追蹤越密（最高每 1–3 個月）；教導每日檢查、合適鞋襪、避免赤足行走。","iwgdf"],["國內指引已於 2024 年更新糖尿病足章節。","dat_t2"]],
+   key:"每天檢查雙腳、穿合腳鞋襪、不赤腳、不熱敷、不自己修繭，每年做足部檢查。" },
+ { t:"年度檢查通知", say:"衛教師提醒我做「年度檢查」。咦？眼睛和腎臟也要檢查嗎？我又沒有不舒服。", q:"你會怎麼建議？",
+   o:["沒有不舒服就不用檢查","每次回診有驗血糖就夠了","要！定期做眼底檢查、尿液白蛋白（UACR）和腎功能（eGFR），以及足部檢查"], a:2,
+   ex:"糖尿病對眼睛和腎臟的影響，早期幾乎都沒有症狀，等到視力模糊或水腫時，往往已經比較嚴重。及早發現就能及早治療，例如現在有些糖尿病藥物已被證實能保護腎臟。第二型糖尿病在確診時就應做第一次眼底檢查，之後一般每年一次；如果連續幾次都正常、血糖也控制得好，醫師可能改成每 1–2 年一次。腎臟則建議每年至少驗一次尿液白蛋白與肌酸酐比值（UACR）和腎絲球過濾率（eGFR）。",
+   ev:[["第二型糖尿病確診時應接受散瞳眼底檢查；無視網膜病變且血糖控制良好者，可每 1–2 年檢查一次。","ada12"],["糖尿病人每年至少檢測一次 UACR 與 eGFR 以篩檢慢性腎臟病。","ada11"],["國內 2024 糖尿病腎臟疾病指引同樣強調以 UACR 與 eGFR 定期篩檢。","dat_dkd"],["SGLT2 抑制劑可降低第二型糖尿病合併腎病變者腎功能惡化的風險。","credence"]],
+   key:"眼睛、腎臟早期沒症狀，每年眼底、UACR、eGFR、足部檢查都要做。" },
+ { t:"神奇保健食品", say:"親戚送我一罐「降糖神奇保健食品」，說吃了就可以不用吃藥了！", q:"該怎麼辦？",
+   o:["太好了，馬上停藥改吃這個","先帶去回診問醫師或藥師，不要自行停藥；目前沒有證據顯示保健食品能取代藥物","兩種一起吃，多多益善"], a:1,
+   ex:"謝謝親戚的關心！不過 ADA 2026 明確表示，不建議用鉻、鎂等微量營養素，或肉桂、蘆薈等草本香料來改善血糖。市面上也曾查到標榜降血糖的產品偷偷添加西藥成分，可能造成低血糖或其他副作用。自行停藥會讓血糖反彈升高。最好的做法是把產品帶去給醫師或藥師看看，確認安全、沒有交互作用。回診時主動告訴醫療團隊你在吃哪些保健食品，也是很重要的好習慣。",
+   ev:[["醫療人員應主動詢問保健食品使用情形；不建議以微量營養素（如鎂、鉻）或草本香料（如肉桂、蘆薈）改善血糖；應避免補充 β-胡蘿蔔素。","ada5"],["食藥署曾多次查獲宣稱降血糖之產品摻加西藥成分，提醒民眾勿輕信誇大廣告。","tfda"]],
+   key:"保健食品不能取代藥物，回診時主動告知，有疑問先問醫師或藥師。" },
+ { t:"疫苗開打了", say:"秋天到了，流感疫苗開打。我是糖友，需要打嗎？", q:"關於疫苗，哪個說法正確？",
+   o:["需要！每年打流感疫苗，並和醫師討論肺炎鏈球菌、新冠、帶狀疱疹、RSV 等疫苗","我身體很好，不用打","打疫苗會讓糖尿病變嚴重，不要打"], a:0,
+   ex:"糖尿病人感染流感、肺炎時，比較容易出現重症或需要住院，而生病也會讓血糖更難控制。疫苗是安全又有效的保護方式，不會讓糖尿病變嚴重。建議每年接種流感疫苗，糖尿病人屬於公費流感疫苗的對象。肺炎鏈球菌疫苗：65 歲以上可接種公費疫苗，65 歲以下可和醫師評估是否自費接種。另外，帶狀疱疹（皮蛇）、新冠、呼吸道融合病毒（RSV）、B 型肝炎等疫苗，也可依年齡與健康狀況和醫師討論。流感和肺炎鏈球菌疫苗可以同一天分開兩手臂接種。",
+   ev:[["糖尿病人應依疾病管制建議接種疫苗，包括每年流感疫苗，以及肺炎鏈球菌、B 型肝炎、COVID-19、帶狀疱疹、RSV 等（依年齡與風險）。","ada4"],["國內糖尿病學會已修訂感染與疫苗注射建議，並針對糖尿病與肥胖族群發布 RSV 疫苗專家共識。","dat_vac"],["衛教學會：糖尿病人都建議接種肺炎鏈球菌疫苗；65 歲以上可公費接種，未滿 65 歲可經評估自費接種；可與流感疫苗同日分開手臂接種。","tade_pcv"],["衛教學會提醒糖尿病人感染帶狀疱疹的風險與疫苗保護。","tade_hz"],["公費流感疫苗實施對象包含具糖尿病等高風險慢性病人。","cdc_tw"]],
+   key:"每年打流感疫苗，肺炎鏈球菌、帶狀疱疹、RSV 等疫苗依年齡與醫師討論。" },
+ { t:"想快點變瘦", say:"我想快點瘦下來！網路上說斷食一個月可以瘦 10 公斤！", q:"關於減重，哪個做法最好？",
+   o:["立刻開始極端斷食","和醫療團隊討論，用均衡飲食加運動穩定減重，先以減掉目前體重的 5% 為目標","體重不重要，只看血糖就好"], a:1,
+   ex:"對體重過重的糖友來說，減重真的很有幫助！只要減掉 5% 的體重（例如 80 公斤減 4 公斤），血糖、血壓、血脂就會開始改善；減得更多，甚至有機會讓糖尿病進入緩解。但極端斷食很難持續，容易復胖，有用藥的人還可能低血糖。穩穩地減、和醫療團隊一起討論最安全。需要時，醫師也可能評估是否適合使用減重藥物（例如 GLP-1 類藥物）。如果有使用這類藥物，更要吃夠蛋白質、多做肌力訓練，才能減脂不減肌、避免復胖。",
+   ev:[["體重過重或肥胖的第二型糖尿病人，減重 5% 以上即可改善血糖與心血管危險因子；減重 15% 以上可帶來更大益處，甚至疾病緩解。","ada8"],["使用減重藥物或接受代謝手術者，應鼓勵達到活動目標，尤其是阻力訓練，以保留肌肉量。","ada5"],["衛教學會：使用減重針時要吃對，才能控糖、防復胖。","tade_glp"],["國內亦有成人肥胖臨床照護指引，提供個別化減重治療建議。","dat_obe"],["DiRECT 試驗中，減重 15 公斤以上的參與者，有 86% 在一年時達到糖尿病緩解。","dirct"]],
+   key:"先以減重 5% 為目標，均衡飲食加運動，吃夠蛋白質、做肌力訓練，不靠極端斷食。" },
+ { t:"一年後的 A1C 報告", say:"一年過去了，今天要看 A1C 報告！A1C 到底是什麼？要多少才算好？", q:"哪個說法正確？",
+   o:["A1C 是今天早上的血糖，越低越好，最好低於 5%","A1C 反映過去約 3 個月的平均血糖；多數成人目標是低於 7%，但會依每個人的狀況調整","只要沒有症狀，A1C 多少都沒關係"], a:1,
+   ex:"A1C（糖化血色素）就像血糖的「三個月成績單」。研究發現，A1C 每降低 1%，眼睛、腎臟、神經等小血管併發症的風險約降低 37%。多數成人的目標是低於 7%，但並不是越低越好：年紀較大、常發生低血糖或有其他疾病的人，目標可能放寬到低於 8%。也有研究發現，對高風險的人過度積極地把血糖壓低，反而增加風險。有戴連續血糖監測（CGM）的人，還可以看「血糖在 70–180 mg/dL 的時間」，多數人的目標是超過 70%。請和醫師討論屬於你自己的目標。",
+   ev:[["多數非懷孕成人的 A1C 目標為 <7%；使用 CGM 者，目標範圍內時間（70–180 mg/dL）>70%。目標應依低血糖風險、共病、預期壽命與個人意願個別化，較寬鬆目標（如 <8%）可能適合部分族群。","ada6"],["國內照護指引同樣以 A1C <7% 為多數成人的目標，並依個人狀況調整。","dat_t2"],["衛教學會：看懂連續血糖報告的安全關卡。","tade_cgm"],["A1C 每降低 1%，微血管併發症風險約降低 37%。","ukpds"],["高心血管風險者以 A1C <6% 為目標的強化治療，反而增加死亡率。","accord"]],
+   key:"A1C 是三個月的血糖成績單，多數人目標 <7%，但要個別化。" },
+];
+/* ============ endings ============ */
+const ENDINGS = [
+ { id:"perfect", n:"糖糖正正模範生", hint:"12 題全部選出最佳做法", say:"一整年，每個選擇都做得好棒！謝謝你一直陪著我。",
+   txt:"這一年，{n}把每一個衛教重點都學起來了。醫院邀請{n}在糖友聚會上分享經驗，台下的新糖友聽得好認真。原來，自己走過的路，也能成為別人的光。" },
+ { id:"teacher", n:"糖友小老師", hint:"A1C 達標、知識很高，且答對 9 題以上", say:"我想把學到的，分享給剛確診的朋友！",
+   txt:"A1C 達標了！{n}開始在支持團體擔任同儕志工，用自己的話告訴新朋友：「別怕，我們一起來。」衛教師說，這就是最好的畢業禮物。" },
+ { id:"walker", n:"活力健走家", hint:"A1C 達標，並且體力很好", say:"現在爬樓梯都不會喘了，週末還報名了健走活動！",
+   txt:"A1C 達標，體力也大大進步。{n}愛上了飯後散步，還揪了家人一起走。運動不再是功課，而是每天最期待的時光。" },
+ { id:"sunny", n:"陽光糖友", hint:"A1C 達標，並且心情很好", say:"雖然是糖尿病，我還是可以好好生活、好好開心！",
+   txt:"A1C 達標，心情也很穩定。{n}學會照顧身體的同時，也照顧自己的心。和家人朋友分享心事，讓這條路一點都不孤單。" },
+ { id:"steady", n:"穩糖新生活", hint:"A1C 降到目標以內", say:"原來一點一點改變，真的會有成果！",
+   txt:"一年前的 A1C 是 8.4%，現在已經進入目標範圍。{n}找到了適合自己的生活節奏，接下來，就是穩穩地走下去。" },
+ { id:"onward", n:"持續前進中", hint:"完成一年的養成", say:"雖然還沒完全達標，但我已經比一年前更懂得照顧自己了！",
+   txt:"A1C 比一年前進步了，雖然還沒到目標，但{n}已經學會好多照顧自己的方法。糖尿病照護是一場長跑，下一年，我們繼續一起加油！回診時，也可以和醫師討論是否需要調整治療。" },
+];
+
+/* ============ art ============ */
+function sceneSVG(){
+  // Original morning garden-town: sun, soft clouds, layered hills, a winding walking path, a greenhouse with vegetable rows, round trees and a kite.
+  let flowers="";
+  for(let i=0;i<40;i++){ const x=(i*149)%1200, y=560+((i*53)%120); flowers+=`<circle cx="${x}" cy="${y}" r="${i%4?3:4}" fill="${["#ffffff","#ffd56b","#f6a5a0","#c9b6f2"][i%4]}"/>`; }
+  const tree=(x,y,s,c)=>`<g transform="translate(${x} ${y}) scale(${s})"><rect x="-5" y="0" width="10" height="34" rx="3" fill="#8a6a4f"/><circle cx="0" cy="-14" r="30" fill="${c}"/><circle cx="-20" cy="2" r="20" fill="${c}"/><circle cx="20" cy="2" r="22" fill="${c}"/></g>`;
+  const cloud=(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})" fill="#ffffff" opacity=".92"><ellipse cx="0" cy="0" rx="60" ry="22"/><circle cx="-24" cy="-12" r="22"/><circle cx="14" cy="-20" r="28"/><circle cx="44" cy="-6" r="18"/></g>`;
+  return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0e4"/><stop offset=".6" stop-color="#cfecf0"/><stop offset="1" stop-color="#fff2d2"/></linearGradient>
+    <radialGradient id="sunglow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff6c9"/><stop offset=".4" stop-color="#ffe597" stop-opacity=".7"/><stop offset="1" stop-color="#ffe597" stop-opacity="0"/></radialGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e9fbff"/><stop offset="1" stop-color="#bfe6ef"/></linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#sky)"/>
+  <circle cx="1040" cy="120" r="150" fill="url(#sunglow)"/><circle cx="1040" cy="120" r="44" fill="#ffe27a"/>
+  ${cloud(180,110,1.1)}${cloud(620,70,.8)}${cloud(860,210,.7)}${cloud(380,230,.55)}
+  <path d="M0 360 Q160 290 330 340 T700 330 T1200 320 L1200 700 L0 700Z" fill="#9ccfb7"/>
+  <path d="M0 420 Q240 360 480 410 T900 400 T1200 380 L1200 700 L0 700Z" fill="#7fbf95"/>
+  <path d="M0 500 Q300 440 640 490 T1200 470 L1200 700 L0 700Z" fill="#69b07f"/>
+  <path d="M560 700 C600 620 760 600 700 540 C650 490 820 470 880 430" stroke="#f6e7c4" stroke-width="34" fill="none" stroke-linecap="round"/>
+  <path d="M560 700 C600 620 760 600 700 540 C650 490 820 470 880 430" stroke="#e8d3a6" stroke-width="2" stroke-dasharray="10 14" fill="none"/>
+  <g transform="translate(150 380)">
+    <path d="M0 110 V40 Q90 -30 180 40 V110Z" fill="url(#glass)" stroke="#5f8f95" stroke-width="4"/>
+    <path d="M60 110 V12 M120 110 V12 M0 70 H180" stroke="#5f8f95" stroke-width="3"/>
+    <rect x="72" y="66" width="36" height="44" fill="#f2b84b" stroke="#5f8f95" stroke-width="3"/>
+  </g>
+  <g>
+    ${[0,1,2,3].map(r=>`<rect x="${120+r*12}" y="${508+r*26}" width="${300-r*20}" height="14" rx="7" fill="#7a5a40"/>${[0,1,2,3,4,5,6,7].map(c=>`<circle cx="${135+r*12+c*36}" cy="${510+r*26}" r="9" fill="${r%2?"#4f9a5f":"#e46c5c"}"/>`).join("")}`).join("")}
+  </g>
+  ${tree(470,420,1,"#4e9a6a")}${tree(1000,400,1.2,"#5aa676")}${tree(1110,440,.9,"#4e9a6a")}${tree(60,450,.8,"#5aa676")}
+  <g transform="translate(830 150) rotate(12)"><path d="M0 -30 L22 0 L0 34 L-22 0Z" fill="#f6a5a0" stroke="#24414a" stroke-width="2"/><path d="M0 -30 V34 M-22 0 H22" stroke="#24414a" stroke-width="1.5"/><path d="M0 34 q10 30 -8 60 q-16 30 4 70" stroke="#24414a" stroke-width="1.5" fill="none"/></g>
+  ${flowers}
+  </svg>`;
+}
+const SKIN="#fde3cf", BLUSH="#f6a5a0";
+function charSVG(kind, expr="normal"){
+  const tang = kind==="tang";
+  const hair = tang?"#5a3a2e":"#2c2b3d";
+  const hood = tang?"#f2a7a0":"#7fc4bb";
+  const hoodD = tang?"#d9857e":"#5ea79d";
+  const backHair = tang?`<path d="M44 104 Q34 210 58 246 L142 246 Q166 210 156 104Z" fill="${hair}"/>`:"";
+  const front = tang
+    ? `<path d="M46 110 Q44 48 100 46 Q156 48 154 110 Q146 82 124 78 Q114 96 98 82 Q84 96 68 82 Q54 92 46 110Z" fill="${hair}"/><g transform="translate(140 66)"><path d="M0 -9 L2.6 -2.8 9 -2.8 3.9 1.2 5.8 7.6 0 3.8 -5.8 7.6 -3.9 1.2 -9 -2.8 -2.6 -2.8Z" fill="#ffd36e" stroke="#c9952e" stroke-width="1"/></g>`
+    : `<circle cx="47" cy="114" r="9" fill="${SKIN}"/><circle cx="153" cy="114" r="9" fill="${SKIN}"/><path d="M48 104 Q46 50 100 48 Q154 50 152 104 Q146 80 130 76 Q120 92 104 76 Q92 90 78 76 Q62 84 48 104Z" fill="${hair}"/><path d="M96 50 Q104 34 116 40 Q106 42 104 52Z" fill="${hair}"/>`;
+  let eyes, mouth, brows="";
+  const openEye=(x)=>`<ellipse cx="${x}" cy="116" rx="8.5" ry="11" fill="#3b2a30"/><ellipse cx="${x}" cy="119" rx="6" ry="7" fill="${tang?'#8a4f3c':'#3f5f7a'}"/><circle cx="${x-3}" cy="111" r="3.4" fill="#fff"/><circle cx="${x+3}" cy="121" r="1.6" fill="#fff"/>`;
+  if(expr==="happy"||expr==="cheer"){
+    eyes=`<path d="M70 118 Q79 106 88 118" stroke="#3b2a30" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M112 118 Q121 106 130 118" stroke="#3b2a30" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  } else eyes=openEye(79)+openEye(121);
+  if(expr==="cheer") mouth=`<path d="M88 136 Q100 154 112 136Z" fill="#c4545a"/><path d="M93 143 Q100 149 107 143" fill="#f39aa0"/>`;
+  else if(expr==="worry"){ mouth=`<path d="M92 142 Q100 136 108 142" stroke="#8a4b4b" stroke-width="3" fill="none" stroke-linecap="round"/>`; brows=`<path d="M70 98 L86 102M130 98 L114 102" stroke="${hair}" stroke-width="3" stroke-linecap="round"/><path d="M150 92 q5 8 0 12 q-5 -4 0 -12z" fill="#9fd3f0"/>`; }
+  else mouth=`<path d="M90 137 Q100 146 110 137" stroke="#8a4b4b" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  const arms = expr==="cheer"
+    ? `<path d="M58 184 Q30 160 34 128" stroke="${hood}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="34" cy="124" r="10" fill="${SKIN}"/><path d="M142 184 Q170 160 166 128" stroke="${hood}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="166" cy="124" r="10" fill="${SKIN}"/>`
+    : `<path d="M58 184 Q40 214 52 246" stroke="${hood}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="54" cy="250" r="9" fill="${SKIN}"/><path d="M142 184 Q160 214 148 246" stroke="${hood}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="146" cy="250" r="9" fill="${SKIN}"/>`;
+  return `<svg viewBox="0 0 200 300" role="img" aria-label="${tang?'糖糖':'正正'}">
+    ${backHair}
+    <path d="M56 300 L60 196 Q62 172 100 168 Q138 172 140 196 L144 300Z" fill="${hood}"/>
+    <path d="M74 172 Q100 196 126 172 Q120 164 100 164 Q80 164 74 172Z" fill="${hoodD}"/>
+    <path d="M92 180 L90 214M108 180 L110 214" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M72 246 H128 Q130 268 120 272 H80 Q70 268 72 246Z" fill="${hoodD}" opacity=".7"/>
+    <path d="M82 254 h36" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>
+    ${arms}
+    <rect x="90" y="150" width="20" height="22" rx="6" fill="${SKIN}"/>
+    <ellipse cx="100" cy="112" rx="54" ry="52" fill="${SKIN}"/>
+    ${front}
+    ${eyes}${brows}
+    <ellipse cx="66" cy="134" rx="9" ry="5" fill="${BLUSH}" opacity=".7"/><ellipse cx="134" cy="134" rx="9" ry="5" fill="${BLUSH}" opacity=".7"/>
+    ${mouth}
+  </svg>`;
+}
+
+/* ============ storage (best-effort) ============ */
+const store = {
+  get(k){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):null; }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} },
+};
+const ACC="ttzz-accounts-v2", CUR="ttzz-current-v2";
+/* Player accounts live on this device only. Each has a nickname, a 4-digit PIN and a birthday (MMDD) for PIN reset, both stored hashed. */
+const accounts = { load(){ return store.get(ACC)||{}; }, save(a){ store.set(ACC,a); } };
+let ME=null; // current account id
+function acc(){ return ME ? accounts.load()[ME] : null; }
+function putAcc(patch){ const all=accounts.load(); if(!ME||!all[ME]) return; Object.assign(all[ME],patch); accounts.save(all); }
+async function hash(salt,txt){
+  const data=new TextEncoder().encode("ttzz|"+salt+"|"+txt);
+  try{ const buf=await crypto.subtle.digest("SHA-256",data); return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join(""); }
+  catch(e){ let h=2166136261; for(const b of data){ h^=b; h=Math.imul(h,16777619)>>>0; } return "f"+h.toString(16); }
+}
+const curSave=()=>acc()?.save||null;
+function saveGame(){ if(ME) putAcc({save:S}); }
+function clearSave(){ if(ME) putAcc({save:null}); }
+function myEndings(){ return acc()?.endings||[]; }
+function addEnding(id){ const e=myEndings(); if(!e.includes(id)){ putAcc({endings:[...e,id]}); } }
+function login(id){ ME=id; store.set(CUR,id); }
+function logout(){ ME=null; store.del(CUR); }
+function exportCode(){ const a=acc(); if(!a) return ""; const json=JSON.stringify({v:2,a}); return "TTZZ-"+btoa(unescape(encodeURIComponent(json))); }
+function importCode(code){
+  const t=code.trim().replace(/^TTZZ-/,"");
+  const obj=JSON.parse(decodeURIComponent(escape(atob(t))));
+  if(!obj||obj.v!==2||!obj.a||!obj.a.name||!obj.a.pin) throw new Error("bad");
+  return obj.a;
+}
+
+/* ============ state ============ */
+let S=null;
+const $=id=>document.getElementById(id);
+const clamp=(v,a=0,b=100)=>Math.max(a,Math.min(b,v));
+function newState(kind,name){ return {kind,name,month:1,a1c:8.4,fit:30,mood:50,know:20,correct:0,answers:[],phase:"plan",picks:[],log:null}; }
+function lowerA1c(d){ S.a1c = 5.5 + (S.a1c-5.5)*Math.exp(-d/4.5); }
+const a1cStr=()=>S.a1c.toFixed(1)+"%";
+function exprFor(){ if(S.mood<30) return "worry"; if(S.mood>=70) return "happy"; return "normal"; }
+
+/* ============ screens ============ */
+const SCREENS=["title","how","refs","gallery","login","setup","game","ending"];
+function show(id){ SCREENS.forEach(s=>$(s).hidden = s!==id); window.scrollTo(0,0); if(id==="title") renderTitle(); }
+function renderTitle(){
+  const a=acc();
+  $("player-bar").innerHTML = a
+    ? `<span>目前玩家：<b></b></span><span class="sp"></span><button class="linkbtn" id="pb-code">我的進度碼</button><button class="linkbtn" id="pb-switch">切換玩家</button>`
+    : `<span>還沒登入，先選擇或建立玩家，進度就會分開保存。</span><span class="sp"></span><button class="linkbtn" id="pb-login">登入／建立玩家</button>`;
+  if(a){ $("player-bar").querySelector("b").textContent=a.name; $("pb-switch").onclick=()=>{ logout(); openLogin(); }; $("pb-code").onclick=showCode; }
+  else $("pb-login").onclick=()=>openLogin();
+  $("b-load").disabled = !!a && !curSave();
+}
+function needLogin(next){ if(ME) next(); else openLogin(next); }
+document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>show("title"));
+
+$("b-how").onclick=()=>show("how");
+$("b-ref").onclick=()=>{ renderRefs(); show("refs"); };
+$("b-gal").onclick=()=>needLogin(()=>{ renderGallery(); show("gallery"); });
+$("b-new").onclick=()=>needLogin(()=>{
+  if(curSave()) confirmBox("開始新的養成？","你目前的存檔會被新的進度取代。",()=>show("setup"));
+  else show("setup");
+});
+$("b-load").onclick=()=>needLogin(()=>{ const s=curSave(); if(s){ S=s; show("game"); renderGame(); } else show("title"); });
+$("b-quit").onclick=()=>{ saveGame(); show("title"); };
+
+/* ============ login ============ */
+let afterLogin=null;
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const isPin=v=>/^\d{4}$/.test(v);
+const isMMDD=v=>{ if(!/^\d{4}$/.test(v)) return false; const m=+v.slice(0,2), d=+v.slice(2); return m>=1&&m<=12&&d>=1&&d<=31; };
+function openLogin(next){ afterLogin=next||null; show("login"); loginList(); }
+function done(){ const n=afterLogin; afterLogin=null; if(n) n(); else show("title"); }
+function L(html){ $("login-body").innerHTML=html; }
+function loginList(){
+  const all=accounts.load(); const ids=Object.keys(all).sort((a,b)=>(all[b].last||0)-(all[a].last||0));
+  L(`<h2>誰要來玩呢？</h2><p class="lead">每位玩家的進度和結局會分開保存在這台裝置上。</p>
+    <div class="acc-list">${ids.map(id=>`<button class="acc" data-id="${id}"><b>${esc(all[id].name)}</b><small>${all[id].save?`進行到第 ${all[id].save.month} 個月`:"尚無存檔"}・結局 ${(all[id].endings||[]).length}/6</small></button>`).join("")}</div>
+    ${ids.length?"":`<p class="note">這台裝置還沒有玩家，請先建立一位。</p>`}
+    <div class="page-actions"><button class="btn primary" id="l-new">建立新玩家</button><button class="btn" id="l-imp">用進度碼還原</button><button class="btn" data-back2>回到標題</button></div>`);
+  $("login-body").querySelectorAll(".acc").forEach(b=>b.onclick=()=>loginPin(b.dataset.id));
+  $("l-new").onclick=loginCreate; $("l-imp").onclick=loginImport;
+  $("login-body").querySelector("[data-back2]").onclick=()=>{ afterLogin=null; show("title"); };
+}
+function loginPin(id){
+  const a=accounts.load()[id];
+  L(`<h2>嗨，<span id="l-nm"></span></h2><label class="fld" for="l-pin">請輸入 4 位數密碼</label>
+    <input type="text" class="pin" id="l-pin" inputmode="numeric" maxlength="4" autocomplete="off">
+    <p class="err" id="l-err"></p>
+    <div class="page-actions"><button class="btn primary" id="l-go">登入</button><button class="btn" id="l-forgot">忘記密碼</button><button class="btn" id="l-back">換一位玩家</button></div>`);
+  $("l-nm").textContent=a.name; $("l-pin").focus();
+  const go=async()=>{ const v=$("l-pin").value.trim(); if(await hash(a.salt,v)===a.pin){ login(id); putAcc({last:Date.now()}); done(); } else { $("l-err").textContent="密碼不對喔，再試一次；想不起來可以按「忘記密碼」。"; $("l-pin").value=""; } };
+  $("l-go").onclick=go; $("l-pin").onkeydown=e=>{ if(e.key==="Enter") go(); };
+  $("l-forgot").onclick=()=>loginForgot(id); $("l-back").onclick=loginList;
+}
+function loginCreate(){
+  L(`<h2>建立新玩家</h2><p class="lead">請不要用真實姓名，取個暱稱就好。</p>
+    <label class="fld" for="c-nm">暱稱</label><input type="text" id="c-nm" maxlength="10" autocomplete="off">
+    <div class="fld-row"><div><label class="fld" for="c-pin">4 位數密碼</label><input type="text" class="pin" id="c-pin" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+    <div><label class="fld" for="c-pin2">再輸入一次</label><input type="text" class="pin" id="c-pin2" inputmode="numeric" maxlength="4" autocomplete="off"></div></div>
+    <label class="fld" for="c-bd">生日月日（忘記密碼時用，例如 3 月 8 日輸入 0308）</label><input type="text" class="pin" id="c-bd" inputmode="numeric" maxlength="4" autocomplete="off">
+    <p class="err" id="c-err"></p>
+    <div class="page-actions"><button class="btn primary" id="c-go">建立並登入</button><button class="btn" id="c-back">返回</button></div>`);
+  $("c-back").onclick=loginList;
+  $("c-go").onclick=async()=>{
+    const nm=$("c-nm").value.trim(), p=$("c-pin").value.trim(), p2=$("c-pin2").value.trim(), bd=$("c-bd").value.trim(), err=$("c-err");
+    const all=accounts.load();
+    if(!nm) return err.textContent="請輸入暱稱。";
+    if(Object.values(all).some(a=>a.name===nm)) return err.textContent="這個暱稱在這台裝置上已經有人用了，換一個吧。";
+    if(!isPin(p)) return err.textContent="密碼請輸入 4 位數字。";
+    if(p!==p2) return err.textContent="兩次密碼不一樣，請再輸入一次。";
+    if(!isMMDD(bd)) return err.textContent="生日請輸入 4 位數月日，例如 0308。";
+    const id="p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6), salt=Math.random().toString(36).slice(2,10);
+    all[id]={name:nm,salt,pin:await hash(salt,p),bd:await hash(salt,"bd"+bd),save:null,endings:[],created:Date.now(),last:Date.now()};
+    accounts.save(all); login(id); done();
+  };
+}
+function loginForgot(id){
+  const a=accounts.load()[id];
+  L(`<h2>重設密碼</h2><p class="lead">輸入建立玩家時填的生日月日，就能設定新密碼，進度不會不見。</p>
+    <label class="fld" for="f-bd">生日月日（4 位數，例如 0308）</label><input type="text" class="pin" id="f-bd" inputmode="numeric" maxlength="4" autocomplete="off">
+    <div class="fld-row"><div><label class="fld" for="f-pin">新密碼</label><input type="text" class="pin" id="f-pin" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+    <div><label class="fld" for="f-pin2">再輸入一次</label><input type="text" class="pin" id="f-pin2" inputmode="numeric" maxlength="4" autocomplete="off"></div></div>
+    <p class="err" id="f-err"></p>
+    <p class="note">生日也想不起來嗎？請找衛教師協助，或用之前複製的「進度碼」重新還原。</p>
+    <div class="page-actions"><button class="btn primary" id="f-go">重設並登入</button><button class="btn" id="f-back">返回</button></div>`);
+  $("f-back").onclick=()=>loginPin(id);
+  $("f-go").onclick=async()=>{
+    const bd=$("f-bd").value.trim(), p=$("f-pin").value.trim(), p2=$("f-pin2").value.trim(), err=$("f-err");
+    if(await hash(a.salt,"bd"+bd)!==a.bd) return err.textContent="生日不對喔，請再確認一次。";
+    if(!isPin(p)) return err.textContent="新密碼請輸入 4 位數字。";
+    if(p!==p2) return err.textContent="兩次密碼不一樣，請再輸入一次。";
+    const all=accounts.load(); all[id].pin=await hash(a.salt,p); all[id].last=Date.now(); accounts.save(all); login(id); done();
+  };
+}
+function loginImport(){
+  L(`<h2>用進度碼還原</h2><p class="lead">把在別台裝置複製的進度碼貼在下面。還原後，用原本的密碼登入。</p>
+    <label class="fld" for="i-code">進度碼</label><textarea id="i-code" spellcheck="false"></textarea>
+    <p class="err" id="i-err"></p>
+    <div class="page-actions"><button class="btn primary" id="i-go">還原</button><button class="btn" id="i-back">返回</button></div>`);
+  $("i-back").onclick=loginList;
+  $("i-go").onclick=()=>{
+    let a; try{ a=importCode($("i-code").value); }catch(e){ return $("i-err").textContent="這組進度碼無法讀取，請確認有完整複製。"; }
+    const all=accounts.load(); const same=Object.keys(all).find(k=>all[k].name===a.name);
+    const id=same||("p"+Date.now().toString(36)); all[id]={...a,last:Date.now()}; accounts.save(all); loginPin(id);
+  };
+}
+function showCode(){
+  const code=exportCode();
+  $("modal-body").innerHTML=`<h2>我的進度碼</h2><p>換手機或平板時，在新裝置選「用進度碼還原」，貼上這組碼，再用原本的密碼登入。</p>
+    <textarea id="m-code" readonly></textarea><p class="err" id="m-msg"></p>
+    <div class="page-actions"><button class="btn primary" id="m-copy">複製</button><button class="btn" id="m-close">關閉</button></div>`;
+  $("m-code").value=code; $("modal").hidden=false;
+  $("m-copy").onclick=()=>{ navigator.clipboard?.writeText(code).then(()=>{ $("m-msg").textContent="已複製。"; }).catch(()=>{ $("m-code").select(); $("m-msg").textContent="請長按或按 Ctrl+C 複製選取的文字。"; }) ?? ($("m-code").select()); };
+  $("m-close").onclick=()=>{ $("modal").hidden=true; };
+}
+
+function confirmBox(title,msg,ok){
+  $("modal-body").innerHTML=`<h2>${title}</h2><p>${msg}</p><div class="page-actions"><button class="btn primary" id="m-ok">確定</button><button class="btn" id="m-no">取消</button></div>`;
+  $("modal").hidden=false;
+  $("m-ok").onclick=()=>{ $("modal").hidden=true; ok(); };
+  $("m-no").onclick=()=>{ $("modal").hidden=true; };
+}
+
+/* setup */
+let pickKind="tang";
+$("pv-tang").innerHTML=charSVG("tang","happy");
+$("pv-zheng").innerHTML=charSVG("zheng","happy");
+function setPick(k){ pickKind=k; $("pk-tang").setAttribute("aria-pressed",k==="tang"); $("pk-zheng").setAttribute("aria-pressed",k==="zheng");
+  const nm=$("nm"); if(nm.value===""||nm.value==="糖糖"||nm.value==="正正") nm.value = k==="tang"?"糖糖":"正正"; }
+$("pk-tang").onclick=()=>setPick("tang");
+$("pk-zheng").onclick=()=>setPick("zheng");
+$("b-start").onclick=()=>{ const n=$("nm").value.trim()||(pickKind==="tang"?"糖糖":"正正"); S=newState(pickKind,n); saveGame(); show("game"); renderGame(); };
+
+/* refs + gallery */
+function refHTML(k){ const r=REFS[k]; return `<a href="${r.u}" target="_blank" rel="noopener">${r.s}</a>`; }
+function renderRefs(){
+  $("ref-list").innerHTML = Object.entries(REF_GROUPS).map(([g,label])=>{
+    const items=Object.values(REFS).filter(r=>r.g===g);
+    return `<li class="ref-g"><b>${label}</b><ol>${items.map(r=>`<li>${r.t} <a href="${r.u}" target="_blank" rel="noopener">查證</a></li>`).join("")}</ol></li>`;
+  }).join("");
+}
+function renderGallery(){
+  const got=myEndings();
+  $("gal-count").textContent=`${esc(acc()?.name||"")} 已解鎖 ${got.length} / ${ENDINGS.length} 個結局`;
+  $("gal").innerHTML=ENDINGS.map(e=> got.includes(e.id)
+    ? `<div class="end-card"><b>${e.n}</b><small>${e.say}</small></div>`
+    : `<div class="end-card lock"><b>？？？</b><small>解鎖條件：${e.hint}</small></div>`).join("");
+}
+
+/* ============ game rendering ============ */
+function renderHUD(){
+  $("h-month").innerHTML=`第 ${S.month} 個月<small>/ 12</small>`;
+  $("h-a1c").textContent=a1cStr();
+  document.querySelectorAll(".bar").forEach(b=>{ const k=b.dataset.k; b.querySelector("b").style.width=S[k]+"%"; b.querySelector("span").textContent=Math.round(S[k]); });
+}
+function setChar(expr, line){ $("chara").innerHTML=charSVG(S.kind,expr); $("bubble").innerHTML=line; }
+
+function renderGame(){
+  renderHUD();
+  if(S.phase==="plan") renderPlan();
+  else if(S.phase==="planResult") renderPlanResult();
+  else if(S.phase==="event") renderEvent();
+  else if(S.phase==="feedback") renderFeedback();
+}
+
+function renderPlan(){
+  const low = S.mood<30;
+  setChar(exprFor(), low
+    ? `最近有點累……這個月可以安排一些<b>放鬆或聊聊天</b>的活動嗎？`
+    : S.month===1 ? `你好！我是${S.name}。接下來一年，請多多指教！` : `第 ${S.month} 個月了，這個月要做什麼呢？`);
+  const p=$("panel");
+  p.innerHTML=`<div class="eyebrow">MONTH ${S.month} ・ 生活計畫</div><h2>這個月安排哪兩項活動？</h2>
+   <p class="hint">選 2 項。每個月固定按時服藥、回診，A1C 會慢慢進步。${low?"心情偏低時，活動效果會打折喔。":""}</p>
+   <div class="acts">${ACTS.map(a=>`<button class="act" data-id="${a.id}" aria-pressed="${S.picks.includes(a.id)}"><b>${a.name}</b><span>${a.desc}</span><span class="fx">${fxText(a)}</span></button>`).join("")}</div>
+   <div class="row"><button class="btn primary" id="b-go" ${S.picks.length===2?"":"disabled"}>開始這個月</button><span class="hint" id="pick-n">已選 ${S.picks.length} / 2</span></div>`;
+  p.querySelectorAll(".act").forEach(b=>b.onclick=()=>{
+    const id=b.dataset.id, i=S.picks.indexOf(id);
+    if(i>=0) S.picks.splice(i,1); else { if(S.picks.length>=2) S.picks.shift(); S.picks.push(id); }
+    renderPlan();
+  });
+  $("b-go").onclick=runMonth;
+}
+function fxText(a){ const L={fit:"體力",mood:"心情",know:"知識"}; const parts=Object.entries(a.fx).map(([k,v])=>`${L[k]}+${v}`); if(a.d>=.06) parts.unshift("A1C↓"); return parts.join("・"); }
+
+function runMonth(){
+  const mult = S.mood<30 ? .6 : 1;
+  const before={a1c:S.a1c,fit:S.fit,mood:S.mood,know:S.know};
+  let d=.02; // taking prescribed medication and follow-up each month
+  S.picks.forEach(id=>{ const a=ACTS.find(x=>x.id===id); d+=a.d*mult; for(const k in a.fx) S[k]=clamp(S[k]+a.fx[k]*mult); });
+  S.fit=clamp(S.fit-2); S.mood=clamp(S.mood-3);
+  lowerA1c(d);
+  S.log={picks:[...S.picks],before,mult};
+  S.phase="planResult"; saveGame(); renderGame();
+}
+function deltaChips(b){
+  const out=[]; const a=+(S.a1c-b.a1c).toFixed(2);
+  out.push(`<span class="chip ${a<0?'up':''}">A1C ${a<=0?'':'+'}${a.toFixed(2)}</span>`);
+  [["fit","體力"],["mood","心情"],["know","知識"]].forEach(([k,l])=>{ const v=Math.round(S[k]-b[k]); out.push(`<span class="chip ${v>0?'up':''}">${l} ${v>=0?'+':''}${v}</span>`); });
+  return out.join("");
+}
+function renderPlanResult(){
+  setChar(S.log.mult<1?"normal":"happy", S.log.mult<1?`有慢慢在進步！下個月也要記得讓自己喘口氣喔。`:`這個月好充實！學到好多東西～`);
+  const items=S.log.picks.map(id=>ACTS.find(x=>x.id===id));
+  $("panel").innerHTML=`<div class="eyebrow">MONTH ${S.month} ・ 這個月的收穫</div><h2>${items.map(i=>i.name).join("、")}</h2>
+   <div class="delta">${deltaChips(S.log.before)}</div>
+   <div class="results">${items.map(i=>`<div class="res"><b>${i.name}</b><div class="tip">${i.tip}</div><cite>出處：${refHTML(i.ref)}</cite></div>`).join("")}</div>
+   <div class="row"><button class="btn primary" id="b-ev">接下來發生了一件事……</button></div>`;
+  $("b-ev").onclick=()=>{ S.phase="event"; saveGame(); renderGame(); };
+}
+
+function renderEvent(){
+  const e=EVENTS[S.month-1];
+  setChar(S.month===1?"worry":"normal", e.say.replace(/糖糖/g,S.name));
+  $("panel").innerHTML=`<div class="eyebrow">MONTH ${S.month} ・ 生活事件</div><h2>${e.t}</h2>
+   <div class="q">${e.q.replace(/糖糖/g,S.name)}</div>
+   <div class="opts">${e.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${"ABC"[i]}</span><span>${o}</span></button>`).join("")}</div>`;
+  $("panel").querySelectorAll(".opt").forEach(b=>b.onclick=()=>choose(+b.dataset.i));
+}
+function choose(i){
+  const e=EVENTS[S.month-1]; const ok=i===e.a;
+  S.answers[S.month-1]=i;
+  const before={a1c:S.a1c,fit:S.fit,mood:S.mood,know:S.know};
+  if(ok){ S.correct++; S.know=clamp(S.know+8); S.mood=clamp(S.mood+5); lowerA1c(.2); }
+  else { S.know=clamp(S.know+3); }
+  S.log={...S.log, evBefore:before};
+  S.phase="feedback"; saveGame(); renderGame();
+}
+function renderFeedback(){
+  const e=EVENTS[S.month-1]; const mine=S.answers[S.month-1]; const ok=mine===e.a;
+  setChar(ok?"cheer":"normal", ok?`原來如此！謝謝你幫我選了最好的做法！`:`原來是這樣！學起來了，下次我就知道怎麼做了！`);
+  $("panel").innerHTML=`<div class="eyebrow">MONTH ${S.month} ・ ${e.t}</div><h2>解答與解說</h2>
+   <div class="opts">${e.o.map((o,i)=>`<button class="opt ${i===e.a?'good':''} ${i===mine?'mine':''}" disabled><span class="k">${"ABC"[i]}</span><span>${o}${i===e.a?'<span class="tag g">最佳做法</span>':''}${i===mine&&i!==e.a?'<span class="tag m">你的選擇</span>':''}</span></button>`).join("")}</div>
+   <div class="verdict ${ok?'ok':'try'}">${ok?'答對了，做得很好！':'沒關係，這正是學習的好機會！'}<span>${ok?'A1C 進步、知識 +8、心情 +5':'知識 +3。看看下面的解說，下次一定沒問題。'}</span></div>
+   <div class="explain">
+     <h3>白話解說</h3><p>${e.ex}</p>
+     <h3>醫學實證依據</h3>
+     <ul class="evi">${e.ev.map(([t,r])=>`<li>${t}<cite>出處：${refHTML(r)}</cite></li>`).join("")}</ul>
+   </div>
+   <div class="row"><button class="btn primary" id="b-next">${S.month<12?'前往下個月':'迎接這一年的結局'}</button></div>`;
+  $("b-next").onclick=nextMonth;
+}
+function nextMonth(){
+  if(S.month>=12){ finish(); return; }
+  S.month++; S.phase="plan"; S.picks=[]; S.log=null; saveGame(); renderGame();
+}
+
+/* ============ ending ============ */
+function pickEnding(){
+  const ok=S.a1c<7;
+  if(S.correct===12) return "perfect";
+  if(ok&&S.know>=85&&S.correct>=9) return "teacher";
+  if(ok&&S.fit>=70) return "walker";
+  if(ok&&S.mood>=70) return "sunny";
+  if(ok) return "steady";
+  return "onward";
+}
+function finish(){
+  const id=pickEnding(); const e=ENDINGS.find(x=>x.id===id);
+  addEnding(id); clearSave();
+  $("ending-body").innerHTML=`
+   <div class="eyebrow">ENDING ・ ${ENDINGS.indexOf(e)+1} / ${ENDINGS.length}</div>
+   <div class="ending-hero"><div>${charSVG(S.kind,"cheer")}</div>
+     <div><h2>${e.n}</h2><p><b>「${e.say}」</b></p><p>${e.txt.replace(/\{n\}/g,S.name)}</p></div></div>
+   <div class="stats">
+     <div class="stat"><small>A1C</small><b>8.4% → ${a1cStr()}</b></div>
+     <div class="stat"><small>最佳做法</small><b>${S.correct} / 12 題</b></div>
+     <div class="stat"><small>體力</small><b>${Math.round(S.fit)}</b></div>
+     <div class="stat"><small>心情</small><b>${Math.round(S.mood)}</b></div>
+     <div class="stat"><small>知識</small><b>${Math.round(S.know)}</b></div>
+   </div>
+   <details class="recap" open><summary>這一年學到的 12 個衛教重點</summary><ol>${EVENTS.map((ev,i)=>`<li><b>${ev.t}：</b>${ev.key}${S.answers[i]===ev.a?' ✓':''}</li>`).join("")}</ol></details>
+   <p class="note">遊戲中的數值為簡化示意。您真正的目標值與治療計畫，請與醫師、糖尿病衛教師一起討論。</p>
+   <div class="page-actions"><button class="btn primary" id="e-again">再玩一次</button><button class="btn" id="e-gal">結局圖鑑</button><button class="btn" id="e-title">回到標題</button></div>`;
+  show("ending");
+  $("e-again").onclick=()=>show("setup");
+  $("e-gal").onclick=()=>{ renderGallery(); show("gallery"); };
+  $("e-title").onclick=()=>show("title");
+}
+
+/* ============ boot ============ */
+$("scene").innerHTML=sceneSVG();
+$("title-chara").innerHTML=charSVG("tang","happy");
+{ const c=store.get(CUR); if(c && accounts.load()[c]) ME=c; }
+show("title");
+</script>
+
+</body>
+</html>
