@@ -246,6 +246,40 @@ details.recap li{margin:6px 0}
   .ending-hero svg{max-width:170px}
   .hud .menu-btn{margin-left:0}
 }
+
+/* ---------- sound + conversations (v3.2) ---------- */
+.snd{display:inline-flex;gap:6px;flex-wrap:wrap}
+.sndbtn{appearance:none;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;padding:3px 11px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.sndbtn[aria-pressed="false"]{background:var(--paper-2);color:var(--muted);border-color:#9fb0b0;text-decoration:line-through}
+.g-top .snd .sndbtn{border-color:var(--paper);background:transparent;color:var(--paper)}
+.g-top .snd .sndbtn[aria-pressed="false"]{opacity:.6}
+.title-snd{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 12px}
+.tile.song{grid-column:1/-1;flex-direction:row;align-items:center;gap:12px;background:linear-gradient(100deg,#fff4f6,#fffaf0 60%,#eef8f2)}
+.tile.song .disc{width:42px;height:42px;border-radius:50%;flex:none;background:radial-gradient(circle,#fffaf0 0 5px,#24414a 6px 8px,#f28b9b 9px 100%);box-shadow:inset 0 0 0 3px #fff}
+.modal.song .page{max-width:560px;width:100%;box-sizing:border-box}
+.song-ctl{display:flex;align-items:center;gap:12px;font-variant-numeric:tabular-nums;color:var(--muted)}
+#th-seek{width:100%;accent-color:var(--leaf);margin:10px 0}
+.lyr{list-style:none;margin:0;padding:8px 0;max-height:min(42vh,320px);overflow:auto;text-align:center;scroll-behavior:smooth;background:var(--paper-2);border-radius:14px}
+.lyr li{padding:3px 10px;color:var(--muted);transition:color .2s,transform .2s;font-size:16px}
+.lyr li.on{color:var(--ink);font-weight:700;transform:scale(1.06)}
+.tw{animation:tw 2.6s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.55}50%{opacity:1}}
+.vn{position:fixed;inset:0;z-index:18;overflow:hidden;background:#20303a}
+.vn>svg.bg{position:absolute;inset:0;width:100%;height:100%}
+.vn .por{position:absolute;bottom:clamp(110px,22vh,190px);width:min(38vw,320px);transition:filter .25s,transform .25s;filter:drop-shadow(0 12px 16px rgba(20,40,50,.3))}
+.vn .por svg{display:block;width:100%;height:auto}
+.vn .por.l{left:max(4vw,8px)}
+.vn .por.r{right:max(4vw,8px)}
+.vn .por.dim{filter:brightness(.7) saturate(.75) drop-shadow(0 12px 16px rgba(20,40,50,.2));transform:translateY(10px) scale(.96)}
+.vn .box{position:absolute;left:50%;transform:translateX(-50%);bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(880px,calc(100% - 24px));box-sizing:border-box;background:rgba(255,250,240,.97);border:2px solid var(--ink);border-radius:22px;box-shadow:0 10px 0 rgba(36,65,74,.18);padding:24px 22px 14px;max-height:60vh;overflow:auto}
+.vn .name{position:sticky;top:0;display:inline-block;margin:-12px 0 6px;background:var(--leaf);color:#fff;border-radius:10px;padding:2px 14px;font-weight:700;font-size:15px}
+.vn .name.me{background:#d9738a}
+.vn .txt{font-size:18.5px;line-height:1.8;min-height:3.6em;cursor:pointer}
+.vn .txt cite{display:block;font-style:normal;font-size:13px;color:var(--muted);margin-top:4px}
+.vn .choices{display:grid;gap:8px;margin-top:8px}
+.vn .ctl{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;align-items:center;margin-top:10px}
+.vn .ctl .snd{margin-right:auto}
+@media (max-width:600px){.vn .por{width:56vw;bottom:calc(36vh - 40px)}.vn .por.l{left:-6vw}.vn .por.r{right:-6vw}.vn .box{max-height:44vh;padding:20px 16px 12px}.vn .txt{font-size:16.5px;min-height:0}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 .float{animation:float 4s ease-in-out infinite}
 @keyframes float{50%{transform:translateY(-6px)}}
@@ -255,6 +289,7 @@ details.recap li{margin:6px 0}
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head>
 <body>
+
 <div id="scene" aria-hidden="true"></div>
 
 <!-- TITLE -->
@@ -265,14 +300,16 @@ details.recap li{margin:6px 0}
       <h1 class="game-title">糖糖正正<span>夢工廠</span></h1>
       <p class="subtitle">陪伴一位新糖友，一起養成穩糖好習慣的一年。</p>
       <div class="player-bar" id="player-bar"></div>
+      <div class="title-snd" id="title-snd"></div>
       <div class="menu">
         <button class="tile main" id="b-new"><span><b>開始新的養成</b><br><small>選主角，開始 12 個月的旅程</small></span><i aria-hidden="true">→</i></button>
         <button class="tile" id="b-load"><b>讀取進度</b><small>從上次存檔的月份繼續</small></button>
         <button class="tile" id="b-gal"><b>結局圖鑑</b><small>6 種溫暖結局</small></button>
         <button class="tile" id="b-how"><b>遊戲說明</b><small>玩法與數值介紹</small></button>
         <button class="tile" id="b-ref"><b>實證文獻依據</b><small>ADA 2026・糖尿病學會・衛教學會</small></button>
+        <button class="tile song" id="b-song"><span class="disc" aria-hidden="true"></span><span><b>聽主題曲</b><br><small>《一步一步，糖糖正正》附歌詞</small></span></button>
       </div>
-      <p class="foot">原創衛教作品，人物與場景皆為原創繪製。內容依據 ADA Standards of Care in Diabetes 2026、中華民國糖尿病學會照護指引與糖尿病衛教學會衛教資料。不取代醫療建議。v3.1</p>
+      <p class="foot">原創衛教作品，人物與場景皆為原創繪製。內容依據 ADA Standards of Care in Diabetes 2026、中華民國糖尿病學會照護指引與糖尿病衛教學會衛教資料。不取代醫療建議。v3.2</p>
       <p class="foot"><a href="/#games" style="color:#2a6b78;font-weight:700">← 回到糖尿病照護小幫手</a></p>
     </div>
     <div class="title-chara" id="title-chara"></div>
@@ -350,7 +387,7 @@ details.recap li{margin:6px 0}
     <div class="g-top">
       <span class="when" id="h-month"></span><span class="pill" id="h-season"></span>
       <span class="who" id="h-who"></span><span class="sp"></span>
-      <span class="left" id="h-left"></span>
+      <span class="left" id="h-left"></span><span id="g-snd"></span>
     </div>
     <div class="g-main">
       <div class="room" id="room">
@@ -370,7 +407,7 @@ details.recap li{margin:6px 0}
     </div>
     <nav class="g-cmd" aria-label="指令">
       <button class="cmd" id="c-plan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3" fill="#a9c6f0" stroke="#24414a" stroke-width="1.6"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#24414a" stroke-width="1.6" stroke-linecap="round"/><path d="M7 14h3M14 14h3M7 17h3" stroke="#24414a" stroke-width="1.6" stroke-linecap="round"/></svg>排行程</button>
-      <button class="cmd" id="c-talk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v10H10l-4 4v-4H4z" fill="#f6c9c1" stroke="#24414a" stroke-width="1.6" stroke-linejoin="round"/></svg>說話</button>
+      <button class="cmd" id="c-talk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v10H10l-4 4v-4H4z" fill="#f6c9c1" stroke="#24414a" stroke-width="1.6" stroke-linejoin="round"/></svg>衛教師</button>
       <button class="cmd" id="c-diet"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" fill="#fff" stroke="#24414a" stroke-width="1.6"/><path d="M12 13V5a8 8 0 0 1 8 8z" fill="#7fbf95"/><path d="M12 13h8a8 8 0 0 1-8 8z" fill="#f2b84b"/><path d="M12 13v8a8 8 0 0 1-8-8z" fill="#e46c5c"/></svg>飲食</button>
       <button class="cmd" id="c-hist"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2" fill="#fff" stroke="#24414a" stroke-width="1.6"/><path d="M7 16l3-4 3 2 4-6" stroke="#3f8f6b" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>回診紀錄</button>
       <button class="cmd" id="c-bag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h14l-1 11H6z" fill="#f2b84b" stroke="#24414a" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 9V7a3 3 0 0 1 6 0v2" stroke="#24414a" stroke-width="1.6" fill="none"/></svg>隨身包</button>
@@ -400,6 +437,7 @@ const REFS = {
   ada7: ADA(7, "Diabetes Technology"),
   ada8: ADA(8, "Obesity and Weight Management for the Prevention and Treatment of Diabetes"),
   ada9: ADA(9, "Pharmacologic Approaches to Glycemic Treatment"),
+  ada10: ADA(10, "Cardiovascular Disease and Risk Management"),
   ada11: ADA(11, "Chronic Kidney Disease and Risk Management"),
   ada12: ADA(12, "Retinopathy, Neuropathy, and Foot Care"),
 
@@ -534,39 +572,263 @@ const ENDINGS = [
 ];
 
 /* ============ art ============ */
-function sceneSVG(){
-  // Original morning garden-town: sun, soft clouds, layered hills, a winding walking path, a greenhouse with vegetable rows, round trees and a kite.
-  let flowers="";
-  for(let i=0;i<40;i++){ const x=(i*149)%1200, y=560+((i*53)%120); flowers+=`<circle cx="${x}" cy="${y}" r="${i%4?3:4}" fill="${["#ffffff","#ffd56b","#f6a5a0","#c9b6f2"][i%4]}"/>`; }
-  const tree=(x,y,s,c)=>`<g transform="translate(${x} ${y}) scale(${s})"><rect x="-5" y="0" width="10" height="34" rx="3" fill="#8a6a4f"/><circle cx="0" cy="-14" r="30" fill="${c}"/><circle cx="-20" cy="2" r="20" fill="${c}"/><circle cx="20" cy="2" r="22" fill="${c}"/></g>`;
-  const cloud=(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})" fill="#ffffff" opacity=".92"><ellipse cx="0" cy="0" rx="60" ry="22"/><circle cx="-24" cy="-12" r="22"/><circle cx="14" cy="-20" r="28"/><circle cx="44" cy="-6" r="18"/></g>`;
-  return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
+/* ============ backgrounds (original, layered light) ============ */
+const SEASONS={
+  spring:{sky:["#9ed7f0","#e9f6f7","#fff0e6"],hill:["#b7dcc3","#93c9a5"],tree:["#f7b9c8","#f39bb2","#fbd3dd"],fall:"#f9c3d0"},
+  summer:{sky:["#7cc8ec","#d8f1f6","#fff6dc"],hill:["#9fd2a8","#6fb685"],tree:["#5fae72","#4a9a62","#86c58f"],fall:null},
+  autumn:{sky:["#a5cfe6","#f5e9da","#ffd9b0"],hill:["#d7c48a","#b9a96a"],tree:["#e8894a","#d96b3a","#f2b45a"],fall:"#e8894a"},
+  winter:{sky:["#b9d3e6","#e8f0f5","#f7efe6"],hill:["#c9d9cf","#a9c3b4"],tree:["#8fb3a0","#7aa190","#b5cfc1"],fall:"#ffffff"}
+};
+const seasonOf=m=>["winter","winter","spring","spring","spring","summer","summer","summer","autumn","autumn","autumn","winter"][(m-1)%12];
+const RNG=s=>()=>((s=Math.imul(s^s>>>15,1|s)+0x6D2B79F5|0,((s^s>>>14)>>>0)/4294967296));
+function fallers(n,col,w,h,seed,shape){
+  if(!col) return "";
+  const r=RNG(seed); let o="";
+  for(let i=0;i<n;i++){ const x=r()*w, d=8+r()*10, dl=-r()*d, s=.6+r()*.8;
+    const p = shape==="leaf" ? `<path d="M0 -5 Q5 0 0 6 Q-5 0 0 -5Z" fill="${col}"/>` : shape==="snow" ? `<circle r="2.2" fill="${col}"/>` : `<path d="M0 -4 Q4 -4 3 1 Q1 5 0 3 Q-1 5 -3 1 Q-4 -4 0 -4Z" fill="${col}"/>`;
+    o+=`<g opacity=".9"><g transform="scale(${s.toFixed(2)})">${p}</g><animateMotion dur="${d.toFixed(1)}s" begin="${dl.toFixed(1)}s" repeatCount="indefinite" rotate="auto" path="M${x.toFixed(0)} -20 C${(x+60).toFixed(0)} ${h*.3} ${(x-50).toFixed(0)} ${h*.6} ${(x+30).toFixed(0)} ${h+20}"/></g>`; }
+  return `<g class="anim">${o}</g>`;
+}
+function motes(n,x0,x1,y0,y1,seed){
+  const r=RNG(seed); let o="";
+  for(let i=0;i<n;i++){ const x=x0+r()*(x1-x0), y=y0+r()*(y1-y0), d=5+r()*6;
+    o+=`<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(1+r()*1.8).toFixed(1)}" fill="#fffbe8"><animate attributeName="opacity" values="0;.9;0" dur="${d.toFixed(1)}s" begin="${(-r()*d).toFixed(1)}s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" values="0 0;${(r()*16-8).toFixed(0)} -18;0 0" dur="${(d*1.6).toFixed(1)}s" repeatCount="indefinite"/></circle>`; }
+  return `<g class="anim">${o}</g>`;
+}
+function windowView(S,u,w,h){
+  const r=RNG(7); let trees="";
+  for(let i=0;i<7;i++){ const x=i*w/6+(r()*20-10), y=h*.66+r()*14, s=.7+r()*.5, c=S.tree[i%3];
+    trees+=`<g transform="translate(${x.toFixed(0)} ${y.toFixed(0)}) scale(${s.toFixed(2)})"><rect x="-3" y="0" width="6" height="26" fill="#8a6a4f"/><circle cy="-10" r="20" fill="${c}"/><circle cx="-14" cy="2" r="13" fill="${S.tree[(i+1)%3]}"/><circle cx="14" cy="0" r="14" fill="${c}"/><circle cx="-5" cy="-18" r="8" fill="#fff" opacity=".18"/></g>`; }
+  return `<rect width="${w}" height="${h}" fill="url(#${u}sky)"/>
+   <circle cx="${w*.78}" cy="${h*.22}" r="${h*.3}" fill="url(#${u}sun)"/><circle cx="${w*.78}" cy="${h*.22}" r="${h*.08}" fill="#fff4c2"/>
+   <g fill="#fff" opacity=".85"><g class="anim"><animateTransform attributeName="transform" type="translate" values="-30 0;40 0;-30 0" dur="60s" repeatCount="indefinite"/>
+     <ellipse cx="${w*.25}" cy="${h*.24}" rx="34" ry="11"/><circle cx="${w*.22}" cy="${h*.2}" r="12"/><circle cx="${w*.28}" cy="${h*.19}" r="15"/></g></g>
+   <path d="M0 ${h*.62} Q${w*.3} ${h*.48} ${w*.55} ${h*.58} T${w} ${h*.55} V${h} H0Z" fill="${S.hill[0]}" opacity=".85"/>
+   <path d="M0 ${h*.74} Q${w*.4} ${h*.64} ${w} ${h*.72} V${h} H0Z" fill="${S.hill[1]}"/>
+   <g transform="translate(${w*.46} ${h*.5})"><rect x="0" y="0" width="34" height="26" fill="#fffaf0"/><path d="M-4 0 L17 -16 L38 0Z" fill="#e4877a"/><rect x="13" y="12" width="8" height="14" fill="#b98f6a"/><rect x="25" y="6" width="6" height="6" fill="#ffe08a"/></g>
+   ${trees}`;
+}
+function roomSVG(month){
+  const sk=seasonOf(month), S=SEASONS[sk], u="r"+(++CHAR_UID);
+  const ticks=Array.from({length:12},(_,i)=>`<rect x="${8+(i%4)*24}" y="${24+Math.floor(i/4)*22}" width="16" height="14" rx="3" fill="${i<month-1?"#7fbf95":i===month-1?"#f0b545":"#fff"}" stroke="#d6cbb3"/>`).join("");
+  const books=[["#e46c5c",14,46],["#7fc4bb",34,52],["#f2b84b",56,40],["#a9c6f0",76,54],["#c7a1d9",98,44],["#f6c9c1",116,50]];
+  const lights=Array.from({length:13},(_,i)=>{const x=40+i*60, y=34+Math.sin(i*1.1)*8+ (i%2?10:0);return `<g transform="translate(${x} ${y})"><path d="M0 -6 v6" stroke="#6b5a4a" stroke-width="1.5"/><circle r="9" fill="url(#${u}bulb)" class="tw" style="animation-delay:${(i*.37)%2}s"/><circle r="3.6" fill="#fff6d6"/></g>`;}).join("");
+  return `<svg class="bg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
   <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0e4"/><stop offset=".6" stop-color="#cfecf0"/><stop offset="1" stop-color="#fff2d2"/></linearGradient>
-    <radialGradient id="sunglow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff6c9"/><stop offset=".4" stop-color="#ffe597" stop-opacity=".7"/><stop offset="1" stop-color="#ffe597" stop-opacity="0"/></radialGradient>
-    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e9fbff"/><stop offset="1" stop-color="#bfe6ef"/></linearGradient>
+    <linearGradient id="${u}sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${S.sky[0]}"/><stop offset=".65" stop-color="${S.sky[1]}"/><stop offset="1" stop-color="${S.sky[2]}"/></linearGradient>
+    <radialGradient id="${u}sun"><stop offset="0" stop-color="#fffbe0"/><stop offset=".35" stop-color="#ffefb0" stop-opacity=".8"/><stop offset="1" stop-color="#ffefb0" stop-opacity="0"/></radialGradient>
+    <linearGradient id="${u}wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7ecdc"/><stop offset="1" stop-color="#efdcc6"/></linearGradient>
+    <pattern id="${u}pat" width="44" height="44" patternUnits="userSpaceOnUse"><path d="M22 14 q3 5 0 8 q-3 -3 0 -8Z M14 22 q5 -3 8 0 q-3 3 -8 0Z M30 22 q-5 -3 -8 0 q3 3 8 0Z M22 30 q3 -5 0 -8 q-3 3 0 8Z" fill="#e9cfb6" opacity=".55"/><circle cx="0" cy="0" r="2" fill="#ecd6c0"/><circle cx="44" cy="44" r="2" fill="#ecd6c0"/></pattern>
+    <linearGradient id="${u}floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c99a6b"/><stop offset="1" stop-color="#a77a50"/></linearGradient>
+    <linearGradient id="${u}beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff7d6" stop-opacity=".55"/><stop offset="1" stop-color="#fff7d6" stop-opacity="0"/></linearGradient>
+    <linearGradient id="${u}cur" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fbe3e3"/><stop offset=".25" stop-color="#ffffff"/><stop offset=".5" stop-color="#f6d2d4"/><stop offset=".75" stop-color="#ffffff"/><stop offset="1" stop-color="#f3cdd0"/></linearGradient>
+    <radialGradient id="${u}bulb"><stop offset="0" stop-color="#fff3b0"/><stop offset=".5" stop-color="#ffd76a" stop-opacity=".7"/><stop offset="1" stop-color="#ffd76a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="${u}vig" cx=".5" cy=".45" r=".75"><stop offset=".6" stop-color="#3a2a20" stop-opacity="0"/><stop offset="1" stop-color="#3a2a20" stop-opacity=".28"/></radialGradient>
+    <radialGradient id="${u}rug" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fbe1dc"/><stop offset=".7" stop-color="#f3c4bd"/><stop offset="1" stop-color="#e7a99f"/></radialGradient>
+    <clipPath id="${u}win"><path d="M262 300 V140 A138 120 0 0 1 538 140 V300Z"/></clipPath>
   </defs>
-  <rect width="1200" height="700" fill="url(#sky)"/>
-  <circle cx="1040" cy="120" r="150" fill="url(#sunglow)"/><circle cx="1040" cy="120" r="44" fill="#ffe27a"/>
-  ${cloud(180,110,1.1)}${cloud(620,70,.8)}${cloud(860,210,.7)}${cloud(380,230,.55)}
-  <path d="M0 360 Q160 290 330 340 T700 330 T1200 320 L1200 700 L0 700Z" fill="#9ccfb7"/>
-  <path d="M0 420 Q240 360 480 410 T900 400 T1200 380 L1200 700 L0 700Z" fill="#7fbf95"/>
-  <path d="M0 500 Q300 440 640 490 T1200 470 L1200 700 L0 700Z" fill="#69b07f"/>
-  <path d="M560 700 C600 620 760 600 700 540 C650 490 820 470 880 430" stroke="#f6e7c4" stroke-width="34" fill="none" stroke-linecap="round"/>
-  <path d="M560 700 C600 620 760 600 700 540 C650 490 820 470 880 430" stroke="#e8d3a6" stroke-width="2" stroke-dasharray="10 14" fill="none"/>
-  <g transform="translate(150 380)">
-    <path d="M0 110 V40 Q90 -30 180 40 V110Z" fill="url(#glass)" stroke="#5f8f95" stroke-width="4"/>
-    <path d="M60 110 V12 M120 110 V12 M0 70 H180" stroke="#5f8f95" stroke-width="3"/>
-    <rect x="72" y="66" width="36" height="44" fill="#f2b84b" stroke="#5f8f95" stroke-width="3"/>
-  </g>
-  <g>
-    ${[0,1,2,3].map(r=>`<rect x="${120+r*12}" y="${508+r*26}" width="${300-r*20}" height="14" rx="7" fill="#7a5a40"/>${[0,1,2,3,4,5,6,7].map(c=>`<circle cx="${135+r*12+c*36}" cy="${510+r*26}" r="9" fill="${r%2?"#4f9a5f":"#e46c5c"}"/>`).join("")}`).join("")}
-  </g>
-  ${tree(470,420,1,"#4e9a6a")}${tree(1000,400,1.2,"#5aa676")}${tree(1110,440,.9,"#4e9a6a")}${tree(60,450,.8,"#5aa676")}
-  <g transform="translate(830 150) rotate(12)"><path d="M0 -30 L22 0 L0 34 L-22 0Z" fill="#f6a5a0" stroke="#24414a" stroke-width="2"/><path d="M0 -30 V34 M-22 0 H22" stroke="#24414a" stroke-width="1.5"/><path d="M0 34 q10 30 -8 60 q-16 30 4 70" stroke="#24414a" stroke-width="1.5" fill="none"/></g>
-  ${flowers}
+  <rect width="800" height="600" fill="url(#${u}wall)"/><rect width="800" height="330" fill="url(#${u}pat)"/>
+  <rect y="330" width="800" height="100" fill="#f3e4d0"/><g stroke="#e2cdb3" stroke-width="2" fill="none">${Array.from({length:8},(_,i)=>`<rect x="${14+i*100}" y="344" width="80" height="70" rx="6"/>`).join("")}</g>
+  <rect y="324" width="800" height="10" fill="#fffaf0"/><rect y="420" width="800" height="14" fill="#fff6e8"/><rect y="432" width="800" height="4" fill="#d8c0a0"/>
+  <rect y="436" width="800" height="164" fill="url(#${u}floor)"/>
+  ${Array.from({length:7},(_,i)=>`<path d="M0 ${456+i*22} H800" stroke="#9b6f47" stroke-width="1.4" opacity=".5"/>`).join("")}
+  ${Array.from({length:22},(_,i)=>`<path d="M${(i*97+(Math.floor(i/3)%2)*48)%800} ${436+(i%7)*22} v22" stroke="#9b6f47" stroke-width="1.2" opacity=".4"/>`).join("")}
+  <!-- window -->
+  <g clip-path="url(#${u}win)"><svg x="262" y="20" width="276" height="280" viewBox="0 0 276 280" preserveAspectRatio="none">${windowView(S,u,276,280)}</svg>${fallers(14,S.fall,800,320,month*13+3,sk==="autumn"?"leaf":sk==="winter"?"snow":"petal")}</g>
+  <path d="M262 300 V140 A138 120 0 0 1 538 140 V300Z" fill="none" stroke="#fffaf0" stroke-width="14"/><path d="M262 300 V140 A138 120 0 0 1 538 140 V300Z" fill="none" stroke="#c9a77f" stroke-width="3"/>
+  <path d="M400 20 V300 M262 190 H538" stroke="#fffaf0" stroke-width="8"/>
+  <rect x="246" y="298" width="308" height="16" rx="5" fill="#fffaf0" stroke="#d6bf9f" stroke-width="2"/>
+  <g transform="translate(270 270)"><path d="M0 28 h34 l-4 -28 h-26Z" fill="#e58b74"/><path d="M17 0 q-16 -18 -6 -32 q8 12 6 32Z M17 0 q14 -20 4 -34 q-10 14 -4 34Z M17 0 q2 -26 -2 -38" fill="#6aa97a"/></g>
+  <g transform="translate(478 274)"><rect width="30" height="24" rx="5" fill="#a9c6f0"/><circle cx="8" cy="-6" r="8" fill="#ffd36e"/><circle cx="20" cy="-8" r="9" fill="#f6a5b8"/><circle cx="14" cy="-16" r="7" fill="#fff"/></g>
+  <!-- sunbeams -->
+  <g class="beam"><path d="M290 140 L360 140 L520 600 L300 600Z" fill="url(#${u}beam)"/><path d="M420 120 L480 130 L700 600 L560 600Z" fill="url(#${u}beam)" opacity=".7"/></g>
+  <!-- curtains -->
+  <rect x="222" y="6" width="356" height="12" rx="6" fill="#b98f6a"/><circle cx="222" cy="12" r="10" fill="#d0a77c"/><circle cx="578" cy="12" r="10" fill="#d0a77c"/>
+  <path d="M226 16 Q200 160 250 330 L214 330 Q190 200 196 16Z" fill="url(#${u}cur)"/><path d="M574 16 Q600 160 550 330 L586 330 Q610 200 604 16Z" fill="url(#${u}cur)"/>
+  <path d="M214 200 q20 6 36 -2 M586 200 q-20 6 -36 -2" stroke="#e7a0a8" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- fairy lights -->
+  <path d="M10 26 ${Array.from({length:13},(_,i)=>`L${40+i*60} ${34+Math.sin(i*1.1)*8+(i%2?10:0)}`).join(" ")} L790 30" stroke="#6b5a4a" stroke-width="1.5" fill="none"/>${lights}
+  <!-- calendar -->
+  <g transform="translate(614 120)"><rect x="3" y="4" width="110" height="100" rx="8" fill="#000" opacity=".08"/><rect width="108" height="98" rx="8" fill="#fffdf6" stroke="#d6cbb3" stroke-width="2"/><rect width="108" height="18" rx="8" fill="#e46c5c"/><rect y="10" width="108" height="8" fill="#e46c5c"/><circle cx="30" cy="-2" r="4" fill="#8a6a4f"/><circle cx="78" cy="-2" r="4" fill="#8a6a4f"/>${ticks}</g>
+  <!-- frames -->
+  <g transform="translate(630 238)"><rect width="74" height="58" rx="4" fill="#c9a77f"/><rect x="6" y="6" width="62" height="46" fill="#e8f4ef"/><path d="M6 52 L26 30 L40 42 L52 32 L68 52Z" fill="#8fc7a4"/><circle cx="54" cy="18" r="6" fill="#ffd36e"/></g>
+  <g transform="translate(712 250)"><rect width="46" height="46" rx="23" fill="#c9a77f"/><rect x="5" y="5" width="36" height="36" rx="18" fill="#fff4f2"/><path d="M23 32 l-9 -9 a5.5 5.5 0 0 1 9 -6 a5.5 5.5 0 0 1 9 6Z" fill="#f28b9b"/></g>
+  <!-- bookshelf -->
+  <g transform="translate(26 150)"><rect x="6" y="6" width="160" height="290" fill="#000" opacity=".1"/><rect width="160" height="290" rx="4" fill="#b58b62"/><rect x="10" y="10" width="140" height="270" fill="#8f6744"/>
+    ${[0,1,2].map(r=>`<rect x="10" y="${92+r*88}" width="140" height="9" fill="#c49a6f"/><rect x="10" y="${101+r*88}" width="140" height="4" fill="#6f4f33" opacity=".5"/>`).join("")}
+    ${books.map(([c,x,h],i)=>`<rect x="${x}" y="${92-h}" width="${i%3?16:19}" height="${h}" rx="2" fill="${c}"/><rect x="${x+3}" y="${92-h+6}" width="${(i%3?16:19)-6}" height="3" fill="#fff" opacity=".6"/>`).join("")}
+    <g transform="translate(22 132)"><rect width="56" height="44" rx="4" fill="#fff" stroke="#d6cbb3"/><path d="M8 34 l11 -11 8 6 12 -15 10 7" stroke="#3f8f6b" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+    <g transform="translate(112 160)"><path d="M-14 20 h28 l-3 14 h-22Z" fill="#e58b74"/><circle cy="4" r="17" fill="#6aa97a"/><circle cx="-8" cy="-4" r="9" fill="#86c58f"/><circle cx="7" cy="-8" r="6" fill="#a5d6ad"/></g>
+    <rect x="20" y="236" width="44" height="36" rx="5" fill="#f2b84b"/><rect x="26" y="242" width="32" height="6" rx="3" fill="#fff" opacity=".7"/><rect x="74" y="226" width="62" height="46" rx="8" fill="#fffaf0" stroke="#d6cbb3"/><circle cx="105" cy="249" r="12" fill="#a9c6f0"/><path d="M99 249 l4 4 8 -8" stroke="#fff" stroke-width="3" fill="none"/></g>
+  <!-- monstera -->
+  <g transform="translate(700 330)"><path d="M-30 100 h60 l-8 50 h-44Z" fill="#e8d7c0" stroke="#c9b394" stroke-width="2"/><rect x="-34" y="96" width="68" height="10" rx="4" fill="#d9c4a6"/>
+    <g fill="#4f9a66"><path d="M0 98 Q-60 40 -70 -10 Q-20 0 0 98Z"/><path d="M0 98 Q60 30 50 -30 Q0 -6 0 98Z" fill="#5fae72"/><path d="M0 98 Q-10 10 -24 -50 Q24 -20 0 98Z" fill="#6cbc80"/><path d="M0 98 Q50 70 84 40 Q40 30 0 98Z" fill="#4a9060"/></g>
+    <path d="M0 98 Q-30 40 -60 -4M0 98 Q30 30 46 -24M0 98 Q-6 20 -20 -44" stroke="#3e7f55" stroke-width="2" fill="none"/></g>
+  <!-- side table + lamp -->
+  <g transform="translate(560 420)"><ellipse cx="75" cy="92" rx="76" ry="10" fill="#000" opacity=".12"/><rect width="150" height="16" rx="6" fill="#c49a6f"/><rect y="12" width="150" height="5" fill="#9b6f47"/><rect x="14" y="16" width="10" height="72" fill="#9b6f47"/><rect x="126" y="16" width="10" height="72" fill="#9b6f47"/>
+    <rect x="18" y="-36" width="20" height="36" rx="6" fill="#bfe0f5" stroke="#7aa6c6" stroke-width="1.5"/><rect x="21" y="-30" width="6" height="22" rx="3" fill="#fff" opacity=".7"/>
+    <ellipse cx="98" cy="-4" rx="34" ry="8" fill="#fff" stroke="#d6cbb3"/><path d="M76 -7 q8 -10 16 0 q8 -12 18 0" fill="#86c58f"/><circle cx="104" cy="-10" r="4" fill="#f28b6b"/></g>
+  <!-- rug -->
+  <ellipse cx="400" cy="545" rx="270" ry="44" fill="url(#${u}rug)"/><ellipse cx="400" cy="545" rx="230" ry="32" fill="none" stroke="#fffaf0" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round"/>
+  <ellipse cx="400" cy="545" rx="190" ry="24" fill="none" stroke="#e7a99f" stroke-width="2"/>
+  <path d="M300 470 L470 470 L600 600 L330 600Z" fill="#fff7d6" opacity=".12"/>
+  ${motes(18,300,620,150,520,month)}
+  <rect width="800" height="600" fill="url(#${u}vig)"/>
   </svg>`;
 }
+function clinicSVG(kind){
+  const u="k"+(++CHAR_UID), doc=kind==="doc";
+  const wall=doc?["#eef5f7","#dbe9ee"]:["#fdf3ea","#f6e3d3"];
+  return `<svg class="bg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+  <defs><linearGradient id="${u}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${wall[0]}"/><stop offset="1" stop-color="${wall[1]}"/></linearGradient>
+   <linearGradient id="${u}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${doc?"#c9d6dc":"#d9c3a5"}"/><stop offset="1" stop-color="${doc?"#aebfc7":"#bea27f"}"/></linearGradient>
+   <linearGradient id="${u}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e9f8ff"/><stop offset="1" stop-color="#b9e0ef"/></linearGradient>
+   <linearGradient id="${u}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff9df" stop-opacity=".28"/><stop offset="1" stop-color="#fff9df" stop-opacity="0"/></linearGradient>
+   <radialGradient id="${u}v" cx=".5" cy=".45" r=".75"><stop offset=".6" stop-color="#20303a" stop-opacity="0"/><stop offset="1" stop-color="#20303a" stop-opacity=".22"/></radialGradient></defs>
+  <rect width="800" height="600" fill="url(#${u}w)"/>
+  <rect y="300" width="800" height="130" fill="${doc?"#e3eef2":"#f8eadc"}"/><rect y="296" width="800" height="8" fill="#fff"/>
+  <rect y="430" width="800" height="170" fill="url(#${u}f)"/>${Array.from({length:9},(_,i)=>`<path d="M${i*100} 430 V600" stroke="#fff" stroke-opacity=".25" stroke-width="2"/>`).join("")}
+  <g transform="translate(520 60)"><rect width="230" height="200" rx="8" fill="#fff"/><rect x="10" y="10" width="210" height="180" rx="4" fill="url(#${u}g)"/>
+    <path d="M10 140 Q80 110 140 130 T220 120 V190 H10Z" fill="#a8d8b9"/><circle cx="170" cy="56" r="20" fill="#fff1b8"/><path d="M115 10 V190 M10 100 H220" stroke="#fff" stroke-width="6"/></g>
+  <path d="M520 60 L750 60 L800 600 L420 600Z" fill="url(#${u}b)"/>
+  <rect x="500" y="44" width="270" height="10" rx="5" fill="${doc?"#9fb4bf":"#c9a77f"}"/>
+  <path d="M504 52 Q490 160 512 276 L488 276 Q476 160 484 52Z M766 52 Q780 160 758 276 L782 276 Q794 160 786 52Z" fill="${doc?"#cfe6ee":"#f9d5cf"}"/>
+  <g transform="translate(430 62)"><circle r="30" fill="#fff" stroke="${doc?"#9fb4bf":"#c9a77f"}" stroke-width="5"/>${Array.from({length:12},(_,i)=>`<path transform="rotate(${i*30})" d="M0 -24 v4" stroke="#9aa8b0" stroke-width="2"/>`).join("")}<path d="M0 0 V-16 M0 0 L11 6" stroke="#24414a" stroke-width="3" stroke-linecap="round"/><circle r="3" fill="#e46c5c"/></g>
+  <g transform="translate(400 0)"><path d="M-80 0 h160 l-20 14 h-120Z" fill="#fff"/><ellipse cy="16" rx="70" ry="5" fill="#fffbe6"/></g>
+  ${doc ? `
+  <g transform="translate(40 110)"><rect width="200" height="150" rx="6" fill="#fff" stroke="#c9d6dc" stroke-width="3"/><text x="100" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#2a6b78">A1C 追蹤</text>
+    <path d="M24 120 H180 M24 40 V120" stroke="#c9d6dc" stroke-width="2"/><path d="M24 70 H180" stroke="#3f8f6b" stroke-dasharray="5 4"/><polyline points="30,50 70,62 110,76 150,86 176,92" stroke="#e46c5c" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    ${[30,70,110,150,176].map((x,i)=>`<circle cx="${x}" cy="${[50,62,76,86,92][i]}" r="4" fill="#e46c5c"/>`).join("")}</g>
+  <g transform="translate(270 150)"><rect width="110" height="150" rx="6" fill="#fff" stroke="#c9d6dc" stroke-width="3"/><circle cx="55" cy="44" r="22" fill="#f2b9b9"/><path d="M40 44 h30 M55 29 v30" stroke="#fff" stroke-width="7"/><path d="M18 90 h74 M18 106 h60 M18 122 h70" stroke="#c9d6dc" stroke-width="5" stroke-linecap="round"/></g>
+  <g transform="translate(40 330)"><rect width="300" height="22" rx="6" fill="#fff" stroke="#c9d6dc" stroke-width="2"/><rect x="10" y="22" width="280" height="80" fill="#e8f0f3"/><rect x="20" y="30" width="120" height="64" rx="4" fill="#fff" stroke="#c9d6dc"/><rect x="150" y="30" width="130" height="64" rx="4" fill="#fff" stroke="#c9d6dc"/>
+    <rect x="170" y="-90" width="110" height="78" rx="6" fill="#2f4c5a"/><rect x="176" y="-84" width="98" height="62" rx="3" fill="#dff3f6"/><polyline points="184,-36 204,-44 222,-50 244,-58 264,-62" stroke="#3f8f6b" stroke-width="3" fill="none"/><rect x="216" y="-12" width="18" height="12" fill="#2f4c5a"/>
+    <rect x="40" y="-18" width="80" height="18" rx="3" fill="#fff6e0" stroke="#d6cbb3"/><circle cx="20" cy="-10" r="10" fill="#7fc4bb"/></g>`
+  : `
+  <g transform="translate(40 80)"><rect width="230" height="200" rx="8" fill="#fff" stroke="#e8cdb6" stroke-width="3"/><text x="115" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#3f8f6b">我的餐盤</text>
+    <circle cx="115" cy="112" r="62" fill="#fffaf0" stroke="#d6cbb3" stroke-width="3"/><path d="M115 112 V50 A62 62 0 0 1 115 174Z" fill="#9fd29f"/><path d="M115 112 V174 A62 62 0 0 1 53 112Z" fill="#f2c56b"/><path d="M115 112 H53 A62 62 0 0 1 115 50Z" fill="#f1a08f"/>
+    <text x="146" y="118" font-size="13" font-weight="700" fill="#2f6b3f" text-anchor="middle">蔬菜</text><text x="88" y="148" font-size="12" font-weight="700" fill="#8a5a12" text-anchor="middle">全穀</text><text x="88" y="92" font-size="11" font-weight="700" fill="#8a3a2a" text-anchor="middle">豆魚蛋肉</text>
+    <circle cx="200" cy="168" r="14" fill="#e3f1fb" stroke="#a9c6f0" stroke-width="2"/></g>
+  <g transform="translate(290 130)"><rect width="150" height="110" rx="10" fill="#fff" stroke="#e8cdb6" stroke-width="3"/><text x="75" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#d9735e">低血糖 15-15</text><circle cx="40" cy="66" r="18" fill="#ffe7a8"/><text x="40" y="72" text-anchor="middle" font-size="14" font-weight="700" fill="#8a5a12">15g</text><path d="M66 66 h20" stroke="#d6cbb3" stroke-width="3"/><circle cx="112" cy="66" r="18" fill="#e3f3e9"/><text x="112" y="72" text-anchor="middle" font-size="13" font-weight="700" fill="#3f8f6b">15分</text></g>
+  <g transform="translate(30 360)"><rect width="320" height="20" rx="8" fill="#e8c9a6"/><rect x="12" y="20" width="12" height="70" fill="#c9a37c"/><rect x="296" y="20" width="12" height="70" fill="#c9a37c"/>
+    <ellipse cx="60" cy="-6" rx="32" ry="8" fill="#fff" stroke="#d6cbb3"/><path d="M40 -8 q10 -12 20 0 q10 -12 22 0" fill="#9fd29f"/><circle cx="62" cy="-14" r="6" fill="#f1a08f"/>
+    <rect x="120" y="-26" width="22" height="26" rx="4" fill="#bfe0f5"/><rect x="160" y="-18" width="40" height="18" rx="4" fill="#f2c56b"/><circle cx="240" cy="-12" r="12" fill="#e46c5c"/><path d="M240 -24 q4 -6 8 -4" stroke="#6aa97a" stroke-width="3" fill="none"/><rect x="262" y="-30" width="30" height="30" rx="6" fill="#fff" stroke="#a9c6f0" stroke-width="2"/><path d="M270 -15 h14 M277 -22 v14" stroke="#7fc4bb" stroke-width="3"/></g>`}
+  <g transform="translate(740 330)"><path d="M-26 90 h52 l-6 44 h-40Z" fill="#fff" stroke="#d6cbb3" stroke-width="2"/><g fill="#5fae72"><path d="M0 90 Q-50 40 -54 -6 Q-12 10 0 90Z"/><path d="M0 90 Q44 30 40 -24 Q2 4 0 90Z" fill="#6cbc80"/><path d="M0 90 Q-6 10 -14 -40 Q20 -10 0 90Z" fill="#4f9a66"/></g></g>
+  ${motes(12,460,780,80,500,doc?5:9)}
+  <rect width="800" height="600" fill="url(#${u}v)"/></svg>`;
+}
+function sceneSVG(){
+  // Original golden-morning garden town: layered hills with soft haze, a pastel "dream workshop" with a chimney puffing hearts and stars, a winding path, flower beds, drifting clouds and sparkles.
+  const u="t"+(++CHAR_UID), r=RNG(42);
+  let flowers=""; for(let i=0;i<70;i++){ const x=r()*1200, y=560+r()*140, c=["#ffffff","#ffd56b","#f6a5a0","#c9b6f2","#ffb3c7"][i%5]; flowers+=`<g transform="translate(${x.toFixed(0)} ${y.toFixed(0)})"><circle r="${(2.5+r()*2.5).toFixed(1)}" fill="${c}"/><circle r="1.2" fill="#f0b545"/></g>`; }
+  const tree=(x,y,s,c,c2)=>`<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="36" rx="34" ry="7" fill="#2f5a3f" opacity=".18"/><rect x="-5" y="0" width="10" height="36" rx="3" fill="#8a6a4f"/><circle cx="0" cy="-16" r="32" fill="${c}"/><circle cx="-22" cy="2" r="21" fill="${c2}"/><circle cx="22" cy="0" r="23" fill="${c}"/><circle cx="-8" cy="-30" r="12" fill="#fff" opacity=".16"/></g>`;
+  const cloud=(x,y,s,d)=>`<g class="anim"><animateTransform attributeName="transform" type="translate" values="0 0;${d} 0;0 0" dur="${Math.abs(d)*1.5}s" repeatCount="indefinite"/><g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="4" cy="8" rx="64" ry="18" fill="#d9e9f2" opacity=".6"/><g fill="#fff"><ellipse cx="0" cy="0" rx="62" ry="22"/><circle cx="-24" cy="-12" r="22"/><circle cx="14" cy="-22" r="29"/><circle cx="44" cy="-6" r="18"/></g></g></g>`;
+  const puff=(i)=>{ const d=6, dl=-i*2; const shape=i%2?`<path d="M0 4 l-6 -6 a3.6 3.6 0 0 1 6 -4 a3.6 3.6 0 0 1 6 4Z" fill="#f6a5b8"/>`:`<path d="M0 -6 L1.8 -1.8 6 -1.8 2.6 .9 3.8 5.2 0 2.6 -3.8 5.2 -2.6 .9 -6 -1.8 -1.8 -1.8Z" fill="#ffd36e"/>`;
+    return `<g class="anim"><g>${shape}<animateMotion dur="${d}s" begin="${dl}s" repeatCount="indefinite" path="M0 0 C10 -30 -14 -60 6 -110"/><animate attributeName="opacity" values="0;1;1;0" dur="${d}s" begin="${dl}s" repeatCount="indefinite"/></g></g>`; };
+  let spark=""; for(let i=0;i<16;i++){ const x=r()*1200,y=r()*420,d=2+r()*3; spark+=`<path transform="translate(${x.toFixed(0)} ${y.toFixed(0)})" d="M0 -6 Q1 -1 6 0 Q1 1 0 6 Q-1 1 -6 0 Q-1 -1 0 -6Z" fill="#fff"><animate attributeName="opacity" values="0;1;0" dur="${d.toFixed(1)}s" begin="${(-r()*d).toFixed(1)}s" repeatCount="indefinite"/></path>`; }
+  return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="${u}sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fc6e6"/><stop offset=".5" stop-color="#c7e9f0"/><stop offset=".8" stop-color="#ffeccd"/><stop offset="1" stop-color="#ffd9b8"/></linearGradient>
+    <radialGradient id="${u}sun"><stop offset="0" stop-color="#fffbe6"/><stop offset=".25" stop-color="#fff0b0" stop-opacity=".9"/><stop offset="1" stop-color="#ffe597" stop-opacity="0"/></radialGradient>
+    <linearGradient id="${u}ray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff8d8" stop-opacity=".45"/><stop offset="1" stop-color="#fff8d8" stop-opacity="0"/></linearGradient>
+    <linearGradient id="${u}h1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9dccb"/><stop offset="1" stop-color="#a6d2bb"/></linearGradient>
+    <linearGradient id="${u}h2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fca9f"/><stop offset="1" stop-color="#78b98b"/></linearGradient>
+    <linearGradient id="${u}h3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b986"/><stop offset="1" stop-color="#5fa572"/></linearGradient>
+    <linearGradient id="${u}haze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4e0" stop-opacity="0"/><stop offset="1" stop-color="#fff4e0" stop-opacity=".55"/></linearGradient>
+    <linearGradient id="${u}glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1fcff"/><stop offset="1" stop-color="#bfe6ef"/></linearGradient>
+    <linearGradient id="${u}roof" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f39aa9"/><stop offset="1" stop-color="#d9738a"/></linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#${u}sky)"/>
+  <circle cx="1010" cy="130" r="230" fill="url(#${u}sun)"/><circle cx="1010" cy="130" r="48" fill="#fff6c8"/>
+  <g opacity=".8" class="beam">${[-40,-20,0,20,40,60].map(a=>`<path transform="rotate(${a+20} 1010 130)" d="M1000 130 L1020 130 L1060 760 L960 760Z" fill="url(#${u}ray)"/>`).join("")}</g>
+  ${cloud(170,110,1.1,40)}${cloud(600,70,.8,-30)}${cloud(820,220,.65,26)}${cloud(380,240,.5,-20)}
+  <g fill="#3a4a5a" opacity=".55" class="anim"><animateTransform attributeName="transform" type="translate" values="0 0;60 -10;0 0" dur="24s" repeatCount="indefinite"/><path d="M700 150 q8 -8 16 0 q8 -8 16 0" stroke="#3a4a5a" stroke-width="2.4" fill="none"/><path d="M740 170 q6 -6 12 0 q6 -6 12 0" stroke="#3a4a5a" stroke-width="2" fill="none"/></g>
+  <path d="M0 350 Q160 280 330 330 T700 320 T1200 300 L1200 700 L0 700Z" fill="url(#${u}h1)"/>
+  ${[90,240,980,1120].map((x,i)=>`<g transform="translate(${x} ${330-i%2*12}) scale(.45)" opacity=".7">${`<rect x="-5" y="0" width="10" height="30" fill="#8aa596"/><circle cy="-14" r="28" fill="#9cc7ae"/>`}</g>`).join("")}
+  <rect y="300" width="1200" height="140" fill="url(#${u}haze)"/>
+  <path d="M0 420 Q240 360 480 410 T900 400 T1200 380 L1200 700 L0 700Z" fill="url(#${u}h2)"/>
+  <!-- dream workshop -->
+  <g transform="translate(760 270)">
+    <ellipse cx="110" cy="150" rx="150" ry="16" fill="#2f5a3f" opacity=".18"/>
+    <rect x="150" y="-10" width="26" height="70" fill="#e9d6c4"/><rect x="146" y="-16" width="34" height="10" rx="3" fill="#d9738a"/>
+    <g transform="translate(163 -18)">${[0,1,2,3].map(puff).join("")}</g>
+    <rect x="10" y="50" width="200" height="100" rx="6" fill="#fff7ee"/><rect x="10" y="132" width="200" height="18" fill="#f3e1cf"/>
+    <path d="M-6 56 L110 -14 L226 56Z" fill="url(#${u}roof)"/><path d="M-6 56 L110 -14 L226 56" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round" opacity=".7"/>
+    <circle cx="110" cy="24" r="16" fill="#fff7ee" stroke="#d9738a" stroke-width="3"/><path d="M110 31 l-7 -7 a4.3 4.3 0 0 1 7 -5 a4.3 4.3 0 0 1 7 5Z" fill="#f28b9b"/>
+    <rect x="90" y="88" width="40" height="62" rx="20" fill="#b98f6a"/><circle cx="122" cy="122" r="3" fill="#ffd36e"/>
+    ${[30,150].map(x=>`<rect x="${x}" y="78" width="40" height="34" rx="5" fill="#ffe9a8" stroke="#c9a77f" stroke-width="3"/><path d="M${x+20} 78 v34 M${x} 95 h40" stroke="#c9a77f" stroke-width="2"/><path d="M${x-4} 116 h48 v8 h-48z" fill="#f6a5b8"/>`).join("")}
+    <rect x="50" y="56" width="120" height="20" rx="10" fill="#3f8f6b"/><text x="110" y="71" text-anchor="middle" font-size="13" font-weight="700" fill="#fffaf0" font-family="LXGW WenKai TC,serif">夢工廠</text>
+  </g>
+  <path d="M0 500 Q300 440 640 490 T1200 470 L1200 700 L0 700Z" fill="url(#${u}h3)"/>
+  <path d="M560 700 C600 620 760 600 700 540 C650 490 820 470 880 430" stroke="#f6e7c4" stroke-width="38" fill="none" stroke-linecap="round"/>
+  <path d="M560 700 C600 620 760 600 700 540 C650 490 820 470 880 430" stroke="#fff6dc" stroke-width="12" fill="none" stroke-linecap="round" opacity=".7"/>
+  <g transform="translate(150 380)">
+    <ellipse cx="90" cy="112" rx="110" ry="10" fill="#2f5a3f" opacity=".18"/>
+    <path d="M0 110 V40 Q90 -30 180 40 V110Z" fill="url(#${u}glass)" stroke="#6f9ea4" stroke-width="4"/>
+    <path d="M60 110 V12 M120 110 V12 M0 70 H180" stroke="#6f9ea4" stroke-width="3"/><path d="M20 40 Q60 6 100 4" stroke="#fff" stroke-width="5" opacity=".7" fill="none" stroke-linecap="round"/>
+    <rect x="72" y="66" width="36" height="44" fill="#f2b84b" stroke="#6f9ea4" stroke-width="3"/>
+    ${[18,40,140,160].map(x=>`<circle cx="${x}" cy="96" r="9" fill="#6cbc80"/><circle cx="${x}" cy="92" r="3" fill="#f6a5b8"/>`).join("")}
+  </g>
+  <g>${[0,1,2,3].map(rr=>`<rect x="${120+rr*12}" y="${508+rr*26}" width="${300-rr*20}" height="14" rx="7" fill="#7a5a40"/>${[0,1,2,3,4,5,6,7].map(c=>`<g transform="translate(${135+rr*12+c*36} ${510+rr*26})"><circle r="10" fill="${rr%2?"#4f9a5f":"#e46c5c"}"/><circle cx="-3" cy="-3" r="3" fill="#fff" opacity=".35"/><path d="M0 -10 q3 -6 7 -5" stroke="#3f8f50" stroke-width="2.5" fill="none"/></g>`).join("")}`).join("")}</g>
+  ${tree(470,420,1,"#4e9a6a","#5aa676")}${tree(1060,420,1.25,"#5aa676","#4e9a6a")}${tree(1150,450,.9,"#4e9a6a","#62b07c")}${tree(60,450,.85,"#5aa676","#4e9a6a")}
+  <g class="anim" transform="translate(640 150) rotate(12)"><animateTransform attributeName="transform" type="rotate" values="-5;5;-5" dur="5s" additive="sum" repeatCount="indefinite"/><path d="M0 -30 L22 0 L0 34 L-22 0Z" fill="#f6a5a0" stroke="#24414a" stroke-width="2"/><path d="M0 -30 V34 M-22 0 H22" stroke="#24414a" stroke-width="1.5"/><path d="M0 34 q10 30 -8 60 q-16 30 4 70" stroke="#24414a" stroke-width="1.5" fill="none"/></g>
+  ${flowers}${spark}
+  </svg>`;
+}
+
+function npcSVG(kind, expr="normal"){
+  const doc = kind==="doc", u="n"+(++CHAR_UID), line="#3a2630";
+  const hair = doc?"#3b2c3a":"#a8683f", hairL = doc?"#5d4860":"#d39a68", hairD = doc?"#241a24":"#7a4628";
+  const iris1 = doc?"#2c2340":"#4a2e1c", iris2 = doc?"#7d6bb0":"#c98d4e";
+  const defs=`<defs>
+    <linearGradient id="${u}i" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${iris1}"/><stop offset=".55" stop-color="${iris2}"/><stop offset="1" stop-color="${doc?'#c7bdf0':'#f3c98f'}"/></linearGradient>
+    <linearGradient id="${u}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${hairL}"/><stop offset=".45" stop-color="${hair}"/><stop offset="1" stop-color="${hairD}"/></linearGradient>
+    <radialGradient id="${u}s" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#fff1e6"/><stop offset="1" stop-color="#f7dccb"/></radialGradient>
+    <linearGradient id="${u}c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e6edf2"/></linearGradient>
+  </defs>`, H=`url(#${u}h)`;
+  const eye=(x,flip)=>{ const d=flip?-1:1; return `
+    <path d="M${x-12} 119 Q${x} 131 ${x+12} 119 L${x+12} 112 Q${x} 100 ${x-12} 112Z" fill="#fff"/>
+    <ellipse cx="${x}" cy="117" rx="9.5" ry="12" fill="url(#${u}i)"/><ellipse cx="${x}" cy="118" rx="4.4" ry="6.2" fill="${iris1}" opacity=".85"/>
+    <ellipse cx="${x-3.6*d}" cy="111.5" rx="3.6" ry="4.4" fill="#fff"/><circle cx="${x+3.6*d}" cy="123" r="1.7" fill="#fff"/>
+    <path d="M${x-13*d} 113 Q${x-2*d} 101 ${x+13*d} 109" stroke="${line}" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+    <path d="M${x+13*d} 109 l${4*d} -3" stroke="${line}" stroke-width="2.4" stroke-linecap="round"/>`; };
+  const happy=x=>`<path d="M${x-12} 120 Q${x} 106 ${x+12} 120" stroke="${line}" stroke-width="3.6" fill="none" stroke-linecap="round"/>`;
+  const eyes = expr==="happy" ? happy(79)+happy(121) : eye(79,true)+eye(121,false);
+  const brows=`<path d="M67 95 Q77 89 88 92M133 95 Q123 89 112 92" stroke="${hairD}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+  const mouth = expr==="talk" ? `<path d="M94 141 Q100 150 106 141Z" fill="#c9525e"/>`
+    : `<path d="M93 141 Q100 148 107 141" stroke="#9a4d55" stroke-width="2.4" fill="${expr==="happy"?"#f3a0a8":"none"}" stroke-linecap="round"/>`;
+  const glasses = doc ? `<g fill="none" stroke="#6b5a74" stroke-width="2.2"><rect x="62" y="104" width="34" height="27" rx="11"/><rect x="104" y="104" width="34" height="27" rx="11"/><path d="M96 114 q4 -3 8 0M62 112 l-10 -3M138 112 l10 -3"/></g><path d="M66 108 l8 -2" stroke="#fff" stroke-width="2" opacity=".7"/>` : "";
+  const back = doc
+    ? `<path d="M44 108 Q40 54 100 48 Q160 54 156 108 Q160 150 150 168 L50 168 Q40 150 44 108Z" fill="${H}"/>`
+    : `<path d="M42 110 Q36 54 100 46 Q164 54 158 110 Q162 150 150 166 Q126 172 100 170 Q74 172 50 166 Q38 150 42 110Z" fill="${H}"/>`;
+  const front = doc
+    ? `<path d="M48 120 Q42 50 100 48 Q158 50 152 120 Q146 86 120 76 Q100 92 70 90 Q56 98 48 120Z" fill="${H}"/>
+       <path d="M150 130 Q170 170 160 230 Q154 250 146 236 Q154 190 140 140Z" fill="${H}"/><circle cx="148" cy="138" r="5" fill="#8fb7e8"/>
+       <path d="M64 66 Q100 50 136 66" stroke="#fff" stroke-opacity=".3" stroke-width="4" fill="none" stroke-linecap="round"/>`
+    : `<path d="M46 122 Q40 50 100 46 Q160 50 154 122 Q150 98 138 86 Q134 102 122 106 Q122 88 110 80 Q100 98 84 102 Q88 88 82 80 Q70 96 56 102 Q56 112 46 122Z" fill="${H}"/>
+       <path d="M44 116 Q40 150 50 166 Q58 160 56 120Z M156 116 Q160 150 150 166 Q142 160 144 120Z" fill="${H}"/>
+       <path d="M62 64 Q100 46 138 64" stroke="#fff" stroke-opacity=".4" stroke-width="4" fill="none" stroke-linecap="round"/>
+       <rect x="128" y="74" width="20" height="7" rx="3.5" fill="#7fc4bb" transform="rotate(-25 138 78)"/>`;
+  const body = doc
+    ? `<path d="M50 300 L56 196 Q60 174 100 170 Q140 174 144 196 L150 300Z" fill="url(#${u}c)" stroke="#c9d3db" stroke-width="2"/>
+       <path d="M86 172 L100 230 L114 172 Q100 168 86 172Z" fill="#b8a6dc"/>
+       <path d="M84 172 L100 236 L82 300 M116 172 L100 236 L118 300" stroke="#c9d3db" stroke-width="2.5" fill="none"/>
+       <path d="M78 182 Q70 230 92 250 M122 182 Q132 228 112 250" stroke="#4d5a6a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+       <circle cx="92" cy="252" r="5" fill="#9aa8b6" stroke="#4d5a6a" stroke-width="2"/><circle cx="112" cy="252" r="7" fill="#c7d0d9" stroke="#4d5a6a" stroke-width="2.5"/>
+       <rect x="120" y="206" width="20" height="14" rx="2" fill="#fff" stroke="#c9d3db"/><path d="M124 210 h12M124 214 h8" stroke="#8fb7e8" stroke-width="2"/>
+       <path d="M66 206 h14 v18 h-14z" fill="#e6edf2"/><path d="M70 202 v10M75 202 v12" stroke="#5aa0d8" stroke-width="2.2"/>`
+    : `<path d="M54 300 L58 196 Q62 174 100 170 Q138 174 142 196 L146 300Z" fill="#9ed8cf"/>
+       <path d="M82 172 L100 196 L118 172 Q100 166 82 172Z" fill="#f6fbfa"/><path d="M82 172 L100 196 L118 172" stroke="#6fbfb2" stroke-width="2.5" fill="none"/>
+       <path d="M86 178 Q92 220 98 236 M114 178 Q108 220 102 236" stroke="#f28b9b" stroke-width="2.5" fill="none"/>
+       <rect x="88" y="234" width="24" height="30" rx="3" fill="#fff" stroke="#6fbfb2" stroke-width="2"/><circle cx="100" cy="245" r="5" fill="#f6b3bd"/><path d="M93 256 h14" stroke="#6fbfb2" stroke-width="2"/>
+       <path d="M62 300 L60 230 Q60 218 72 220 L76 300Z" fill="#7ec8bc" opacity=".6"/>
+       <g transform="translate(118 222) rotate(8)"><rect width="34" height="44" rx="3" fill="#f2b84b" stroke="#c9952e" stroke-width="2"/><rect x="4" y="8" width="26" height="32" fill="#fffaf0"/><path d="M8 16h18M8 22h18M8 28h12" stroke="#c9bfa6" stroke-width="2"/><rect x="11" y="-3" width="12" height="7" rx="2" fill="#8a9aa6"/></g>`;
+  const blush=`<ellipse cx="67" cy="136" rx="9" ry="4.5" fill="#f7a1a8" opacity=".5"/><ellipse cx="133" cy="136" rx="9" ry="4.5" fill="#f7a1a8" opacity=".5"/>`;
+  return `<svg viewBox="0 0 200 300" role="img" aria-label="${doc?'林醫師':'小安衛教師'}">${defs}${back}${body}
+    <path d="M90 148 h20 v24 q-10 6 -20 0Z" fill="#f2cdb9"/>
+    <path d="M52 102 Q52 58 100 56 Q148 58 148 102 Q148 136 124 156 Q100 172 76 156 Q52 136 52 102Z" fill="url(#${u}s)"/>
+    ${front}${eyes}${brows}<path d="M99 131 q1.5 1.5 3 0" stroke="#d9a58e" stroke-width="1.6" fill="none" stroke-linecap="round"/>${blush}${mouth}${glasses}</svg>`;
+}
+
 const SKIN="#fde3cf", BLUSH="#f6a5a0";
 let CHAR_UID=0;
 function charSVG(kind, expr="normal", full=false){
@@ -700,6 +962,7 @@ const a1cStr=()=>S.a1c.toFixed(1)+"%";
 function exprFor(){ if(S.mood<30) return "worry"; if(S.mood>=70) return "happy"; return "normal"; }
 
 /* ============ screens ============ */
+const RM=window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 const SCREENS=["title","how","refs","gallery","login","setup","game","ending"];
 function show(id){ SCREENS.forEach(s=>$(s).hidden = s!==id); window.scrollTo(0,0); if(id==="title") renderTitle(); }
 function renderTitle(){
@@ -870,34 +1133,7 @@ const TALKS = [
 ];
 const ITEMS = ["衛教手冊","餐盤便當盒","保溫水壺","健走鞋","葡萄糖錠","生病日小卡","合腳鞋襪","年度檢查表","藥物清單卡","疫苗紀錄卡","體重紀錄本","A1C 成績單"];
 
-/* ============ room scene (original) ============ */
-function roomSVG(month){
-  const ticks=Array.from({length:12},(_,i)=>`<rect x="${8+(i%4)*24}" y="${20+Math.floor(i/4)*24}" width="16" height="14" rx="2" fill="${i<month-1?"#7fbf95":"#fff"}" stroke="#c9bfa6"/>`).join("");
-  return `<svg class="bg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-  <defs><linearGradient id="win" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fd6e8"/><stop offset="1" stop-color="#e8f6ef"/></linearGradient>
-  <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9b98e"/><stop offset="1" stop-color="#c49d6f"/></linearGradient></defs>
-  <rect width="800" height="600" fill="#eef1e4"/>
-  <rect y="0" width="800" height="430" fill="#e6ecd9"/>
-  ${Array.from({length:20},(_,i)=>`<rect x="${i*40}" y="0" width="20" height="430" fill="#e1e8d2"/>`).join("")}
-  <rect y="410" width="800" height="22" fill="#f6f1e2"/>
-  <rect y="430" width="800" height="170" fill="url(#floor)"/>
-  ${Array.from({length:8},(_,i)=>`<path d="M0 ${452+i*20} H800" stroke="#b8925f" stroke-width="1.5" opacity=".45"/>`).join("")}
-  <g transform="translate(250 70)"><rect width="300" height="230" rx="10" fill="#fffaf0" stroke="#8a6a4f" stroke-width="6"/><rect x="12" y="12" width="276" height="206" rx="4" fill="url(#win)"/>
-    <circle cx="230" cy="62" r="26" fill="#ffe27a"/><path d="M12 170 Q90 130 160 160 T288 150 V218 H12Z" fill="#9ccfb7"/><path d="M150 12 V218 M12 115 H288" stroke="#8a6a4f" stroke-width="6"/>
-    <path d="M-30 -10 Q10 120 -18 250 L-40 250 L-40 -10Z" fill="#f6c9c1"/><path d="M330 -10 Q290 120 318 250 L340 250 L340 -10Z" fill="#f6c9c1"/><rect x="-46" y="-18" width="392" height="12" rx="6" fill="#8a6a4f"/></g>
-  <g transform="translate(600 100)"><rect width="104" height="96" rx="6" fill="#fff" stroke="#8a6a4f" stroke-width="3"/><rect width="104" height="14" rx="4" fill="#e46c5c"/>${ticks}</g>
-  <g transform="translate(40 150)"><rect width="150" height="270" fill="#a57e5a"/><rect x="10" y="10" width="130" height="250" fill="#8a6a4f"/>
-    ${[0,1,2].map(r=>`<rect x="10" y="${88+r*86}" width="130" height="8" fill="#a57e5a"/>`).join("")}
-    ${[["#e46c5c",16,40],["#7fc4bb",36,48],["#f2b84b",58,36],["#a9c6f0",80,50]].map(([c,x,h])=>`<rect x="${x}" y="${88-h}" width="18" height="${h}" fill="${c}"/>`).join("")}
-    <rect x="20" y="130" width="60" height="44" rx="4" fill="#fff" stroke="#c9bfa6"/><path d="M28 160 l10 -10 8 6 12 -14 10 6" stroke="#3f8f6b" stroke-width="3" fill="none"/>
-    <circle cx="110" cy="160" r="16" fill="#7fbf95"/><rect x="100" y="166" width="20" height="10" fill="#c9845a"/>
-    <rect x="22" y="226" width="40" height="34" rx="4" fill="#f2b84b"/><rect x="72" y="214" width="50" height="46" rx="6" fill="#fffaf0" stroke="#c9bfa6"/></g>
-  <g transform="translate(610 300)"><path d="M0 130 Q-10 40 40 20 Q90 40 80 130Z" fill="#c9845a"/><circle cx="40" cy="0" r="48" fill="#5aa676"/><circle cx="0" cy="20" r="30" fill="#4e9a6a"/><circle cx="80" cy="24" r="32" fill="#4e9a6a"/></g>
-  <ellipse cx="400" cy="540" rx="250" ry="40" fill="#f6c9c1" opacity=".75"/><ellipse cx="400" cy="540" rx="200" ry="28" fill="none" stroke="#fffaf0" stroke-width="4" stroke-dasharray="10 10"/>
-  <g transform="translate(560 430)"><rect width="150" height="16" rx="6" fill="#a57e5a"/><rect x="12" y="16" width="10" height="70" fill="#8a6a4f"/><rect x="128" y="16" width="10" height="70" fill="#8a6a4f"/>
-    <rect x="20" y="-34" width="18" height="34" rx="6" fill="#a9c6f0" stroke="#24414a" stroke-width="1.5"/><ellipse cx="96" cy="-4" rx="34" ry="8" fill="#fff" stroke="#c9bfa6"/><path d="M70 -6 h52" stroke="#7fbf95" stroke-width="5"/></g>
-  </svg>`;
-}
+/* ============ room scene: see backgrounds below ============ */
 
 /* ============ game rendering ============ */
 const SEASON=m=>["冬","冬","春","春","春","夏","夏","夏","秋","秋","秋","冬"][(m-1)%12];
@@ -911,7 +1147,7 @@ function upgrade(){ // fill fields added after v2 saves
 let tab="base";
 function setChar(expr, line){ $("chara").innerHTML=charSVG(S.kind,expr,true); $("bubble").innerHTML=line; }
 function renderHUD(){
-  const room=$("room"); room.querySelector("svg.bg")?.remove(); room.insertAdjacentHTML("afterbegin",roomSVG(S.month));
+  const room=$("room"); room.querySelector("svg.bg")?.remove(); room.insertAdjacentHTML("afterbegin",roomSVG(S.month)); if(RM) room.querySelector("svg.bg").pauseAnimations?.();
   $("h-month").textContent=`確診後第 ${S.month} 個月`;
   $("h-season").textContent=`${S.month} 月・${SEASON(S.month)}`;
   $("h-who").textContent=`${S.name}・${AGE(S.kind)} 歲`;
@@ -932,7 +1168,7 @@ function renderTab(){
   if(tab==="base"){
     b.innerHTML=[["fit","體力"],["mood","心情"],["know","衛教知識"]].map(([k,l])=>`<div class="sbar" data-k="${k}"><span style="text-align:left;font-weight:400">${l}</span><i><b style="width:${S[k]}%"></b></i><span>${Math.round(S[k])}</span></div>`).join("")
       +`<div class="sbar"><span style="text-align:left;font-weight:400">最佳做法</span><i><b style="width:${S.correct/12*100}%;background:linear-gradient(90deg,#c9952e,#f0b545)"></b></i><span>${S.correct}/12</span></div>`
-      +`<p class="fine">心情低於 30 時，活動效果會打折；記得安排放鬆或和人聊聊。每個月可以「說話」一次，心情會變好。</p>`;
+      +`<p class="fine">心情低於 30 時，活動效果會打折；記得安排放鬆或和人聊聊。每個月可以找「衛教師」聊一次，心情會變好；每 3 個月會回診，聽醫師說明 A1C。</p>`;
   } else if(tab==="hist"){
     const pts=[[0,8.4],...Array.from(S.hist,(v,i)=>[i+1,v])].filter(p=>typeof p[1]==="number"); // v2 saves have no early months
     const W=320,H=170,x=i=>30+i*(W-40)/12,y=v=>12+(9-v)/(9-5.5)*(H-36);
@@ -956,9 +1192,9 @@ function renderHub(){
   renderHUD();
   if(S.phase!=="hub") return;
   const low=S.mood<30;
-  setChar(exprFor(), low ? `最近有點累……這個月可以安排<b>放鬆</b>或<b>說說話</b>嗎？`
+  setChar(exprFor(), low ? `最近有點累……這個月可以安排<b>放鬆</b>，或找<b>衛教師</b>聊聊嗎？`
     : S.month===1 ? `你好！我是${esc(S.name)}，請多多指教！先按下方的<b>排行程</b>，安排這個月吧。`
-    : `第 ${S.month} 個月了！按<b>排行程</b>安排這個月，也可以先<b>說話</b>或調整<b>飲食</b>。`);
+    : `第 ${S.month} 個月了！按<b>排行程</b>安排這個月，也可以先找<b>衛教師</b>聊聊，或調整<b>飲食</b>。`);
 }
 function renderGame(){
   upgrade(); renderHub();
@@ -972,16 +1208,7 @@ function renderGame(){
 $("c-plan").onclick=()=>{ if(S.phase==="hub") renderPlan(); else renderGame(); };
 $("c-hist").onclick=()=>{ tab="hist"; renderHUD(); $("tabbody").scrollIntoView({behavior:"smooth",block:"nearest"}); };
 $("c-bag").onclick=()=>{ tab="bag"; renderHUD(); $("tabbody").scrollIntoView({behavior:"smooth",block:"nearest"}); };
-$("c-talk").onclick=()=>{
-  const t=TALKS[(S.month-1)%TALKS.length]; const first=S.talked!==S.month;
-  if(first){ S.talked=S.month; S.mood=clamp(S.mood+4); saveGame(); renderHUD(); }
-  $("panel").innerHTML=`<div class="eyebrow">MONTH ${S.month} ・ 說話</div><h2>和${esc(S.name)}聊聊</h2>
-    <div class="who-line"><div class="mini">${charSVG(S.kind,"normal")}</div><div>${t.say}</div></div>
-    <div class="who-line"><div><b>你：</b>${t.reply}<cite style="display:block;font-style:normal;font-size:12.5px;color:var(--muted)">出處：${refHTML(t.ref)}</cite></div></div>
-    <p class="hint">${first?"聊完心情變好了（心情 +4）。":"這個月已經聊過了，下個月再來聊新話題吧。"}</p>
-    <div class="row"><button class="btn primary" id="t-ok">好</button></div>`;
-  openDlg(false); $("t-ok").onclick=closeDlg;
-};
+$("c-talk").onclick=cdeTalk;
 $("c-diet").onclick=()=>{
   const can=S.dietM!==S.month;
   $("panel").innerHTML=`<div class="eyebrow">MONTH ${S.month} ・ 飲食</div><h2>這個月的飲食方針</h2>
@@ -992,7 +1219,7 @@ $("c-diet").onclick=()=>{
   if(can) $("panel").querySelectorAll(".act").forEach(b=>b.onclick=()=>{ const d=DIETS.find(x=>x.id===b.dataset.id); if(S.diet!==d.id){ S.diet=d.id; S.dietM=S.month; for(const k in d.fx) S[k]=clamp(S[k]+d.fx[k]); saveGame(); } closeDlg(); });
 };
 $("c-sys").onclick=()=>{
-  $("panel").innerHTML=`<div class="eyebrow">系統</div><h2>選單</h2><p class="hint">遊戲會自動存檔。</p>
+  $("panel").innerHTML=`<div class="eyebrow">系統</div><h2>選單</h2><p class="hint">遊戲會自動存檔。</p><p>${sndBtns()}</p>
     <div class="row"><button class="btn primary" id="s-back">繼續遊戲</button><button class="btn" id="s-how">遊戲說明</button><button class="btn" id="s-ref">實證文獻依據</button><button class="btn" id="s-quit">存檔並回標題</button></div>`;
   openDlg(false);
   $("s-back").onclick=closeDlg;
@@ -1076,9 +1303,9 @@ function renderFeedback(){
      <h3>醫學實證依據</h3>
      <ul class="evi">${e.ev.map(([t,r])=>`<li>${t}<cite>出處：${refHTML(r)}</cite></li>`).join("")}</ul>
    </div>
-   <div class="row"><button class="btn primary" id="b-next">${S.month<12?'前往下個月':'迎接這一年的結局'}</button></div>`;
+   <div class="row"><button class="btn primary" id="b-next">${S.month%3===0?'去回診，聽醫師說明報告':S.month<12?'前往下個月':'迎接這一年的結局'}</button></div>`;
   openDlg(false);
-  $("b-next").onclick=nextMonth;
+  $("b-next").onclick= S.month%3===0 ? ()=>{ $("dlg").hidden=true; doctorVisit(nextMonth); } : nextMonth;
 }
 function nextMonth(){
   S.hist[S.month-1]=+S.a1c.toFixed(2);
@@ -1119,12 +1346,167 @@ function finish(){
   $("e-title").onclick=()=>show("title");
 }
 
+
+/* ============ sound: piano BGM, theme song, read-aloud ============ */
+const AUD_KEY="ttzz-audio-v1";
+const AUD=Object.assign({bgm:true,voice:true},store.get(AUD_KEY)||{});
+const BGM=new Audio("audio/bgm.mp3"); BGM.loop=true; BGM.volume=.32; BGM.preload="none";
+let THEME=null, BGM_UNLOCKED=false;
+function bgmSync(){ if(AUD.bgm && BGM_UNLOCKED && !(THEME&&!THEME.paused) && !document.hidden) BGM.play().catch(()=>{}); else BGM.pause(); }
+document.addEventListener("pointerdown",()=>{ if(!BGM_UNLOCKED){ BGM_UNLOCKED=true; bgmSync(); } },true);
+document.addEventListener("keydown",()=>{ if(!BGM_UNLOCKED){ BGM_UNLOCKED=true; bgmSync(); } },true);
+document.addEventListener("visibilitychange",()=>{ bgmSync(); if(document.hidden) hush(); });
+function sndBtns(){ return `<span class="snd"><button class="sndbtn" data-snd="bgm" aria-pressed="${AUD.bgm}" title="背景音樂">${AUD.bgm?"♪ 音樂開":"♪ 音樂關"}</button><button class="sndbtn" data-snd="voice" aria-pressed="${AUD.voice}" title="對話朗讀">${AUD.voice?"🗣 朗讀開":"🗣 朗讀關"}</button></span>`; }
+function paintSnd(){ document.querySelectorAll(".sndbtn").forEach(b=>{ const k=b.dataset.snd; b.setAttribute("aria-pressed",AUD[k]); b.textContent=k==="bgm"?(AUD.bgm?"♪ 音樂開":"♪ 音樂關"):(AUD.voice?"🗣 朗讀開":"🗣 朗讀關"); }); }
+document.addEventListener("click",e=>{ const b=e.target.closest(".sndbtn"); if(!b) return; const k=b.dataset.snd; AUD[k]=!AUD[k]; store.set(AUD_KEY,AUD); BGM_UNLOCKED=true; if(k==="bgm") bgmSync(); else if(!AUD.voice) hush(); paintSnd(); });
+const TTS = "speechSynthesis" in window;
+let ZH=null;
+function zhVoice(){ if(!TTS) return null; const vs=speechSynthesis.getVoices(); return vs.find(v=>/zh[-_]TW/i.test(v.lang))||vs.find(v=>/zh[-_](HK|Hant)/i.test(v.lang))||vs.find(v=>/^zh/i.test(v.lang))||null; }
+if(TTS){ ZH=zhVoice(); speechSynthesis.onvoiceschanged=()=>{ ZH=zhVoice(); }; }
+const VOICE={tang:[1.25,1],zheng:[.88,1],cde:[1.12,1.02],doc:[.95,.95]};
+function sayText(h){ return h.replace(/<[^>]+>/g,"").replace(/mg\/dL/g,"毫克每公合").replace(/mmHg/g,"毫米汞柱").replace(/(\d)\s*[–-]\s*(\d)/g,"$1到$2").replace(/A1C/g,"A 1 C").replace(/[「」]/g,""); }
+function hush(){ if(TTS) speechSynthesis.cancel(); BGM.volume=.32; }
+function speak(html,who){
+  if(!AUD.voice||!TTS) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(sayText(html)); u.lang="zh-TW"; if(ZH) u.voice=ZH;
+  const p=VOICE[who]||[1,1]; u.pitch=p[0]; u.rate=p[1];
+  u.onstart=()=>{ BGM.volume=.12; }; u.onend=u.onerror=()=>{ BGM.volume=.32; };
+  speechSynthesis.speak(u);
+}
+
+/* theme song player with line-by-line lyrics */
+const LYR=[["(啦啦啦 糖糖正正)", 10.37, 10.61], ["那天醫生說 血糖有點高", 10.37, 13.8], ["心裡有點慌 不知怎麼好", 15.24, 18.67], ["打開夢工廠 答案慢慢找", 20.11, 23.54], ["每天一小步 明天會更好", 25.05, 28.48], ["不用一次就完美", 29.92, 32.07], ["一點一點 也很珍貴", 32.39, 34.63], ["一步一步 糖糖正正", 35.74, 37.98], ["蔬菜先吃 餐盤要平衡", 38.22, 40.53], ["飯後走一走 心情就放晴", 40.37, 42.45], ["每個好選擇 都是小小的贏", 42.77, 45.8], ["一步一步 糖糖正正", 45.56, 47.63], ["陪我走過 一整年的旅程", 47.63, 50.19], ["頭暈冒冷汗 別慌也別亂", 54.49, 58.16], ["十五克糖分 先吃最簡單", 59.36, 62.79], ["十五分鐘後 再測心才安", 62.79, 64.15], ["十五分鐘後 再測心才安", 64.55, 67.66], ["回診看數字 慢慢在改變", 69.42, 71.89], ["和醫生一起 把目標談一談", 72.45, 74.36], ["不懂就問 一點也不累", 75.24, 76.83], ["衛教師陪你 一起面對", 77.63, 79.31], ["一步一步 糖糖正正", 82.26, 84.33], ["蔬菜先吃 餐盤要平衡", 84.42, 87.05], ["飯後走一走 心情就放晴", 86.89, 88.96], ["每個好選擇 都是小小的贏", 89.36, 92.31], ["一步一步 糖糖正正", 92.07, 94.23], ["陪我走過 一整年的旅程", 94.23, 96.7], ["睡飽一點 笑多一點", 101.73, 103.8], ["睡飽一點 笑多一點", 103.88, 104.2], ["疫苗打好 雙腳天天看", 104.36, 106.2], ["十二個月 小小的勇敢", 106.75, 108.67], ["匯成大大的 明天", 109.15, 111.06], ["一步一步 糖糖正正", 114.1, 116.09], ["今天的我 比昨天更堅定", 116.25, 118.32], ["照顧身體 也照顧心情", 118.72, 120.8], ["每個好選擇 都是小小的贏", 121.12, 123.43], ["一步一步 糖糖正正", 123.19, 125.82], ["一起走向 更好的風景", 126.06, 130.53], ["(糖糖正正 夢工廠)", 128.46, 130.53]];
+function openTheme(){
+  if(!THEME){ THEME=new Audio("audio/theme.mp3"); THEME.preload="auto"; THEME.addEventListener("play",bgmSync); THEME.addEventListener("pause",bgmSync); THEME.addEventListener("ended",bgmSync); }
+  $("modal-body").innerHTML=`<div class="eyebrow">THEME SONG</div><h2>主題曲《一步一步，糖糖正正》</h2>
+    <p class="hint">由 Suno 生成的原創歌曲，歌詞對應遊戲裡的衛教重點。</p>
+    <div class="song-ctl"><button class="btn primary" id="th-play">▶ 播放</button><span id="th-time">0:00 / 2:24</span></div>
+    <input type="range" id="th-seek" min="0" max="144" step="1" value="0" aria-label="播放進度">
+    <ol class="lyr" id="th-lyr">${LYR.map(([t])=>`<li>${t}</li>`).join("")}</ol>
+    <div class="page-actions"><button class="btn" id="th-close">關閉</button></div>`;
+  $("modal").hidden=false; $("modal").classList.add("song");
+  const play=$("th-play"), seek=$("th-seek"), li=[...$("th-lyr").children];
+  const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,"0")}`;
+  const tick=()=>{ const t=THEME.currentTime; seek.value=t; $("th-time").textContent=`${fmt(t)} / ${fmt(THEME.duration||144.4)}`;
+    let k=-1; LYR.forEach(([,s],i)=>{ if(t>=s-.15) k=i; }); li.forEach((x,i)=>x.classList.toggle("on",i===k));
+    if(k>=0 && THEME.paused===false){ const box=$("th-lyr"); const el=li[k]; box.scrollTop=el.offsetTop-box.clientHeight/2+el.clientHeight/2; } };
+  const paint=()=>{ play.textContent=THEME.paused?"▶ 播放":"❚❚ 暫停"; };
+  THEME.ontimeupdate=tick; THEME.onplay=THEME.onpause=paint;
+  play.onclick=()=>{ BGM_UNLOCKED=true; if(THEME.paused){ hush(); THEME.play().catch(()=>{ $("th-time").textContent="無法播放音訊，請稍後再試"; }); } else THEME.pause(); };
+  seek.oninput=()=>{ THEME.currentTime=+seek.value; tick(); };
+  $("th-close").onclick=()=>{ THEME.pause(); $("modal").hidden=true; $("modal").classList.remove("song"); };
+  paint(); tick();
+}
+
+/* ============ visual-novel conversations ============ */
+const NPC={cde:"小安衛教師",doc:"林醫師"};
+const CDE_MORE=[
+  "現在的注射筆針頭很細，很多人打過後都說比想像中不痛。用什麼藥、怎麼用，都會依你的狀況一起決定。",
+  "可以試試「配對測量」：同一餐的飯前和飯後 2 小時各量一次，就知道這一餐對血糖的影響。",
+  "下次可以邀請家人一起來上衛教課，讓他們知道怎麼陪伴你，而不是責備你。",
+  "固定時間上床和起床，下午以後少喝含咖啡因的飲料。如果打鼾很嚴重、白天很想睡，可以請醫師評估是否有睡眠呼吸中止。",
+  "如果要喝，女性一天不超過 1 份、男性不超過 2 份，而且不要空腹喝。",
+  "家人也可以一起做檢查。有糖尿病家族史的成人，建議定期篩檢血糖。",
+  "戒菸初期可能會嘴饞，可以先準備無糖飲料或蔬菜棒。戒菸對心臟和血管的好處，遠大於體重稍微增加。",
+  "先喝一杯水，用小盤子裝，吃完一輪等 15 分鐘再決定要不要再拿，比較不會吃過量。",
+  "CGM 會畫出一整天的血糖曲線，常用「目標範圍內時間」來看，也就是血糖在 70–180 mg/dL 之間的時間。",
+  "把這些進步寫下來，回診時拿給醫師看，也是給自己的鼓勵。",
+  "搭飛機時，藥物和血糖機都放在隨身行李，不要托運，避免太冷或太熱讓藥物變質。",
+  "之後每年也別忘了做眼睛、腎臟和足部檢查。我們明年也一起加油！",
+];
+const DOC_QA=[
+  {q:"藥是不是要吃一輩子？", a:"糖尿病是長期的病，藥物會依你的狀況調整。生活習慣做得好，有些人藥量可以減少，但請不要自己停藥，有疑問回診時我們一起討論。", ref:"ada9"},
+  {q:"多久要驗一次 A1C？", a:"還沒達標或剛調整治療時，大約每 3 個月驗一次；穩定達標的人，一年至少驗兩次。", ref:"ada6"},
+  {q:"血糖太低的時候怎麼辦？", a:"血糖低於 70 mg/dL，可能會手抖、冒冷汗、心慌。先吃 15 公克的糖，例如葡萄糖錠或半杯果汁，15 分鐘後再量一次，還是偏低就再吃一次。", ref:"ada6"},
+  {q:"除了血糖，還要注意什麼？", a:"血壓、血脂、腎臟、眼睛和腳都要定期檢查。多數糖友的血壓目標是低於 130/80 mmHg。", ref:"ada10"},
+  {q:"我可以自己調整藥量嗎？", a:"請不要自己增減或停藥。如果常常頭暈、低血糖，或有副作用，把情況記下來告訴我，我們一起調整。", ref:"ada9"},
+  {q:"眼睛要多久檢查一次？", a:"確診時就要做第一次眼底檢查。沒有視網膜病變、血糖也穩定的話，通常每 1–2 年檢查一次；有病變就至少每年一次。", ref:"ada12"},
+];
+const DOC_SETS=[[0,1],[2,4],[3,5],[1,3]];
+let VN=null;
+function vnOpen(bg,npc,lines,done){
+  VN={npc,q:[...lines],done,typing:null};
+  let el=$("vn"); if(!el){ el=document.createElement("div"); el.id="vn"; el.className="vn"; document.body.appendChild(el); }
+  el.innerHTML=`${clinicSVG(bg)}<div class="por l" id="vn-n">${npcSVG(npc)}</div><div class="por r" id="vn-p">${charSVG(S.kind,"normal")}</div>
+    <div class="box" role="dialog" aria-modal="true" aria-live="polite"><div class="name" id="vn-name"></div><div class="txt" id="vn-txt"></div><div id="vn-ch" class="choices"></div>
+    <div class="ctl">${sndBtns()}<button class="btn small" id="vn-re" title="再唸一次">↻ 再唸一次</button><button class="btn small primary" id="vn-next">繼續 ▶</button></div></div>`;
+  el.hidden=false; if(RM) el.querySelectorAll("svg").forEach(s=>s.pauseAnimations?.());
+  $("vn-next").onclick=vnStep; el.querySelector(".txt").onclick=vnStep; $("vn-re").onclick=()=>{ const l=VN.cur; if(l) speak(l.t,l.who==="p"?S.kind:VN.npc); };
+  vnStep();
+}
+function vnType(html){
+  const box=$("vn-txt"); clearInterval(VN.typing);
+  if(RM){ box.innerHTML=html; VN.typing=null; return; }
+  const plain=html.replace(/<cite[\s\S]*$/,""), tail=html.slice(plain.length); let i=0;
+  box.innerHTML=""; VN.full=html;
+  VN.typing=setInterval(()=>{ i+=2; if(i>=plain.length){ clearInterval(VN.typing); VN.typing=null; box.innerHTML=html; } else box.textContent=plain.slice(0,i).replace(/<[^>]*$/,"").replace(/<[^>]+>/g,""); },28);
+}
+function vnStep(){
+  if(!VN) return;
+  if(VN.typing){ clearInterval(VN.typing); VN.typing=null; $("vn-txt").innerHTML=VN.full; return; }
+  if(VN.cur&&VN.cur.choices) return;
+  const l=VN.q.shift();
+  if(!l){ hush(); const d=VN.done; VN=null; $("vn").hidden=true; d&&d(); return; }
+  VN.cur=l;
+  const me=l.who==="p";
+  $("vn-name").textContent= me?S.name:NPC[VN.npc];
+  $("vn-name").classList.toggle("me",me);
+  $("vn-p").classList.toggle("dim",!me); $("vn-n").classList.toggle("dim",me);
+  if(me) $("vn-p").innerHTML=charSVG(S.kind,l.e||"normal"); else { $("vn-n").innerHTML=npcSVG(VN.npc,l.e||"talk"); $("vn-p").innerHTML=charSVG(S.kind,l.pe||"normal"); }
+  vnType(l.t+(l.ref?`<cite>出處：${refHTML(l.ref)}</cite>`:""));
+  speak(l.t, me?S.kind:VN.npc);
+  const ch=$("vn-ch"); ch.innerHTML="";
+  $("vn-next").hidden=!!l.choices;
+  if(l.choices){
+    ch.innerHTML=l.choices.map((c,i)=>`<button class="opt" data-i="${i}"><span class="k">${"ABC"[i]}</span><span>${c.t}</span></button>`).join("");
+    ch.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ const c=l.choices[+b.dataset.i]; VN.cur=null; ch.innerHTML=""; $("vn-next").hidden=false; VN.q.unshift({who:"p",t:c.t,e:c.e},...c.then()); vnStep(); });
+  }
+}
+function cdeTalk(){
+  const i=(S.month-1)%TALKS.length, t=TALKS[i], first=S.talked!==S.month, n=esc(S.name);
+  if(first){ S.talked=S.month; S.mood=clamp(S.mood+4); saveGame(); }
+  const lines=[
+    {who:"n",t:S.month===1?`你好，我是衛教師小安。有什麼擔心或想問的，都可以跟我說喔。`:`${n}，又見面了！這個月過得怎麼樣？`,e:"happy"},
+    {who:"p",t:t.say,e:i===0||i===1||i===2?"worry":"normal"},
+    {who:"n",t:t.reply,ref:t.ref},
+    {who:"n",t:"你覺得呢？",choices:[
+      {t:"我想試試看！",e:"happy",then:()=>[{who:"n",t:"好！有任何問題，隨時來衛教室找我。",e:"happy"}]},
+      {t:"可以再多說一點嗎？",then:()=>[{who:"n",t:CDE_MORE[i],ref:t.ref},{who:"p",t:"原來如此，我學到了！",e:"happy"}]},
+    ]},
+  ];
+  if(!first) lines.push({who:"n",t:"這個月已經聊過囉，下個月再來找我聊新話題吧！",e:"happy"});
+  else lines.push({who:"n",t:"說出來心情有沒有好一點？（心情 +4）",e:"happy"});
+  vnOpen("cde","cde",lines,()=>renderHub());
+}
+function doctorVisit(done){
+  const v=Math.min(3,Math.floor(S.month/3)-1), prev=v===0?8.4:S.hist[S.month-4], now=S.a1c, n=esc(S.name);
+  const prevS=(typeof prev==="number"?prev:8.4).toFixed(1);
+  const verdict = now<7 ? `已經低於多數人的目標 7% 了！做得很好，繼續保持。`
+    : now<prev-0.05 ? `比上次的 ${prevS}% 進步了，方向是對的，我們繼續加油。`
+    : `這次沒有明顯下降也沒關係，我們一起看看哪裡可以調整。`;
+  const set=[...DOC_SETS[v]];
+  const ask=()=>({who:"n",t:set.length===2?"今天有什麼想問我的嗎？":"還有其他想問的嗎？",choices:[
+    ...set.map(k=>({t:DOC_QA[k].q,then:()=>{ set.splice(set.indexOf(k),1); return [{who:"n",t:DOC_QA[k].a,ref:DOC_QA[k].ref},...(set.length?[ask()]:[]),...(set.length?[]:closing())]; }})),
+    {t:"沒有了，謝謝醫師！",e:"happy",then:()=>closing()},
+  ]});
+  const closing=()=>[{who:"n",t:S.month<12?`那我們三個月後見。有不舒服的話，不用等到回診，隨時回來喔。`:`這一年辛苦了！明年我們也一起努力。`,e:"happy"},{who:"p",t:"謝謝醫師！",e:"happy"}];
+  const lines=[
+    {who:"n",t:`${n}你好，我是林醫師。這三個月過得怎麼樣？`,e:"happy"},
+    {who:"p",t:v===0?"我有照著計畫努力，可是看報告還是有點緊張……":"我有繼續努力！想知道這次的結果。",e:v===0?"worry":"normal"},
+    {who:"n",t:`這次的糖化血色素，也就是 A1C，是 ${now.toFixed(1)}%。${verdict}`,ref:"ada6",pe:now<prev-0.05||now<7?"happy":"normal"},
+    ask(),
+  ];
+  if(S.docSeen!==S.month){ S.docSeen=S.month; S.know=clamp(S.know+3); S.mood=clamp(S.mood+3); saveGame(); }
+  vnOpen("doc","doc",lines,done);
+}
+
 /* ============ boot ============ */
-$("scene").innerHTML=sceneSVG();
+$("scene").innerHTML=sceneSVG(); if(RM) $("scene").querySelector("svg").pauseAnimations?.();
+$("title-snd").innerHTML=sndBtns(); $("g-snd").innerHTML=sndBtns(); $("b-song").onclick=openTheme;
 $("title-chara").innerHTML=charSVG("tang","happy");
 { const c=store.get(CUR); if(c && accounts.load()[c]) ME=c; }
 show("title");
 </script>
-
 </body>
 </html>
