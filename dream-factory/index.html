@@ -272,7 +272,7 @@ details.recap li{margin:6px 0}
         <button class="tile" id="b-how"><b>遊戲說明</b><small>玩法與數值介紹</small></button>
         <button class="tile" id="b-ref"><b>實證文獻依據</b><small>ADA 2026・糖尿病學會・衛教學會</small></button>
       </div>
-      <p class="foot">原創衛教作品，人物與場景皆為原創繪製。內容依據 ADA Standards of Care in Diabetes 2026、中華民國糖尿病學會照護指引與糖尿病衛教學會衛教資料。不取代醫療建議。v3.0</p>
+      <p class="foot">原創衛教作品，人物與場景皆為原創繪製。內容依據 ADA Standards of Care in Diabetes 2026、中華民國糖尿病學會照護指引與糖尿病衛教學會衛教資料。不取代醫療建議。v3.1</p>
       <p class="foot"><a href="/#games" style="color:#2a6b78;font-weight:700">← 回到糖尿病照護小幫手</a></p>
     </div>
     <div class="title-chara" id="title-chara"></div>
@@ -568,42 +568,93 @@ function sceneSVG(){
   </svg>`;
 }
 const SKIN="#fde3cf", BLUSH="#f6a5a0";
+let CHAR_UID=0;
 function charSVG(kind, expr="normal", full=false){
-  const tang = kind==="tang";
-  const hair = tang?"#5a3a2e":"#2c2b3d";
-  const hood = tang?"#f2a7a0":"#7fc4bb";
-  const hoodD = tang?"#d9857e":"#5ea79d";
-  const backHair = tang?`<path d="M44 104 Q34 210 58 246 L142 246 Q166 210 156 104Z" fill="${hair}"/>`:"";
+  const tang = kind==="tang", u="c"+(++CHAR_UID);
+  const hair = tang?"#6b3f2e":"#2d3045", hairL = tang?"#9a6248":"#4a5374", hairD = tang?"#4a2a1f":"#1c1e2e";
+  const top = tang?"#f6b3bd":"#79c3b8", topD = tang?"#e48f9c":"#57a497";
+  const iris1 = tang?"#5a2f22":"#1f3550", iris2 = tang?"#c27a45":"#4f9bb5";
+  const line = "#3a2630";
+  const defs = `<defs>
+    <linearGradient id="${u}i" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${iris1}"/><stop offset=".55" stop-color="${iris2}"/><stop offset="1" stop-color="${tang?'#f0b77a':'#9fd8e0'}"/></linearGradient>
+    <linearGradient id="${u}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${hairL}"/><stop offset=".45" stop-color="${hair}"/><stop offset="1" stop-color="${hairD}"/></linearGradient>
+    <radialGradient id="${u}s" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#fff1e6"/><stop offset="1" stop-color="#f7dccb"/></radialGradient>
+  </defs>`;
+  const H=`url(#${u}h)`;
+  // eyes
+  const eyeOpen=(x,flip)=>{ const d=flip?-1:1; return `
+    <path d="M${x-12} ${119} Q${x} ${131} ${x+12} ${119} L${x+12} ${112} Q${x} ${100} ${x-12} ${112}Z" fill="#fff"/>
+    <ellipse cx="${x}" cy="117" rx="9.5" ry="12.5" fill="url(#${u}i)"/>
+    <ellipse cx="${x}" cy="118" rx="4.6" ry="6.5" fill="${iris1}" opacity=".85"/>
+    <path d="M${x-9} 112 Q${x} 108 ${x+9} 112" stroke="${iris1}" stroke-width="2" fill="none" opacity=".6"/>
+    <ellipse cx="${x-3.6*d}" cy="111" rx="3.8" ry="4.6" fill="#fff"/>
+    <circle cx="${x+3.6*d}" cy="123.5" r="1.8" fill="#fff" opacity=".95"/>
+    <circle cx="${x+5*d}" cy="113" r="1" fill="#fff" opacity=".8"/>
+    <path d="M${x-13*d} 113 Q${x-2*d} 100 ${x+13*d} 109" stroke="${line}" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+    ${tang?`<path d="M${x+13*d} 109 l${4.5*d} -3.6" stroke="${line}" stroke-width="2.6" stroke-linecap="round"/>`:""}
+    <path d="M${x-8} 130.5 Q${x} 132.5 ${x+8} 130" stroke="${line}" stroke-width="1.2" fill="none" opacity=".45"/>`; };
+  const eyeHappy=(x)=>`<path d="M${x-12} 120 Q${x} 105 ${x+12} 120" stroke="${line}" stroke-width="3.8" fill="none" stroke-linecap="round"/>${tang?`<path d="M${x+11} 118 l4 -2.5M${x-11} 118 l-4 -2.5" stroke="${line}" stroke-width="2.2" stroke-linecap="round"/>`:""}`;
+  let eyes, mouth, brows, extra="";
+  if(expr==="happy"||expr==="cheer") eyes=eyeHappy(79)+eyeHappy(121); else eyes=eyeOpen(79,true)+eyeOpen(121,false);
+  brows = expr==="worry"
+    ? `<path d="M67 92 Q77 92 88 97M133 92 Q123 92 112 97" stroke="${hairD}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`
+    : `<path d="M67 95 Q77 89 88 92M133 95 Q123 89 112 92" stroke="${hairD}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+  if(expr==="cheer") mouth=`<path d="M92 141 Q100 152 108 141Z" fill="#c9525e"/><path d="M95 146 Q100 150 105 146" fill="#f6a5ad"/>`;
+  else if(expr==="worry"){ mouth=`<path d="M94 145 Q100 141 106 145" stroke="#9a4d55" stroke-width="2.4" fill="none" stroke-linecap="round"/>`; extra=`<path d="M150 96 q5 8 0 12 q-5 -4 0 -12z" fill="#9fd3f0"/>`; }
+  else if(expr==="happy") mouth=`<path d="M93 141 Q100 149 107 141" stroke="#9a4d55" stroke-width="2.4" fill="#f3a0a8" stroke-linecap="round"/>`;
+  else mouth=`<path d="M94 142 Q100 147 106 142" stroke="#9a4d55" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+  const nose=`<path d="M99 131 q1.5 1.5 3 0" stroke="#d9a58e" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+  const blush=`<ellipse cx="67" cy="136" rx="9" ry="4.5" fill="#f7a1a8" opacity=".55"/><ellipse cx="133" cy="136" rx="9" ry="4.5" fill="#f7a1a8" opacity=".55"/>${tang?`<path d="M62 135 l3 -2M66 136 l3 -2M134 135 l3 -2M138 136 l3 -2" stroke="#e98691" stroke-width="1.2" opacity=".7"/>`:""}`;
+  // hair
+  const backHair = tang
+    ? `<path d="M40 106 Q30 60 70 46 Q100 36 130 46 Q170 60 160 106 Q172 190 158 262 Q140 276 124 262 L76 262 Q60 276 42 262 Q28 190 40 106Z" fill="${H}"/>`
+    : `<path d="M46 104 Q40 58 100 46 Q160 58 154 104 Q152 128 146 140 L54 140 Q48 128 46 104Z" fill="${H}"/>`;
   const front = tang
-    ? `<path d="M46 110 Q44 48 100 46 Q156 48 154 110 Q146 82 124 78 Q114 96 98 82 Q84 96 68 82 Q54 92 46 110Z" fill="${hair}"/><g transform="translate(140 66)"><path d="M0 -9 L2.6 -2.8 9 -2.8 3.9 1.2 5.8 7.6 0 3.8 -5.8 7.6 -3.9 1.2 -9 -2.8 -2.6 -2.8Z" fill="#ffd36e" stroke="#c9952e" stroke-width="1"/></g>`
-    : `<circle cx="47" cy="114" r="9" fill="${SKIN}"/><circle cx="153" cy="114" r="9" fill="${SKIN}"/><path d="M48 104 Q46 50 100 48 Q154 50 152 104 Q146 80 130 76 Q120 92 104 76 Q92 90 78 76 Q62 84 48 104Z" fill="${hair}"/><path d="M96 50 Q104 34 116 40 Q106 42 104 52Z" fill="${hair}"/>`;
-  let eyes, mouth, brows="";
-  const openEye=(x)=>`<ellipse cx="${x}" cy="116" rx="8.5" ry="11" fill="#3b2a30"/><ellipse cx="${x}" cy="119" rx="6" ry="7" fill="${tang?'#8a4f3c':'#3f5f7a'}"/><circle cx="${x-3}" cy="111" r="3.4" fill="#fff"/><circle cx="${x+3}" cy="121" r="1.6" fill="#fff"/>`;
-  if(expr==="happy"||expr==="cheer"){
-    eyes=`<path d="M70 118 Q79 106 88 118" stroke="#3b2a30" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M112 118 Q121 106 130 118" stroke="#3b2a30" stroke-width="4" fill="none" stroke-linecap="round"/>`;
-  } else eyes=openEye(79)+openEye(121);
-  if(expr==="cheer") mouth=`<path d="M88 136 Q100 154 112 136Z" fill="#c4545a"/><path d="M93 143 Q100 149 107 143" fill="#f39aa0"/>`;
-  else if(expr==="worry"){ mouth=`<path d="M92 142 Q100 136 108 142" stroke="#8a4b4b" stroke-width="3" fill="none" stroke-linecap="round"/>`; brows=`<path d="M70 98 L86 102M130 98 L114 102" stroke="${hair}" stroke-width="3" stroke-linecap="round"/><path d="M150 92 q5 8 0 12 q-5 -4 0 -12z" fill="#9fd3f0"/>`; }
-  else mouth=`<path d="M90 137 Q100 146 110 137" stroke="#8a4b4b" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+    ? `<path d="M46 116 Q42 50 100 46 Q158 50 154 116 Q150 96 140 84 Q138 102 128 108 Q126 88 116 78 Q108 98 94 104 Q98 88 92 78 Q82 96 66 104 Q70 92 66 84 Q54 96 46 116Z" fill="${H}"/>
+       <path d="M44 110 Q38 150 44 196 Q50 214 58 200 Q52 160 56 118Z" fill="${H}"/><path d="M156 110 Q162 150 156 196 Q150 214 142 200 Q148 160 144 118Z" fill="${H}"/>
+       <path d="M62 64 Q100 46 138 64" stroke="#fff" stroke-opacity=".35" stroke-width="4" fill="none" stroke-linecap="round"/>
+       <path d="M68 72 q6 -4 10 -2M90 64 q6 -3 10 -1M114 66 q6 -2 10 1" stroke="#fff" stroke-opacity=".45" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+       <g transform="translate(142 70)"><path d="M0 -9 L2.6 -2.8 9 -2.8 3.9 1.2 5.8 7.6 0 3.8 -5.8 7.6 -3.9 1.2 -9 -2.8 -2.6 -2.8Z" fill="#ffd36e" stroke="#c9952e" stroke-width="1"/></g>
+       <g transform="translate(56 76)"><path d="M0 0 Q-12 -10 -14 2 Q-12 12 0 0Z M0 0 Q12 -10 14 2 Q12 12 0 0Z" fill="#f28b9b"/><circle r="3" fill="#e06d80"/></g>`
+    : `<circle cx="48" cy="118" r="8" fill="url(#${u}s)"/><circle cx="152" cy="118" r="8" fill="url(#${u}s)"/>
+       <path d="M48 110 Q44 52 100 48 Q156 52 152 110 Q148 92 138 84 L134 100 Q126 86 116 80 L112 98 Q104 84 92 80 L86 98 Q78 86 66 84 L62 100 Q54 96 48 110Z" fill="${H}"/>
+       <path d="M96 52 Q106 30 122 38 Q108 42 106 54Z" fill="${H}"/>
+       <path d="M64 66 Q100 50 136 66" stroke="#fff" stroke-opacity=".3" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  // body
+  const sleeve = top;
   const arms = expr==="cheer"
-    ? `<path d="M58 184 Q30 160 34 128" stroke="${hood}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="34" cy="124" r="10" fill="${SKIN}"/><path d="M142 184 Q170 160 166 128" stroke="${hood}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="166" cy="124" r="10" fill="${SKIN}"/>`
-    : `<path d="M58 184 Q40 214 52 246" stroke="${hood}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="54" cy="250" r="9" fill="${SKIN}"/><path d="M142 184 Q160 214 148 246" stroke="${hood}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="146" cy="250" r="9" fill="${SKIN}"/>`;
-  const legs = full ? `<path d="M64 292 L66 372 H96 L99 300 H101 L104 372 H134 L136 292Z" fill="${tang?"#4f6d8a":"#3d4a5c"}"/><path d="M60 368 h40 q4 0 4 6 v6 h-48 v-4 q0 -8 4 -8Z M100 368 h40 q4 0 4 8 v4 h-48 v-6 q0 -6 4 -6Z" fill="#fffaf0" stroke="#24414a" stroke-width="2"/>` : "";
-  return `<svg viewBox="0 0 200 ${full?390:300}" role="img" aria-label="${tang?'糖糖':'正正'}">
-    ${legs}
+    ? `<path d="M60 188 Q34 164 36 130" stroke="${sleeve}" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="36" cy="125" r="9" fill="url(#${u}s)"/><path d="M140 188 Q166 164 164 130" stroke="${sleeve}" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="164" cy="125" r="9" fill="url(#${u}s)"/>`
+    : `<path d="M60 188 Q44 216 54 246" stroke="${sleeve}" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="55" cy="250" r="8.5" fill="url(#${u}s)"/><path d="M140 188 Q156 216 146 246" stroke="${sleeve}" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="145" cy="250" r="8.5" fill="url(#${u}s)"/>`;
+  const torso = tang
+    ? `<path d="M58 300 L62 198 Q66 176 100 172 Q134 176 138 198 L142 300Z" fill="${top}"/>
+       <path d="M86 174 L100 300 L114 174 Q100 170 86 174Z" fill="#fffaf3"/>
+       <path d="M84 172 L100 188 L116 172 L110 168 L100 178 L90 168Z" fill="#fff"/>
+       <path d="M100 186 l-9 -5 v10Z M100 186 l9 -5 v10Z" fill="#e5606f"/><circle cx="100" cy="186" r="2.6" fill="#c94a59"/>
+       <path d="M86 174 L98 300M114 174 L102 300" stroke="${topD}" stroke-width="2.5"/>
+       <circle cx="91" cy="222" r="2.2" fill="${topD}"/><circle cx="92" cy="250" r="2.2" fill="${topD}"/><circle cx="109" cy="222" r="2.2" fill="${topD}"/><circle cx="108" cy="250" r="2.2" fill="${topD}"/>`
+    : `<path d="M56 300 L60 196 Q62 174 100 170 Q138 174 140 196 L144 300Z" fill="${top}"/>
+       <path d="M84 172 Q100 186 116 172 L112 300 H88Z" fill="#fff"/>
+       <path d="M74 174 Q100 198 126 174 Q120 166 100 166 Q80 166 74 174Z" fill="${topD}"/>
+       <path d="M88 178 L86 210M112 178 L114 210" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+       <path d="M88 180 V300M112 180 V300" stroke="${topD}" stroke-width="3"/>`;
+  const legs = !full ? "" : tang
+    ? `<path d="M78 300 L76 352 H88 L90 300Z M110 300 L112 352 H124 L122 300Z" fill="#f4e3d6"/>
+       <path d="M60 290 Q56 330 50 352 Q100 362 150 352 Q144 330 140 290Z" fill="#8fa9d6"/>
+       <path d="M76 296 L70 352M100 298 V358M124 296 L130 352" stroke="#7690c2" stroke-width="2"/>
+       <path d="M70 354 h22 v14 q0 6 -6 6 h-20 q-6 0 -4 -8Z M108 354 h22 q8 12 2 20 h-20 q-6 0 -6 -6Z" fill="#a8667a"/>
+       <path d="M72 358 h18M110 358 h18" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>`
+    : `<path d="M64 292 L66 368 H96 L99 300 H101 L104 368 H134 L136 292Z" fill="#3f5878"/><path d="M100 300 V360" stroke="#33486a" stroke-width="2"/>
+       <path d="M60 364 h40 q4 0 4 6 v6 h-48 v-4 q0 -8 4 -8Z M100 364 h40 q4 0 4 8 v4 h-48 v-6 q0 -6 4 -6Z" fill="#fffaf0" stroke="#24414a" stroke-width="2"/>`;
+  const hem = full && !tang ? `<path d="M56 290 H144 V300 Q100 306 56 300Z" fill="${topD}"/>` : "";
+  return `<svg viewBox="0 0 200 ${full?390:300}" role="img" aria-label="${tang?'糖糖':'正正'}">${defs}
     ${backHair}
-    <path d="M56 300 L60 196 Q62 172 100 168 Q138 172 140 196 L144 300Z" fill="${hood}"/>${full?`<path d="M56 290 H144 V300 Q100 306 56 300Z" fill="${hoodD}"/>`:""}
-    <path d="M74 172 Q100 196 126 172 Q120 164 100 164 Q80 164 74 172Z" fill="${hoodD}"/>
-    <path d="M92 180 L90 214M108 180 L110 214" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M72 246 H128 Q130 268 120 272 H80 Q70 268 72 246Z" fill="${hoodD}" opacity=".7"/>
-    <path d="M82 254 h36" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>
+    ${legs}
+    ${torso}${hem}
     ${arms}
-    <rect x="90" y="150" width="20" height="22" rx="6" fill="${SKIN}"/>
-    <ellipse cx="100" cy="112" rx="54" ry="52" fill="${SKIN}"/>
+    <path d="M90 148 h20 v24 q-10 6 -20 0Z" fill="#f2cdb9"/>
+    <path d="M52 102 Q52 58 100 56 Q148 58 148 102 Q148 136 124 156 Q100 172 76 156 Q52 136 52 102Z" fill="url(#${u}s)"/>
     ${front}
-    ${eyes}${brows}
-    <ellipse cx="66" cy="134" rx="9" ry="5" fill="${BLUSH}" opacity=".7"/><ellipse cx="134" cy="134" rx="9" ry="5" fill="${BLUSH}" opacity=".7"/>
-    ${mouth}
+    ${eyes}${brows}${nose}${blush}${mouth}${extra}
   </svg>`;
 }
 
