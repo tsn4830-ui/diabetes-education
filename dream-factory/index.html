@@ -239,7 +239,7 @@ details.recap li{margin:6px 0}
 
 /* in-page confirm */
 .modal{position:fixed;inset:0;z-index:20;background:rgba(36,65,74,.45);display:grid;place-items:center;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.modal .page{max-width:420px}
+.modal .page{max-width:420px;max-height:calc(100dvh - 32px);overflow-y:auto;box-sizing:border-box}
 
 @media (max-width:760px){
       .chara{order:-1;margin:0;max-width:110px}
@@ -1279,7 +1279,7 @@ async function saveEndingCard(e){
   $("modal").classList.remove("song"); $("modal").hidden=false;
   let cv; try{ cv=await drawEndingCard(e); }catch(err){ $("ec-hint").textContent="圖片製作失敗，請稍後再試。"; $("ec-act").innerHTML=`<button class="btn" id="ec-close">關閉</button>`; $("ec-close").onclick=()=>{ $("modal").hidden=true; }; return; }
   const url=cv.toDataURL("image/png"), fname=`糖糖正正夢工廠-${e.n}.png`;
-  $("ec-box").innerHTML=`<img src="${url}" alt="${esc(e.n)} 結局紀念卡" style="width:100%;max-width:420px;display:block;margin:0 auto;border-radius:14px;border:2px solid var(--ink)">`;
+  $("ec-box").innerHTML=`<img src="${url}" alt="${esc(e.n)} 結局紀念卡" style="width:auto;max-width:100%;max-height:min(56dvh,525px);display:block;margin:0 auto;border-radius:14px;border:2px solid var(--ink)">`;
   $("ec-hint").textContent="手機可以長按圖片，選「加入照片」或「儲存影像」。";
   const canShare = !!(navigator.canShare && window.File);
   $("ec-act").innerHTML=`<a class="btn primary" id="ec-dl" style="text-decoration:none" href="${url}" download="${fname}">下載圖片</a>${canShare?`<button class="btn" id="ec-share">分享</button>`:""}<button class="btn" id="ec-close">關閉</button>`;
