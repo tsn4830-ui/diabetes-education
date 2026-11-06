@@ -239,7 +239,7 @@ details.recap li{margin:6px 0}
 
 /* in-page confirm */
 .modal{position:fixed;inset:0;z-index:20;background:rgba(36,65,74,.45);display:grid;place-items:center;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.modal .page{max-width:420px}
+.modal .page{max-width:420px;max-height:calc(100dvh - 32px);overflow-y:auto;box-sizing:border-box}
 
 @media (max-width:760px){
       .chara{order:-1;margin:0;max-width:110px}
@@ -1218,13 +1218,74 @@ function finish(){
    </div>
    <details class="recap" open><summary>這一年學到的 12 個衛教重點</summary><ol>${EVENTS.map((ev,i)=>`<li><b>${ev.t}：</b>${ev.key}${S.answers[i]===ev.a?' ✓':''}</li>`).join("")}</ol></details>
    <p class="note">遊戲中的數值為簡化示意。您真正的目標值與治療計畫，請與醫師、糖尿病衛教師一起討論。</p>
-   <div class="page-actions"><button class="btn primary" id="e-again">再玩一次</button><button class="btn" id="e-gal">結局圖鑑</button><button class="btn" id="e-title">回到標題</button></div>`;
+   <div class="page-actions"><button class="btn primary" id="e-save">保存結局圖片</button><button class="btn" id="e-again">再玩一次</button><button class="btn" id="e-gal">結局圖鑑</button><button class="btn" id="e-title">回到標題</button></div>`;
   show("ending");
+  $("e-save").onclick=()=>saveEndingCard(e);
   $("e-again").onclick=()=>show("setup");
   $("e-gal").onclick=()=>{ renderGallery(); show("gallery"); };
   $("e-title").onclick=()=>show("title");
 }
 
+
+/* ============ 結局圖片：畫成一張 1080×1350 的紀念卡，可下載或分享 ============ */
+function loadImg(src){ return new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=src; }); }
+function wrapText(ctx, text, maxW){ const out=[]; let line=""; const NB="，。！？、；：」』）…"; for(const ch of text){ const t=line+ch; if(ctx.measureText(t).width>maxW && line){ if(NB.includes(ch)){ const k=[...line]; const last=k.pop(); out.push(k.join("")); line=last+ch; } else { out.push(line); line=ch; } } else line=t; } if(line) out.push(line); return out; }
+function rrect(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+async function drawEndingCard(e){
+  const W=1080,H=1350, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const g=cv.getContext("2d");
+  try{ await document.fonts.ready; }catch(_){}
+  const DISP='"LXGW WenKai TC","Kaiti TC","DFKai-SB","BiauKai",serif', BODY='"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';
+  // 背景：遊戲的田園場景
+  try{ let sv=sceneSVG(); if(!/xmlns=/.test(sv)) sv=sv.replace("<svg",'<svg xmlns="http://www.w3.org/2000/svg"');
+    const url=URL.createObjectURL(new Blob([sv],{type:"image/svg+xml"})); const im=await loadImg(url);
+    const sc=Math.max(W/im.width,H/im.height); g.drawImage(im,(W-im.width*sc)/2,(H-im.height*sc)/2,im.width*sc,im.height*sc); URL.revokeObjectURL(url);
+  }catch(_){ const gr=g.createLinearGradient(0,0,0,H); gr.addColorStop(0,"#bfe3f2"); gr.addColorStop(1,"#cfe8c9"); g.fillStyle=gr; g.fillRect(0,0,W,H); }
+  g.fillStyle="rgba(255,250,240,.35)"; g.fillRect(0,0,W,H);
+  // 人物（加油表情）
+  try{ const c=CHIMG[S.kind], im=await loadImg(chURL(S.kind,"cheer")); const h=760, w=h*im.width/im.height;
+    g.save(); g.shadowColor="rgba(36,65,74,.28)"; g.shadowBlur=24; g.shadowOffsetY=10;
+    g.drawImage(im, 300-w*c.hx, 330-h*c.ht, w, h); g.restore(); }catch(_){}
+  // 標題
+  g.textAlign="center"; g.fillStyle="#24414a"; g.font=`700 44px ${BODY}`;
+  rrect(g,W/2-250,48,500,70,35); g.fillStyle="#3f8f6b"; g.fill(); g.fillStyle="#fff"; g.fillText("糖糖正正夢工廠 ・ 結局",W/2,98);
+  // 右側卡片
+  const cx=560, cy=250, cw=470;
+  let fs=58; g.font=`700 ${fs}px ${DISP}`; while(fs>40 && g.measureText(e.n).width>cw-72){ fs-=2; g.font=`700 ${fs}px ${DISP}`; }
+  const tl=wrapText(g,e.n,cw-72); g.font=`700 30px ${BODY}`; const ql=wrapText(g,`「${e.say}」`,cw-72);
+  const ch=130+tl.length*(fs+10)+6+ql.length*44+18+5*46+10;
+  rrect(g,cx,cy,cw,ch,28); g.fillStyle="rgba(255,250,240,.94)"; g.fill(); g.lineWidth=4; g.strokeStyle="#24414a"; g.stroke();
+  g.textAlign="left"; g.fillStyle="#7a8a86"; g.font=`700 24px ${BODY}`; g.fillText(`ENDING ${ENDINGS.indexOf(e)+1} / ${ENDINGS.length}`,cx+36,cy+58);
+  g.fillStyle="#24414a"; g.font=`700 ${fs}px ${DISP}`; let y=cy+130;
+  for(const l of tl){ g.fillText(l,cx+36,y); y+=fs+10; }
+  g.fillStyle="#c4527a"; g.font=`700 30px ${BODY}`; y+=6;
+  for(const l of ql){ g.fillText(l,cx+36,y); y+=44; }
+  y+=18; g.fillStyle="#24414a"; g.font=`500 26px ${BODY}`;
+  const st=[["A1C",`8.4% → ${a1cStr()}`],["最佳做法",`${S.correct} / 12 題`],["體力",Math.round(S.fit)],["心情",Math.round(S.mood)],["衛教知識",Math.round(S.know)]];
+  for(const [k,v] of st){ g.fillStyle="#6b7d79"; g.font=`500 26px ${BODY}`; g.fillText(k,cx+36,y); g.fillStyle="#24414a"; g.font=`700 30px ${BODY}`; g.fillText(String(v),cx+190,y); y+=46; }
+  // 底部：玩家與日期
+  const d=new Date(), ds=`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
+  rrect(g,40,960,W-80,210,28); g.fillStyle="rgba(255,250,240,.94)"; g.fill(); g.lineWidth=4; g.strokeStyle="#24414a"; g.stroke();
+  g.textAlign="center"; g.fillStyle="#24414a"; g.font=`700 40px ${DISP}`;
+  g.fillText(`${S.name}完成了確診後的第一年`,W/2,1030);
+  g.font=`500 26px ${BODY}`; g.fillStyle="#3f8f6b"; g.fillText(`陪伴新糖友，一步一步養成穩糖好習慣 ・ ${ds}`,W/2,1080);
+  g.fillStyle="#6b7d79"; g.font=`500 24px ${BODY}`; g.fillText("dm.drtsengshihting.com/dream-factory",W/2,1130);
+  rrect(g,150,1198,W-300,48,24); g.fillStyle="rgba(255,250,240,.85)"; g.fill();
+  g.fillStyle="rgba(36,65,74,.8)"; g.font=`500 21px ${BODY}`;
+  g.fillText("遊戲數值為簡化示意，不取代醫療建議。實際目標請與醫療團隊討論。",W/2,1230);
+  return cv;
+}
+async function saveEndingCard(e){
+  $("modal-body").innerHTML=`<h2>結局紀念卡</h2><p class="hint" id="ec-hint">製作中……</p><div id="ec-box"></div><div class="page-actions" id="ec-act"></div>`;
+  $("modal").classList.remove("song"); $("modal").hidden=false;
+  let cv; try{ cv=await drawEndingCard(e); }catch(err){ $("ec-hint").textContent="圖片製作失敗，請稍後再試。"; $("ec-act").innerHTML=`<button class="btn" id="ec-close">關閉</button>`; $("ec-close").onclick=()=>{ $("modal").hidden=true; }; return; }
+  const url=cv.toDataURL("image/png"), fname=`糖糖正正夢工廠-${e.n}.png`;
+  $("ec-box").innerHTML=`<img src="${url}" alt="${esc(e.n)} 結局紀念卡" style="width:auto;max-width:100%;max-height:min(56dvh,525px);display:block;margin:0 auto;border-radius:14px;border:2px solid var(--ink)">`;
+  $("ec-hint").textContent="手機可以長按圖片，選「加入照片」或「儲存影像」。";
+  const canShare = !!(navigator.canShare && window.File);
+  $("ec-act").innerHTML=`<a class="btn primary" id="ec-dl" style="text-decoration:none" href="${url}" download="${fname}">下載圖片</a>${canShare?`<button class="btn" id="ec-share">分享</button>`:""}<button class="btn" id="ec-close">關閉</button>`;
+  $("ec-close").onclick=()=>{ $("modal").hidden=true; };
+  if(canShare) $("ec-share").onclick=()=>{ cv.toBlob(async b=>{ try{ const f=new File([b],fname,{type:"image/png"}); if(navigator.canShare({files:[f]})) await navigator.share({files:[f],title:"糖糖正正夢工廠",text:`我在糖糖正正夢工廠得到「${e.n}」結局！`}); else $("ec-hint").textContent="這個瀏覽器不支援分享圖片，請改用下載或長按圖片儲存。"; }catch(_){} },"image/png"); };
+}
 
 /* ============ sound: piano BGM, theme song, read-aloud ============ */
 const AUD_KEY="ttzz-audio-v1";
