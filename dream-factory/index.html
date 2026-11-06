@@ -270,7 +270,7 @@ details.recap li{margin:6px 0}
 .vn .por svg{display:block;width:100%;height:auto}
 .vn .por.l{left:max(4vw,8px)}
 .vn .por.r{right:max(4vw,8px)}
-.vn .por.dim{filter:brightness(.7) saturate(.75) drop-shadow(0 12px 16px rgba(20,40,50,.2));transform:translateY(10px) scale(.96)}
+.vn .por.dim{filter:brightness(.88) saturate(.92) drop-shadow(0 12px 16px rgba(20,40,50,.2));transform:translateY(8px) scale(.97)}
 .vn .box{position:absolute;left:50%;transform:translateX(-50%);bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(880px,calc(100% - 24px));box-sizing:border-box;background:rgba(255,250,240,.97);border:2px solid var(--ink);border-radius:22px;box-shadow:0 10px 0 rgba(36,65,74,.18);padding:24px 22px 14px;max-height:60vh;overflow:auto}
 .vn .name{position:sticky;top:0;display:inline-block;margin:-12px 0 6px;background:var(--leaf);color:#fff;border-radius:10px;padding:2px 14px;font-weight:700;font-size:15px}
 .vn .name.me{background:#d9738a}
@@ -790,8 +790,8 @@ function npcSVG(kind, expr="normal"){
     <path d="M${x-12} 119 Q${x} 131 ${x+12} 119 L${x+12} 112 Q${x} 100 ${x-12} 112Z" fill="#fff"/>
     <ellipse cx="${x}" cy="117" rx="9.5" ry="12" fill="url(#${u}i)"/><ellipse cx="${x}" cy="118" rx="4.4" ry="6.2" fill="${iris1}" opacity=".85"/>
     <ellipse cx="${x-3.6*d}" cy="111.5" rx="3.6" ry="4.4" fill="#fff"/><circle cx="${x+3.6*d}" cy="123" r="1.7" fill="#fff"/>
-    <path d="M${x-13*d} 113 Q${x-2*d} 101 ${x+13*d} 109" stroke="${line}" stroke-width="3.4" fill="none" stroke-linecap="round"/>
-    <path d="M${x+13*d} 109 l${4*d} -3" stroke="${line}" stroke-width="2.4" stroke-linecap="round"/>`; };
+    <path d="M${x-12.5} 113 Q${x} 101 ${x+12.5} 113" stroke="${line}" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+    <path d="M${x+12*d} 112 l${3.6*d} -3.2" stroke="${line}" stroke-width="2.2" stroke-linecap="round"/>`; };
   const happy=x=>`<path d="M${x-12} 120 Q${x} 106 ${x+12} 120" stroke="${line}" stroke-width="3.6" fill="none" stroke-linecap="round"/>`;
   const eyes = expr==="happy" ? happy(79)+happy(121) : eye(79,true)+eye(121,false);
   const brows=`<path d="M67 95 Q77 89 88 92M133 95 Q123 89 112 92" stroke="${hairD}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
@@ -846,22 +846,21 @@ function charSVG(kind, expr="normal", full=false){
   const H=`url(#${u}h)`;
   // eyes
   const eyeOpen=(x,flip)=>{ const d=flip?-1:1; return `
-    <path d="M${x-12} ${119} Q${x} ${131} ${x+12} ${119} L${x+12} ${112} Q${x} ${100} ${x-12} ${112}Z" fill="#fff"/>
-    <ellipse cx="${x}" cy="117" rx="9.5" ry="12.5" fill="url(#${u}i)"/>
-    <ellipse cx="${x}" cy="118" rx="4.6" ry="6.5" fill="${iris1}" opacity=".85"/>
-    <path d="M${x-9} 112 Q${x} 108 ${x+9} 112" stroke="${iris1}" stroke-width="2" fill="none" opacity=".6"/>
-    <ellipse cx="${x-3.6*d}" cy="111" rx="3.8" ry="4.6" fill="#fff"/>
-    <circle cx="${x+3.6*d}" cy="123.5" r="1.8" fill="#fff" opacity=".95"/>
-    <circle cx="${x+5*d}" cy="113" r="1" fill="#fff" opacity=".8"/>
-    <path d="M${x-13*d} 113 Q${x-2*d} 100 ${x+13*d} 109" stroke="${line}" stroke-width="3.6" fill="none" stroke-linecap="round"/>
-    ${tang?`<path d="M${x+13*d} 109 l${4.5*d} -3.6" stroke="${line}" stroke-width="2.6" stroke-linecap="round"/>`:""}
-    <path d="M${x-8} 130.5 Q${x} 132.5 ${x+8} 130" stroke="${line}" stroke-width="1.2" fill="none" opacity=".45"/>`; };
+    <path d="M${x-11} 112 Q${x} 103 ${x+11} 112 L${x+11} 121 Q${x} 129 ${x-11} 121Z" fill="#fff"/>
+    <ellipse cx="${x}" cy="117.5" rx="8.8" ry="11.2" fill="url(#${u}i)"/>
+    <ellipse cx="${x}" cy="118.5" rx="4.3" ry="5.8" fill="${iris1}" opacity=".85"/>
+    <path d="M${x-8.5} 111.5 Q${x} 108 ${x+8.5} 111.5" stroke="${iris1}" stroke-width="2.2" fill="none" opacity=".55"/>
+    <ellipse cx="${x-3.4*d}" cy="112.5" rx="3.4" ry="4.2" fill="#fff"/>
+    <circle cx="${x+3.4*d}" cy="123" r="1.6" fill="#fff" opacity=".95"/>
+    <path d="M${x-12.5} 113 Q${x} 100.5 ${x+12.5} 113" stroke="${line}" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+    ${tang?`<path d="M${x+12*d} 112 l${3.8*d} -3.4" stroke="${line}" stroke-width="2.4" stroke-linecap="round"/>`:""}
+    <path d="M${x-6} 129.5 Q${x} 131 ${x+6} 129.5" stroke="${line}" stroke-width="1.2" fill="none" opacity=".4"/>`; };
   const eyeHappy=(x)=>`<path d="M${x-12} 120 Q${x} 105 ${x+12} 120" stroke="${line}" stroke-width="3.8" fill="none" stroke-linecap="round"/>${tang?`<path d="M${x+11} 118 l4 -2.5M${x-11} 118 l-4 -2.5" stroke="${line}" stroke-width="2.2" stroke-linecap="round"/>`:""}`;
   let eyes, mouth, brows, extra="";
   if(expr==="happy"||expr==="cheer") eyes=eyeHappy(79)+eyeHappy(121); else eyes=eyeOpen(79,true)+eyeOpen(121,false);
   brows = expr==="worry"
-    ? `<path d="M67 92 Q77 92 88 97M133 92 Q123 92 112 97" stroke="${hairD}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`
-    : `<path d="M67 95 Q77 89 88 92M133 95 Q123 89 112 92" stroke="${hairD}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+    ? `<path d="M67 96 Q77 94 87 89M133 96 Q123 94 113 89" stroke="${hairD}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`
+    : `<path d="M68 95 Q77 90 87 92M132 95 Q123 90 113 92" stroke="${hairD}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
   if(expr==="cheer") mouth=`<path d="M92 141 Q100 152 108 141Z" fill="#c9525e"/><path d="M95 146 Q100 150 105 146" fill="#f6a5ad"/>`;
   else if(expr==="worry"){ mouth=`<path d="M94 145 Q100 141 106 145" stroke="#9a4d55" stroke-width="2.4" fill="none" stroke-linecap="round"/>`; extra=`<path d="M150 96 q5 8 0 12 q-5 -4 0 -12z" fill="#9fd3f0"/>`; }
   else if(expr==="happy") mouth=`<path d="M93 141 Q100 149 107 141" stroke="#9a4d55" stroke-width="2.4" fill="#f3a0a8" stroke-linecap="round"/>`;
@@ -884,32 +883,36 @@ function charSVG(kind, expr="normal", full=false){
        <path d="M96 52 Q106 30 122 38 Q108 42 106 54Z" fill="${H}"/>
        <path d="M64 66 Q100 50 136 66" stroke="#fff" stroke-opacity=".3" stroke-width="4" fill="none" stroke-linecap="round"/>`;
   // body
-  const sleeve = top;
-  const arms = expr==="cheer"
-    ? `<path d="M60 188 Q34 164 36 130" stroke="${sleeve}" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="36" cy="125" r="9" fill="url(#${u}s)"/><path d="M140 188 Q166 164 164 130" stroke="${sleeve}" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="164" cy="125" r="9" fill="url(#${u}s)"/>`
-    : `<path d="M60 188 Q44 216 54 246" stroke="${sleeve}" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="55" cy="250" r="8.5" fill="url(#${u}s)"/><path d="M140 188 Q156 216 146 246" stroke="${sleeve}" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="145" cy="250" r="8.5" fill="url(#${u}s)"/>`;
+  const sleeve = top, OL=`stroke="#6b4a55" stroke-opacity=".45" stroke-width="1.6" stroke-linejoin="round"`;
+  const mir=d=>`<g transform="translate(200 0) scale(-1 1)">${d}</g>`;
+  const hand=(x,y)=>`<path d="M${x-7} ${y-3} Q${x-9} ${y+7} ${x-2} ${y+10} Q${x+6} ${y+11} ${x+7} ${y+3} Q${x+7} ${y-5} ${x} ${y-6} Q${x-5} ${y-6} ${x-7} ${y-3}Z" fill="url(#${u}s)" ${OL}/>`;
+  const k=tang?0:-4;
+  const armDown=`<g transform="translate(${k} 0)"><path d="M78 181 Q63 184 60 208 L55 250 Q62 258 71 253 L73 216 Q76 200 84 192Z" fill="${sleeve}" ${OL}/><path d="M57 236 Q64 241 72 239" stroke="${topD}" stroke-width="2" fill="none" opacity=".6"/>${hand(63,259)}</g>`;
+  const armUp=`<g transform="translate(${k} 0)"><path d="M80 184 Q60 182 52 160 L44 134 Q50 124 60 130 L66 154 Q72 168 86 176Z" fill="${sleeve}" ${OL}/>${hand(49,126)}</g>`;
+  const arms = expr==="cheer" ? armUp+mir(armUp) : armDown+mir(armDown);
   const torso = tang
-    ? `<path d="M58 300 L62 198 Q66 176 100 172 Q134 176 138 198 L142 300Z" fill="${top}"/>
-       <path d="M86 174 L100 300 L114 174 Q100 170 86 174Z" fill="#fffaf3"/>
-       <path d="M84 172 L100 188 L116 172 L110 168 L100 178 L90 168Z" fill="#fff"/>
+    ? `<path d="M68 276 Q64 240 68 210 Q70 186 88 177 L100 174 L112 177 Q130 186 132 210 Q136 240 132 276 Q116 282 100 280 Q84 282 68 276Z" fill="${top}" ${OL}/>
+       <path d="M88 176 L100 272 L112 176 Q100 172 88 176Z" fill="#fffaf3"/>
+       <path d="M85 173 L100 188 L115 173 L109 169 L100 178 L91 169Z" fill="#fff" stroke="#6b4a55" stroke-opacity=".3" stroke-width="1"/>
        <path d="M100 186 l-9 -5 v10Z M100 186 l9 -5 v10Z" fill="#e5606f"/><circle cx="100" cy="186" r="2.6" fill="#c94a59"/>
-       <path d="M86 174 L98 300M114 174 L102 300" stroke="${topD}" stroke-width="2.5"/>
-       <circle cx="91" cy="222" r="2.2" fill="${topD}"/><circle cx="92" cy="250" r="2.2" fill="${topD}"/><circle cx="109" cy="222" r="2.2" fill="${topD}"/><circle cx="108" cy="250" r="2.2" fill="${topD}"/>`
-    : `<path d="M56 300 L60 196 Q62 174 100 170 Q138 174 140 196 L144 300Z" fill="${top}"/>
-       <path d="M84 172 Q100 186 116 172 L112 300 H88Z" fill="#fff"/>
-       <path d="M74 174 Q100 198 126 174 Q120 166 100 166 Q80 166 74 174Z" fill="${topD}"/>
-       <path d="M88 178 L86 210M112 178 L114 210" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
-       <path d="M88 180 V300M112 180 V300" stroke="${topD}" stroke-width="3"/>`;
+       <path d="M88 177 L98 278M112 177 L102 278" stroke="${topD}" stroke-width="2.4"/>
+       <circle cx="93" cy="216" r="2" fill="${topD}"/><circle cx="94" cy="242" r="2" fill="${topD}"/><circle cx="107" cy="216" r="2" fill="${topD}"/><circle cx="106" cy="242" r="2" fill="${topD}"/>`
+    : `<path d="M64 290 Q60 250 64 212 Q66 186 86 176 L100 173 L114 176 Q134 186 136 212 Q140 250 136 290Z" fill="${top}" ${OL}/>
+       <path d="M86 176 Q100 188 114 176 L110 288 H90Z" fill="#fff"/>
+       <path d="M76 178 Q100 200 124 178 Q118 167 100 167 Q82 167 76 178Z" fill="${topD}"/>
+       <path d="M90 182 L88 212M110 182 L112 212" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="88" cy="214" r="2.4" fill="#fff"/><circle cx="112" cy="214" r="2.4" fill="#fff"/>
+       <path d="M90 184 V288M110 184 V288" stroke="${topD}" stroke-width="2.6"/>
+       <path d="M64 280 H136 L136 292 Q100 298 64 292Z" fill="${topD}" ${OL}/>`;
   const legs = !full ? "" : tang
-    ? `<path d="M78 300 L76 352 H88 L90 300Z M110 300 L112 352 H124 L122 300Z" fill="#f4e3d6"/>
-       <path d="M60 290 Q56 330 50 352 Q100 362 150 352 Q144 330 140 290Z" fill="#8fa9d6"/>
-       <path d="M76 296 L70 352M100 298 V358M124 296 L130 352" stroke="#7690c2" stroke-width="2"/>
-       <path d="M70 354 h22 v14 q0 6 -6 6 h-20 q-6 0 -4 -8Z M108 354 h22 q8 12 2 20 h-20 q-6 0 -6 -6Z" fill="#a8667a"/>
-       <path d="M72 358 h18M110 358 h18" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>`
-    : `<path d="M64 292 L66 368 H96 L99 300 H101 L104 368 H134 L136 292Z" fill="#3f5878"/><path d="M100 300 V360" stroke="#33486a" stroke-width="2"/>
-       <path d="M60 364 h40 q4 0 4 6 v6 h-48 v-4 q0 -8 4 -8Z M100 364 h40 q4 0 4 8 v4 h-48 v-6 q0 -6 4 -6Z" fill="#fffaf0" stroke="#24414a" stroke-width="2"/>`;
-  const hem = full && !tang ? `<path d="M56 290 H144 V300 Q100 306 56 300Z" fill="${topD}"/>` : "";
-  return `<svg viewBox="0 0 200 ${full?390:300}" role="img" aria-label="${tang?'糖糖':'正正'}">${defs}
+    ? `<path d="M84 344 L83 362 H93 L94 344Z M106 344 L107 362 H117 L116 344Z" fill="#f4e3d6" ${OL}/>
+       <path d="M72 262 Q62 306 56 346 Q100 356 144 346 Q138 306 128 262Z" fill="#8fa9d6" ${OL}/>
+       <path d="M82 268 L74 348M100 270 V352M118 268 L126 348" stroke="#7690c2" stroke-width="2"/>
+       <path d="M82 359 h12 q5 0 5 6 q0 6 -6 6 h-11 q-6 0 -6 -5 q0 -7 6 -7Z M106 359 h12 q6 0 6 7 q0 5 -6 5 h-11 q-6 0 -6 -6 q0 -6 5 -6Z" fill="#a8667a" stroke="#6b4a55" stroke-opacity=".5" stroke-width="1.4"/>`
+    : `<path d="M70 286 L72 360 Q83 364 95 360 L98 302 H102 L105 360 Q117 364 128 360 L130 286Z" fill="#3f5878" ${OL}/><path d="M84 296 L85 356M116 296 L115 356" stroke="#33486a" stroke-width="1.6" opacity=".6"/>
+       <path d="M69 357 Q66 372 74 375 H96 Q100 372 96 360 Q83 364 69 357Z M131 357 Q134 372 126 375 H104 Q100 372 104 360 Q117 364 131 357Z" fill="#fffaf0" stroke="#24414a" stroke-width="2" stroke-linejoin="round"/><path d="M70 370 H97M103 370 H130" stroke="#c9d0dc" stroke-width="2"/>`;
+  const hem = "";
+  return `<svg viewBox="0 0 200 ${full?390:(tang?277:287)}" role="img" aria-label="${tang?'糖糖':'正正'}">${defs}
+    ${full?`<ellipse cx="100" cy="${tang?372:375}" rx="48" ry="6" fill="#24414a" opacity=".12"/>`:""}
     ${backHair}
     ${legs}
     ${torso}${hem}
