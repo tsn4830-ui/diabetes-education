@@ -124,9 +124,10 @@ input[type=text]{font:inherit;width:100%;box-sizing:border-box;border:2px solid 
 .g-main{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);background:var(--paper)}
 .room{position:relative;min-height:440px;overflow:hidden;background:#e9e2cf}
 .room>svg.bg{position:absolute;inset:0;width:100%;height:100%}
-.room .chara{position:absolute;left:50%;bottom:2%;transform:translateX(-50%);width:min(46%,250px);margin:0;max-width:none;filter:drop-shadow(0 10px 10px rgba(36,65,74,.25))}
-.room .bubble{position:absolute;z-index:2;left:14px;top:14px;width:auto;max-width:min(62%,330px);box-shadow:0 4px 0 rgba(36,65,74,.15)}
-.room .bubble::after{left:34px;bottom:-12px;transform:rotate(45deg)}
+.room .chara{position:absolute;left:50%;bottom:2%;transform:translateX(-50%);height:95%;width:auto;aspect-ratio:200/390;margin:0;max-width:none;filter:drop-shadow(0 10px 10px rgba(36,65,74,.25))}
+.room .bubble{position:absolute;z-index:2;left:12px;bottom:12px;width:auto;max-width:min(34%,260px);background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:8px 12px;font-size:14.5px;line-height:1.6;box-shadow:0 4px 0 rgba(36,65,74,.15)}
+.room .bubble:empty{display:none}
+.room .chara svg{display:block;width:100%;height:100%}
 .room .meter{position:absolute;right:12px;bottom:12px;background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:6px 10px;min-width:150px;font-size:13px;font-variant-numeric:tabular-nums}
 .room .meter b{font-size:18px}
 .room .meter i{display:block;height:8px;border-radius:8px;background:var(--paper-2);margin-top:4px;overflow:hidden}
@@ -170,7 +171,8 @@ input[type=text]{font:inherit;width:100%;box-sizing:border-box;border:2px solid 
   .g-main{grid-template-columns:1fr}
   .sheet{border-left:none;border-top:2px solid var(--ink)}
   .room{min-height:330px}
-  .room .chara{width:min(44%,190px)}
+  .room .chara{height:94%}
+  .room .bubble{max-width:38%;font-size:13px;padding:6px 9px}
   .g-cmd{grid-template-columns:repeat(3,1fr);position:sticky;bottom:0;padding-bottom:max(10px,env(safe-area-inset-bottom,0px))}
   .prof dl{grid-template-columns:auto 1fr}
   .g-top .left{width:100%}
@@ -267,10 +269,10 @@ details.recap li{margin:6px 0}
 .vn{position:fixed;inset:0;z-index:18;overflow:hidden;background:#20303a}
 .vn>svg.bg{position:absolute;inset:0;width:100%;height:100%}
 .vn .por{position:absolute;bottom:clamp(110px,22vh,190px);width:min(38vw,320px);transition:filter .25s,transform .25s;filter:drop-shadow(0 12px 16px rgba(20,40,50,.3))}
-.vn .por svg{display:block;width:100%;height:auto}
+.vn .por svg{display:block;width:100%;height:auto;overflow:visible}
 .vn .por.l{left:max(4vw,8px)}
 .vn .por.r{right:max(4vw,8px)}
-.vn .por.dim{filter:brightness(.7) saturate(.75) drop-shadow(0 12px 16px rgba(20,40,50,.2));transform:translateY(10px) scale(.96)}
+.vn .por.dim{filter:brightness(.88) saturate(.92) drop-shadow(0 12px 16px rgba(20,40,50,.2));transform:translateY(8px) scale(.97)}
 .vn .box{position:absolute;left:50%;transform:translateX(-50%);bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(880px,calc(100% - 24px));box-sizing:border-box;background:rgba(255,250,240,.97);border:2px solid var(--ink);border-radius:22px;box-shadow:0 10px 0 rgba(36,65,74,.18);padding:24px 22px 14px;max-height:60vh;overflow:auto}
 .vn .name{position:sticky;top:0;display:inline-block;margin:-12px 0 6px;background:var(--leaf);color:#fff;border-radius:10px;padding:2px 14px;font-weight:700;font-size:15px}
 .vn .name.me{background:#d9738a}
@@ -776,150 +778,26 @@ function sceneSVG(){
   </svg>`;
 }
 
-function npcSVG(kind, expr="normal"){
-  const doc = kind==="doc", u="n"+(++CHAR_UID), line="#3a2630";
-  const hair = doc?"#4a3226":"#a8683f", hairL = doc?"#7a5442":"#d39a68", hairD = doc?"#2e1e16":"#7a4628";
-  const iris1 = doc?"#2a1c16":"#4a2e1c", iris2 = doc?"#6e4a38":"#c98d4e";
-  const defs=`<defs>
-    <linearGradient id="${u}i" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${iris1}"/><stop offset=".55" stop-color="${iris2}"/><stop offset="1" stop-color="${doc?'#c9a084':'#f3c98f'}"/></linearGradient>
-    <linearGradient id="${u}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${hairL}"/><stop offset=".45" stop-color="${hair}"/><stop offset="1" stop-color="${hairD}"/></linearGradient>
-    <radialGradient id="${u}s" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#fff1e6"/><stop offset="1" stop-color="#f7dccb"/></radialGradient>
-    <linearGradient id="${u}c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e6edf2"/></linearGradient>
-  </defs>`, H=`url(#${u}h)`;
-  const eye=(x,flip)=>{ const d=flip?-1:1; return `
-    <path d="M${x-12} 119 Q${x} 131 ${x+12} 119 L${x+12} 112 Q${x} 100 ${x-12} 112Z" fill="#fff"/>
-    <ellipse cx="${x}" cy="117" rx="9.5" ry="12" fill="url(#${u}i)"/><ellipse cx="${x}" cy="118" rx="4.4" ry="6.2" fill="${iris1}" opacity=".85"/>
-    <ellipse cx="${x-3.6*d}" cy="111.5" rx="3.6" ry="4.4" fill="#fff"/><circle cx="${x+3.6*d}" cy="123" r="1.7" fill="#fff"/>
-    <path d="M${x-13*d} 113 Q${x-2*d} 101 ${x+13*d} 109" stroke="${line}" stroke-width="3.4" fill="none" stroke-linecap="round"/>
-    <path d="M${x+13*d} 109 l${4*d} -3" stroke="${line}" stroke-width="2.4" stroke-linecap="round"/>`; };
-  const happy=x=>`<path d="M${x-12} 120 Q${x} 106 ${x+12} 120" stroke="${line}" stroke-width="3.6" fill="none" stroke-linecap="round"/>`;
-  const eyes = expr==="happy" ? happy(79)+happy(121) : eye(79,true)+eye(121,false);
-  const brows=`<path d="M67 95 Q77 89 88 92M133 95 Q123 89 112 92" stroke="${hairD}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
-  const mouth = expr==="talk" ? `<path d="M94 141 Q100 150 106 141Z" fill="#c9525e"/>`
-    : `<path d="M93 141 Q100 148 107 141" stroke="#9a4d55" stroke-width="2.4" fill="${expr==="happy"?"#f3a0a8":"none"}" stroke-linecap="round"/>`;
-  const glasses = doc ? `<g fill="none" stroke="#2b2420" stroke-width="3.2"><ellipse cx="79" cy="117" rx="17" ry="15"/><ellipse cx="121" cy="117" rx="17" ry="15"/><path d="M96 115 q4 -4 8 0M62 113 l-10 -4M138 113 l10 -4"/></g><path d="M67 108 l7 -3M109 108 l7 -3" stroke="#fff" stroke-width="2" opacity=".6"/>` : "";
-  const back = doc
-    ? `<path d="M42 108 Q38 52 100 46 Q162 52 158 108 Q162 150 160 178 Q150 192 134 184 L66 184 Q50 192 40 178 Q38 150 42 108Z" fill="${H}"/>`
-    : `<path d="M42 110 Q36 54 100 46 Q164 54 158 110 Q162 150 150 166 Q126 172 100 170 Q74 172 50 166 Q38 150 42 110Z" fill="${H}"/>`;
-  const front = doc
-    ? `<path d="M46 120 Q40 48 100 46 Q160 48 154 120 Q150 92 136 80 Q126 96 104 98 Q112 86 108 76 Q90 94 62 96 Q52 104 46 120Z" fill="${H}"/>
-       <path d="M44 112 Q38 150 46 176 Q54 182 58 170 Q52 140 56 116Z M156 112 Q162 150 154 176 Q146 182 142 170 Q148 140 144 116Z" fill="${H}"/>
-       <path d="M64 64 Q100 48 136 64" stroke="#fff" stroke-opacity=".3" stroke-width="4" fill="none" stroke-linecap="round"/>`
-    : `<path d="M46 122 Q40 50 100 46 Q160 50 154 122 Q150 98 138 86 Q134 102 122 106 Q122 88 110 80 Q100 98 84 102 Q88 88 82 80 Q70 96 56 102 Q56 112 46 122Z" fill="${H}"/>
-       <path d="M44 116 Q40 150 50 166 Q58 160 56 120Z M156 116 Q160 150 150 166 Q142 160 144 120Z" fill="${H}"/>
-       <path d="M62 64 Q100 46 138 64" stroke="#fff" stroke-opacity=".4" stroke-width="4" fill="none" stroke-linecap="round"/>
-       <rect x="128" y="74" width="20" height="7" rx="3.5" fill="#7fc4bb" transform="rotate(-25 138 78)"/>`;
-  const body = doc
-    ? `<path d="M50 300 L56 196 Q60 174 100 170 Q140 174 144 196 L150 300Z" fill="url(#${u}c)" stroke="#c9d3db" stroke-width="2"/>
-       <path d="M84 172 L100 230 L116 172 Q100 166 84 172Z" fill="#5fb3a3"/>
-       <path d="M84 172 L100 236 L82 300 M116 172 L100 236 L118 300" stroke="#c9d3db" stroke-width="2.5" fill="none"/>
-       <path d="M78 182 Q70 230 92 250 M122 182 Q132 228 112 250" stroke="#4d5a6a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-       <circle cx="92" cy="252" r="5" fill="#9aa8b6" stroke="#4d5a6a" stroke-width="2"/><circle cx="112" cy="252" r="7" fill="#c7d0d9" stroke="#4d5a6a" stroke-width="2.5"/>
-       <rect x="120" y="206" width="20" height="14" rx="2" fill="#fff" stroke="#c9d3db"/><path d="M124 210 h12M124 214 h8" stroke="#8fb7e8" stroke-width="2"/>
-       <path d="M66 206 h14 v18 h-14z" fill="#e6edf2"/><path d="M70 202 v10M75 202 v12" stroke="#5aa0d8" stroke-width="2.2"/>`
-    : `<path d="M54 300 L58 196 Q62 174 100 170 Q138 174 142 196 L146 300Z" fill="#9ed8cf"/>
-       <path d="M82 172 L100 196 L118 172 Q100 166 82 172Z" fill="#f6fbfa"/><path d="M82 172 L100 196 L118 172" stroke="#6fbfb2" stroke-width="2.5" fill="none"/>
-       <path d="M86 178 Q92 220 98 236 M114 178 Q108 220 102 236" stroke="#f28b9b" stroke-width="2.5" fill="none"/>
-       <rect x="88" y="234" width="24" height="30" rx="3" fill="#fff" stroke="#6fbfb2" stroke-width="2"/><circle cx="100" cy="245" r="5" fill="#f6b3bd"/><path d="M93 256 h14" stroke="#6fbfb2" stroke-width="2"/>
-       <path d="M62 300 L60 230 Q60 218 72 220 L76 300Z" fill="#7ec8bc" opacity=".6"/>
-       <g transform="translate(118 222) rotate(8)"><rect width="34" height="44" rx="3" fill="#f2b84b" stroke="#c9952e" stroke-width="2"/><rect x="4" y="8" width="26" height="32" fill="#fffaf0"/><path d="M8 16h18M8 22h18M8 28h12" stroke="#c9bfa6" stroke-width="2"/><rect x="11" y="-3" width="12" height="7" rx="2" fill="#8a9aa6"/></g>`;
-  const blush=`<ellipse cx="67" cy="136" rx="9" ry="4.5" fill="#f7a1a8" opacity=".5"/><ellipse cx="133" cy="136" rx="9" ry="4.5" fill="#f7a1a8" opacity=".5"/>`;
-  return `<svg viewBox="0 0 200 300" role="img" aria-label="${doc?'曾醫師':'小安衛教師'}">${defs}${back}${body}
-    <path d="M90 148 h20 v24 q-10 6 -20 0Z" fill="#f2cdb9"/>
-    <path d="M52 102 Q52 58 100 56 Q148 58 148 102 Q148 136 124 156 Q100 172 76 156 Q52 136 52 102Z" fill="url(#${u}s)"/>
-    ${front}${eyes}${brows}<path d="M99 131 q1.5 1.5 3 0" stroke="#d9a58e" stroke-width="1.6" fill="none" stroke-linecap="round"/>${blush}${mouth}${glasses}</svg>`;
+const CHIMG={
+  tang:{w:426,h:1000,hx:0.472,ht:0.04,ex:["normal", "happy", "cheer", "worry"]},
+  zheng:{w:401,h:1000,hx:0.495,ht:0.061,ex:["normal", "happy", "cheer", "worry"]},
+  cde:{w:374,h:1000,hx:0.406,ht:0.0,ex:["normal", "happy", "cheer"]},
+  doc:{w:285,h:1000,hx:0.49,ht:0.001,ex:["normal", "happy", "cheer"]}
+};
+const CHARA_DIR="chara/";
+function chURL(kind, expr){ const c=CHIMG[kind]; return CHARA_DIR+kind+"-"+(c.ex.includes(expr)?expr:"normal")+".webp"; }
+(function preloadChara(){ try{ for(const k in CHIMG) for(const e of CHIMG[k].ex){ const i=new Image(); i.src=chURL(k,e); } }catch(e){} })();
+function chSVG(kind, expr, full, label){
+  const c=CHIMG[kind], H=(full?380:740)/(1-c.ht), W=H*c.w/c.h, x=100-W*c.hx, y=(full?4:6)-H*c.ht;
+  const hx=100, hy=y+H*c.ht+H*(1-c.ht)*0.072, r=H*0.06, has=c.ex.includes(expr);
+  const fx = (!has && expr==="worry") ? `<path d="M${hx+r*1.25} ${hy-r*.9} q${r*.32} ${r*.55} 0 ${r*.78} q${-r*.32} ${-r*.23} 0 ${-r*.78}z" fill="#a8dcf4" stroke="#5aa7d0" stroke-width="${r*.04}"/>` : "";
+  const vb=full?"0 0 200 390":"0 0 200 287";
+  return `<svg viewBox="${vb}" role="img" aria-label="${label}" class="chimg ex-${expr}">${full?`<ellipse cx="100" cy="384" rx="40" ry="5" fill="#24414a" opacity=".14"/>`:""}<image href="${chURL(kind,expr)}" x="${x.toFixed(1)}" y="${y}" width="${W.toFixed(1)}" height="${H.toFixed(1)}" preserveAspectRatio="none"/>${fx}</svg>`;
 }
-
+function npcSVG(kind, expr="normal"){ return chSVG(kind, expr, false, kind==="doc"?"曾醫師":"小安衛教師"); }
 const SKIN="#fde3cf", BLUSH="#f6a5a0";
 let CHAR_UID=0;
-function charSVG(kind, expr="normal", full=false){
-  const tang = kind==="tang", u="c"+(++CHAR_UID);
-  const hair = tang?"#6b3f2e":"#2d3045", hairL = tang?"#9a6248":"#4a5374", hairD = tang?"#4a2a1f":"#1c1e2e";
-  const top = tang?"#f6b3bd":"#79c3b8", topD = tang?"#e48f9c":"#57a497";
-  const iris1 = tang?"#5a2f22":"#1f3550", iris2 = tang?"#c27a45":"#4f9bb5";
-  const line = "#3a2630";
-  const defs = `<defs>
-    <linearGradient id="${u}i" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${iris1}"/><stop offset=".55" stop-color="${iris2}"/><stop offset="1" stop-color="${tang?'#f0b77a':'#9fd8e0'}"/></linearGradient>
-    <linearGradient id="${u}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${hairL}"/><stop offset=".45" stop-color="${hair}"/><stop offset="1" stop-color="${hairD}"/></linearGradient>
-    <radialGradient id="${u}s" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#fff1e6"/><stop offset="1" stop-color="#f7dccb"/></radialGradient>
-  </defs>`;
-  const H=`url(#${u}h)`;
-  // eyes
-  const eyeOpen=(x,flip)=>{ const d=flip?-1:1; return `
-    <path d="M${x-12} ${119} Q${x} ${131} ${x+12} ${119} L${x+12} ${112} Q${x} ${100} ${x-12} ${112}Z" fill="#fff"/>
-    <ellipse cx="${x}" cy="117" rx="9.5" ry="12.5" fill="url(#${u}i)"/>
-    <ellipse cx="${x}" cy="118" rx="4.6" ry="6.5" fill="${iris1}" opacity=".85"/>
-    <path d="M${x-9} 112 Q${x} 108 ${x+9} 112" stroke="${iris1}" stroke-width="2" fill="none" opacity=".6"/>
-    <ellipse cx="${x-3.6*d}" cy="111" rx="3.8" ry="4.6" fill="#fff"/>
-    <circle cx="${x+3.6*d}" cy="123.5" r="1.8" fill="#fff" opacity=".95"/>
-    <circle cx="${x+5*d}" cy="113" r="1" fill="#fff" opacity=".8"/>
-    <path d="M${x-13*d} 113 Q${x-2*d} 100 ${x+13*d} 109" stroke="${line}" stroke-width="3.6" fill="none" stroke-linecap="round"/>
-    ${tang?`<path d="M${x+13*d} 109 l${4.5*d} -3.6" stroke="${line}" stroke-width="2.6" stroke-linecap="round"/>`:""}
-    <path d="M${x-8} 130.5 Q${x} 132.5 ${x+8} 130" stroke="${line}" stroke-width="1.2" fill="none" opacity=".45"/>`; };
-  const eyeHappy=(x)=>`<path d="M${x-12} 120 Q${x} 105 ${x+12} 120" stroke="${line}" stroke-width="3.8" fill="none" stroke-linecap="round"/>${tang?`<path d="M${x+11} 118 l4 -2.5M${x-11} 118 l-4 -2.5" stroke="${line}" stroke-width="2.2" stroke-linecap="round"/>`:""}`;
-  let eyes, mouth, brows, extra="";
-  if(expr==="happy"||expr==="cheer") eyes=eyeHappy(79)+eyeHappy(121); else eyes=eyeOpen(79,true)+eyeOpen(121,false);
-  brows = expr==="worry"
-    ? `<path d="M67 92 Q77 92 88 97M133 92 Q123 92 112 97" stroke="${hairD}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`
-    : `<path d="M67 95 Q77 89 88 92M133 95 Q123 89 112 92" stroke="${hairD}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
-  if(expr==="cheer") mouth=`<path d="M92 141 Q100 152 108 141Z" fill="#c9525e"/><path d="M95 146 Q100 150 105 146" fill="#f6a5ad"/>`;
-  else if(expr==="worry"){ mouth=`<path d="M94 145 Q100 141 106 145" stroke="#9a4d55" stroke-width="2.4" fill="none" stroke-linecap="round"/>`; extra=`<path d="M150 96 q5 8 0 12 q-5 -4 0 -12z" fill="#9fd3f0"/>`; }
-  else if(expr==="happy") mouth=`<path d="M93 141 Q100 149 107 141" stroke="#9a4d55" stroke-width="2.4" fill="#f3a0a8" stroke-linecap="round"/>`;
-  else mouth=`<path d="M94 142 Q100 147 106 142" stroke="#9a4d55" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
-  const nose=`<path d="M99 131 q1.5 1.5 3 0" stroke="#d9a58e" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
-  const blush=`<ellipse cx="67" cy="136" rx="9" ry="4.5" fill="#f7a1a8" opacity=".55"/><ellipse cx="133" cy="136" rx="9" ry="4.5" fill="#f7a1a8" opacity=".55"/>${tang?`<path d="M62 135 l3 -2M66 136 l3 -2M134 135 l3 -2M138 136 l3 -2" stroke="#e98691" stroke-width="1.2" opacity=".7"/>`:""}`;
-  // hair
-  const backHair = tang
-    ? `<path d="M40 106 Q30 60 70 46 Q100 36 130 46 Q170 60 160 106 Q172 190 158 262 Q140 276 124 262 L76 262 Q60 276 42 262 Q28 190 40 106Z" fill="${H}"/>`
-    : `<path d="M46 104 Q40 58 100 46 Q160 58 154 104 Q152 128 146 140 L54 140 Q48 128 46 104Z" fill="${H}"/>`;
-  const front = tang
-    ? `<path d="M46 116 Q42 50 100 46 Q158 50 154 116 Q150 96 140 84 Q138 102 128 108 Q126 88 116 78 Q108 98 94 104 Q98 88 92 78 Q82 96 66 104 Q70 92 66 84 Q54 96 46 116Z" fill="${H}"/>
-       <path d="M44 110 Q38 150 44 196 Q50 214 58 200 Q52 160 56 118Z" fill="${H}"/><path d="M156 110 Q162 150 156 196 Q150 214 142 200 Q148 160 144 118Z" fill="${H}"/>
-       <path d="M62 64 Q100 46 138 64" stroke="#fff" stroke-opacity=".35" stroke-width="4" fill="none" stroke-linecap="round"/>
-       <path d="M68 72 q6 -4 10 -2M90 64 q6 -3 10 -1M114 66 q6 -2 10 1" stroke="#fff" stroke-opacity=".45" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-       <g transform="translate(142 70)"><path d="M0 -9 L2.6 -2.8 9 -2.8 3.9 1.2 5.8 7.6 0 3.8 -5.8 7.6 -3.9 1.2 -9 -2.8 -2.6 -2.8Z" fill="#ffd36e" stroke="#c9952e" stroke-width="1"/></g>
-       <g transform="translate(56 76)"><path d="M0 0 Q-12 -10 -14 2 Q-12 12 0 0Z M0 0 Q12 -10 14 2 Q12 12 0 0Z" fill="#f28b9b"/><circle r="3" fill="#e06d80"/></g>`
-    : `<circle cx="48" cy="118" r="8" fill="url(#${u}s)"/><circle cx="152" cy="118" r="8" fill="url(#${u}s)"/>
-       <path d="M48 110 Q44 52 100 48 Q156 52 152 110 Q148 92 138 84 L134 100 Q126 86 116 80 L112 98 Q104 84 92 80 L86 98 Q78 86 66 84 L62 100 Q54 96 48 110Z" fill="${H}"/>
-       <path d="M96 52 Q106 30 122 38 Q108 42 106 54Z" fill="${H}"/>
-       <path d="M64 66 Q100 50 136 66" stroke="#fff" stroke-opacity=".3" stroke-width="4" fill="none" stroke-linecap="round"/>`;
-  // body
-  const sleeve = top;
-  const arms = expr==="cheer"
-    ? `<path d="M60 188 Q34 164 36 130" stroke="${sleeve}" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="36" cy="125" r="9" fill="url(#${u}s)"/><path d="M140 188 Q166 164 164 130" stroke="${sleeve}" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="164" cy="125" r="9" fill="url(#${u}s)"/>`
-    : `<path d="M60 188 Q44 216 54 246" stroke="${sleeve}" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="55" cy="250" r="8.5" fill="url(#${u}s)"/><path d="M140 188 Q156 216 146 246" stroke="${sleeve}" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="145" cy="250" r="8.5" fill="url(#${u}s)"/>`;
-  const torso = tang
-    ? `<path d="M58 300 L62 198 Q66 176 100 172 Q134 176 138 198 L142 300Z" fill="${top}"/>
-       <path d="M86 174 L100 300 L114 174 Q100 170 86 174Z" fill="#fffaf3"/>
-       <path d="M84 172 L100 188 L116 172 L110 168 L100 178 L90 168Z" fill="#fff"/>
-       <path d="M100 186 l-9 -5 v10Z M100 186 l9 -5 v10Z" fill="#e5606f"/><circle cx="100" cy="186" r="2.6" fill="#c94a59"/>
-       <path d="M86 174 L98 300M114 174 L102 300" stroke="${topD}" stroke-width="2.5"/>
-       <circle cx="91" cy="222" r="2.2" fill="${topD}"/><circle cx="92" cy="250" r="2.2" fill="${topD}"/><circle cx="109" cy="222" r="2.2" fill="${topD}"/><circle cx="108" cy="250" r="2.2" fill="${topD}"/>`
-    : `<path d="M56 300 L60 196 Q62 174 100 170 Q138 174 140 196 L144 300Z" fill="${top}"/>
-       <path d="M84 172 Q100 186 116 172 L112 300 H88Z" fill="#fff"/>
-       <path d="M74 174 Q100 198 126 174 Q120 166 100 166 Q80 166 74 174Z" fill="${topD}"/>
-       <path d="M88 178 L86 210M112 178 L114 210" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
-       <path d="M88 180 V300M112 180 V300" stroke="${topD}" stroke-width="3"/>`;
-  const legs = !full ? "" : tang
-    ? `<path d="M78 300 L76 352 H88 L90 300Z M110 300 L112 352 H124 L122 300Z" fill="#f4e3d6"/>
-       <path d="M60 290 Q56 330 50 352 Q100 362 150 352 Q144 330 140 290Z" fill="#8fa9d6"/>
-       <path d="M76 296 L70 352M100 298 V358M124 296 L130 352" stroke="#7690c2" stroke-width="2"/>
-       <path d="M70 354 h22 v14 q0 6 -6 6 h-20 q-6 0 -4 -8Z M108 354 h22 q8 12 2 20 h-20 q-6 0 -6 -6Z" fill="#a8667a"/>
-       <path d="M72 358 h18M110 358 h18" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>`
-    : `<path d="M64 292 L66 368 H96 L99 300 H101 L104 368 H134 L136 292Z" fill="#3f5878"/><path d="M100 300 V360" stroke="#33486a" stroke-width="2"/>
-       <path d="M60 364 h40 q4 0 4 6 v6 h-48 v-4 q0 -8 4 -8Z M100 364 h40 q4 0 4 8 v4 h-48 v-6 q0 -6 4 -6Z" fill="#fffaf0" stroke="#24414a" stroke-width="2"/>`;
-  const hem = full && !tang ? `<path d="M56 290 H144 V300 Q100 306 56 300Z" fill="${topD}"/>` : "";
-  return `<svg viewBox="0 0 200 ${full?390:300}" role="img" aria-label="${tang?'糖糖':'正正'}">${defs}
-    ${backHair}
-    ${legs}
-    ${torso}${hem}
-    ${arms}
-    <path d="M90 148 h20 v24 q-10 6 -20 0Z" fill="#f2cdb9"/>
-    <path d="M52 102 Q52 58 100 56 Q148 58 148 102 Q148 136 124 156 Q100 172 76 156 Q52 136 52 102Z" fill="url(#${u}s)"/>
-    ${front}
-    ${eyes}${brows}${nose}${blush}${mouth}${extra}
-  </svg>`;
-}
+function charSVG(kind, expr="normal", full=false){ return chSVG(kind, expr, full, kind==="tang"?"糖糖":"正正"); }
 
 /* ============ storage (best-effort) ============ */
 const store = {
@@ -1505,7 +1383,7 @@ function doctorVisit(done){
 /* ============ boot ============ */
 $("scene").innerHTML=sceneSVG(); if(RM) $("scene").querySelector("svg").pauseAnimations?.();
 $("title-snd").innerHTML=sndBtns(); $("g-snd").innerHTML=sndBtns(); $("b-song").onclick=openTheme;
-$("title-chara").innerHTML=charSVG("tang","happy");
+$("title-chara").innerHTML=charSVG("tang","happy",true);
 { const c=store.get(CUR); if(c && accounts.load()[c]) ME=c; }
 show("title");
 </script>
