@@ -3491,6 +3491,24 @@
     <p>從國內教學醫院與糖尿病衛教學會的官方影片中，挑幾支給您參考</p>
   </div>
 
+  <style>
+    #videos [hidden] { display: none !important; }
+    #video-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    #video-filters button { min-height: 44px; padding: 8px 14px; border: 1px solid var(--sage-deep); border-radius: 20px; background: white; color: var(--sage-deep); font: inherit; cursor: pointer; }
+    #video-filters button[aria-pressed="true"] { background: var(--sage-deep); color: white; }
+  </style>
+  <div id="video-filters" role="group" aria-label="篩選衛教影片" hidden>
+    <button type="button" data-filter="all" aria-pressed="true">全部影片</button>
+    <button type="button" data-filter="author" aria-pressed="false">曾醫師的影片</button>
+    <button type="button" data-filter="start" aria-pressed="false">剛確診</button>
+    <button type="button" data-filter="med" aria-pressed="false">用藥與注射</button>
+    <button type="button" data-filter="low" aria-pressed="false">低血糖怎麼辦</button>
+    <button type="button" data-filter="care" aria-pressed="false">眼睛、腎臟與足部照護</button>
+    <button type="button" data-filter="food" aria-pressed="false">飲食與保健食品</button>
+    <button type="button" data-filter="bone" aria-pressed="false">骨骼與甲狀腺</button>
+  </div>
+  <p id="video-filter-status" role="status"></p>
+
   <!-- 曾醫師（本站作者）自己的影片 -->
   <div class="author-videos">
     <div class="author-videos-head">
@@ -3502,7 +3520,7 @@
       這些是曾醫師針對病人常問的問題整理的說明，內容可以當作和曾醫師討論時的參考。
     </p>
     <div class="video-grid">
-      <a href="https://www.youtube.com/watch?v=hI8BTZKNDjU" target="_blank" rel="noopener" class="video-card">
+      <a href="https://www.youtube.com/watch?v=hI8BTZKNDjU" target="_blank" rel="noopener" class="video-card" data-video-topics="med care">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/hI8BTZKNDjU/hqdefault.jpg" alt="" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3514,7 +3532,7 @@
         </div>
       </a>
 
-      <a href="https://www.youtube.com/watch?v=wtfLG7dGFR8" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：我有糖尿病該怎麼辦？（曾醫師說明）">
+      <a href="https://www.youtube.com/watch?v=wtfLG7dGFR8" target="_blank" rel="noopener" class="video-card" data-video-topics="start" aria-label="開啟影片：我有糖尿病該怎麼辦？（曾醫師說明）">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/wtfLG7dGFR8/hqdefault.jpg" alt="我有糖尿病該怎麼辦？ 影片縮圖" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3527,7 +3545,7 @@
         </div>
       </a>
 
-      <a href="https://www.youtube.com/watch?v=d1nHHWLTzQc" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：苦瓜胜肽（曾醫師說明）">
+      <a href="https://www.youtube.com/watch?v=d1nHHWLTzQc" target="_blank" rel="noopener" class="video-card" data-video-topics="food" aria-label="開啟影片：苦瓜胜肽（曾醫師說明）">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/d1nHHWLTzQc/hqdefault.jpg" alt="苦瓜胜肽 曾醫師說明 影片縮圖" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3540,7 +3558,7 @@
         </div>
       </a>
 
-      <a href="https://www.youtube.com/watch?v=ykF3Gc5VbrE" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：守護腎利人生 台語原聲順暢版（曾醫師說明）">
+      <a href="https://www.youtube.com/watch?v=ykF3Gc5VbrE" target="_blank" rel="noopener" class="video-card" data-video-topics="care" aria-label="開啟影片：守護腎利人生 台語原聲順暢版（曾醫師說明）">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/ykF3Gc5VbrE/hqdefault.jpg" alt="守護腎利人生 台語原聲順暢版 影片縮圖" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3553,7 +3571,7 @@
         </div>
       </a>
 
-      <a href="https://www.youtube.com/watch?v=Q-o816Q7a3o" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：甲狀腺細針穿刺（曾醫師說明）">
+      <a href="https://www.youtube.com/watch?v=Q-o816Q7a3o" target="_blank" rel="noopener" class="video-card" data-video-topics="bone" aria-label="開啟影片：甲狀腺細針穿刺（曾醫師說明）">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/Q-o816Q7a3o/hqdefault.jpg" alt="甲狀腺細針穿刺 影片縮圖" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3566,7 +3584,7 @@
         </div>
       </a>
 
-      <a href="https://www.youtube.com/watch?v=Jy7dMs1g5K8" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：骨質疏鬆怎麼補鈣（曾醫師說明）">
+      <a href="https://www.youtube.com/watch?v=Jy7dMs1g5K8" target="_blank" rel="noopener" class="video-card" data-video-topics="bone" aria-label="開啟影片：骨質疏鬆怎麼補鈣（曾醫師說明）">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/Jy7dMs1g5K8/hqdefault.jpg" alt="骨質疏鬆怎麼補鈣 影片縮圖" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3589,7 +3607,7 @@
   </div>
 
   <div class="video-grid">
-    <a href="https://www.youtube.com/watch?v=js47CHlb8AE" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：認識糖尿病">
+    <a href="https://www.youtube.com/watch?v=js47CHlb8AE" target="_blank" rel="noopener" class="video-card" data-video-topics="start" aria-label="開啟影片：認識糖尿病">
       <div class="video-thumb-wrap">
         <img src="https://i.ytimg.com/vi/js47CHlb8AE/hqdefault.jpg" alt="認識糖尿病 影片縮圖" loading="lazy" width="480" height="360">
         <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3602,7 +3620,7 @@
       </div>
     </a>
 
-    <a href="https://www.youtube.com/watch?v=Eb_tuj_GlaA" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：糖尿病足篩檢">
+    <a href="https://www.youtube.com/watch?v=Eb_tuj_GlaA" target="_blank" rel="noopener" class="video-card" data-video-topics="care" aria-label="開啟影片：糖尿病足篩檢">
       <div class="video-thumb-wrap">
         <img src="https://i.ytimg.com/vi/Eb_tuj_GlaA/hqdefault.jpg" alt="糖尿病足篩檢 影片縮圖" loading="lazy" width="480" height="360">
         <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3615,7 +3633,7 @@
       </div>
     </a>
 
-    <a href="https://www.youtube.com/watch?v=Q_XmsIiw_xA" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：警戒低血糖">
+    <a href="https://www.youtube.com/watch?v=Q_XmsIiw_xA" target="_blank" rel="noopener" class="video-card" data-video-topics="low" aria-label="開啟影片：警戒低血糖">
       <div class="video-thumb-wrap">
         <img src="https://i.ytimg.com/vi/Q_XmsIiw_xA/hqdefault.jpg" alt="警戒低血糖 影片縮圖" loading="lazy" width="480" height="360">
         <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3628,7 +3646,7 @@
       </div>
     </a>
 
-    <a href="https://www.youtube.com/watch?v=PixP24dSndA" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：胰島素注射部位">
+    <a href="https://www.youtube.com/watch?v=PixP24dSndA" target="_blank" rel="noopener" class="video-card" data-video-topics="med" aria-label="開啟影片：胰島素注射部位">
       <div class="video-thumb-wrap">
         <img src="https://i.ytimg.com/vi/PixP24dSndA/hqdefault.jpg" alt="胰島素注射部位 影片縮圖" loading="lazy" width="480" height="360">
         <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3641,7 +3659,7 @@
       </div>
     </a>
 
-    <a href="https://www.youtube.com/watch?v=uXHND5dgLdg" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：糖尿病與骨質疏鬆">
+    <a href="https://www.youtube.com/watch?v=uXHND5dgLdg" target="_blank" rel="noopener" class="video-card" data-video-topics="bone" aria-label="開啟影片：糖尿病與骨質疏鬆">
       <div class="video-thumb-wrap">
         <img src="https://i.ytimg.com/vi/uXHND5dgLdg/hqdefault.jpg" alt="糖尿病與骨質疏鬆 影片縮圖" loading="lazy" width="480" height="360">
         <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3654,7 +3672,7 @@
       </div>
     </a>
 
-    <a href="https://www.youtube.com/watch?v=i__iyPVSpdk" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：糖尿病與周邊神經病變">
+    <a href="https://www.youtube.com/watch?v=i__iyPVSpdk" target="_blank" rel="noopener" class="video-card" data-video-topics="care" aria-label="開啟影片：糖尿病與周邊神經病變">
       <div class="video-thumb-wrap">
         <img src="https://i.ytimg.com/vi/i__iyPVSpdk/hqdefault.jpg" alt="糖尿病與周邊神經病變 影片縮圖" loading="lazy" width="480" height="360">
         <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3672,7 +3690,7 @@
   <details class="video-more">
     <summary>💉 有在打胰島素的病友，另外可以看這 5 支操作教學</summary>
     <div class="video-grid">
-      <a href="https://www.youtube.com/watch?v=CvCV-d8sm6U" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：速效型胰島素注射筆操作步驟">
+      <a href="https://www.youtube.com/watch?v=CvCV-d8sm6U" target="_blank" rel="noopener" class="video-card" data-video-topics="med" aria-label="開啟影片：速效型胰島素注射筆操作步驟">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/CvCV-d8sm6U/hqdefault.jpg" alt="速效型胰島素注射筆 影片縮圖" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3685,7 +3703,7 @@
         </div>
       </a>
 
-      <a href="https://www.youtube.com/watch?v=pudwWgUbjj8" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：長效型胰島素注射筆操作步驟">
+      <a href="https://www.youtube.com/watch?v=pudwWgUbjj8" target="_blank" rel="noopener" class="video-card" data-video-topics="med" aria-label="開啟影片：長效型胰島素注射筆操作步驟">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/pudwWgUbjj8/hqdefault.jpg" alt="長效型胰島素注射筆 影片縮圖" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3698,7 +3716,7 @@
         </div>
       </a>
 
-      <a href="https://www.youtube.com/watch?v=5HKs7QPIZJM" target="_blank" rel="noopener" class="video-card">
+      <a href="https://www.youtube.com/watch?v=5HKs7QPIZJM" target="_blank" rel="noopener" class="video-card" data-video-topics="med">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/5HKs7QPIZJM/hqdefault.jpg" alt="" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3708,7 +3726,7 @@
         </div>
       </a>
 
-      <a href="https://www.youtube.com/watch?v=G7bOHtMiP-0" target="_blank" rel="noopener" class="video-card">
+      <a href="https://www.youtube.com/watch?v=G7bOHtMiP-0" target="_blank" rel="noopener" class="video-card" data-video-topics="med">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/G7bOHtMiP-0/hqdefault.jpg" alt="" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3718,7 +3736,7 @@
         </div>
       </a>
 
-      <a href="https://www.youtube.com/watch?v=KrcBZCqx37k" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：空針抽取中效胰島素注射步驟">
+      <a href="https://www.youtube.com/watch?v=KrcBZCqx37k" target="_blank" rel="noopener" class="video-card" data-video-topics="med" aria-label="開啟影片：空針抽取中效胰島素注射步驟">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/KrcBZCqx37k/hqdefault.jpg" alt="空針抽取中效胰島素 影片縮圖" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3743,7 +3761,7 @@
       若用途、劑量有疑問，請以曾醫師與衛教師的說明為準。
     </div>
     <div class="video-grid">
-      <a href="https://www.youtube.com/watch?v=BryQsB_VVWA" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：胰妥讚 Ozempic 使用操作">
+      <a href="https://www.youtube.com/watch?v=BryQsB_VVWA" target="_blank" rel="noopener" class="video-card" data-video-topics="med" aria-label="開啟影片：胰妥讚 Ozempic 使用操作">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/BryQsB_VVWA/hqdefault.jpg" alt="胰妥讚 Ozempic 操作教學 影片縮圖" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3756,7 +3774,7 @@
         </div>
       </a>
 
-      <a href="https://www.youtube.com/watch?v=gH6RAP8WLB4" target="_blank" rel="noopener" class="video-card" aria-label="開啟影片：Mounjaro 猛健樂使用衛教">
+      <a href="https://www.youtube.com/watch?v=gH6RAP8WLB4" target="_blank" rel="noopener" class="video-card" data-video-topics="med" aria-label="開啟影片：Mounjaro 猛健樂使用衛教">
         <div class="video-thumb-wrap">
           <img src="https://i.ytimg.com/vi/gH6RAP8WLB4/hqdefault.jpg" alt="猛健樂 Mounjaro 操作教學 影片縮圖" loading="lazy" width="480" height="360">
           <div class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -3774,6 +3792,46 @@
   <p style="text-align: center; margin-top: 32px; color: var(--ink-soft); font-size: 0.9em;">
     影片來源：<strong>成大醫院 · 中國醫藥大學附設醫院 · 員林基督教醫院 · 中華民國糖尿病衛教學會 · 臺北醫學大學附設醫院</strong>（全數為台灣教學醫院／學會官方頻道，2026 年 8 月核對可用）
   </p>
+  <script>
+    (() => {
+      const section = document.getElementById('videos');
+      const filters = document.getElementById('video-filters');
+      const status = document.getElementById('video-filter-status');
+      const cards = [...section.querySelectorAll('.video-card')];
+      const containers = section.querySelectorAll('.video-grid, .author-videos, .video-more');
+      const details = [...section.querySelectorAll('.video-more')];
+      const disclaimer = section.querySelector('.video-disclaimer');
+      let previousOpen = [];
+      filters.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-filter]');
+        if (!button || button.getAttribute('aria-pressed') === 'true') return;
+        const current = filters.querySelector('[aria-pressed="true"]');
+        if (current.dataset.filter === 'all') previousOpen = details.map((group) => group.open);
+        current.setAttribute('aria-pressed', 'false');
+        button.setAttribute('aria-pressed', 'true');
+        const topic = button.dataset.filter;
+        let visible = 0;
+        let hasExternal = false;
+        for (const card of cards) {
+          const isAuthor = Boolean(card.closest('.author-videos'));
+          card.hidden = !(topic === 'all' || (topic === 'author' ? isAuthor : (card.dataset.videoTopics || '').split(' ').includes(topic)));
+          if (!card.hidden) {
+            visible++;
+            if (!isAuthor) hasExternal = true;
+          }
+        }
+        for (const container of containers) {
+          container.hidden = !container.querySelector('.video-card:not([hidden])');
+        }
+        details.forEach((group, index) => {
+          group.open = topic === 'all' ? previousOpen[index] : !group.hidden;
+        });
+        disclaimer.hidden = !hasExternal;
+        status.textContent = topic === 'all' ? '' : '顯示 ' + visible + ' 支影片';
+      });
+      filters.hidden = false;
+    })();
+  </script>
 </section>
 
 <!-- ============ 衛教小遊戲 ============ -->
